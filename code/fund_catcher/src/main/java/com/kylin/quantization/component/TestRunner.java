@@ -30,7 +30,8 @@ public class TestRunner  implements ApplicationRunner {
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        Configuration conf = HBaseConfiguration.create();
+        logger.info("---------");
+        /*Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.rootdir", "hdfs://192.168.109.201:9000/hbase");
         conf.set("hbase.zookeeper.quorum", ZKconnect);
         Connection conn = null;
@@ -46,6 +47,6 @@ public class TestRunner  implements ApplicationRunner {
             logger.info("---------"+exist);
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
