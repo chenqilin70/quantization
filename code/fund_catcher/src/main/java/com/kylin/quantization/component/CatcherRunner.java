@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Map;
 
-@Component
+//@Component
 public class CatcherRunner  implements ApplicationRunner {
     public static Logger logger= LoggerFactory.getLogger(CatcherRunner.class);
     @Autowired
