@@ -27,7 +27,6 @@ public class CatcherService {
     private MapUtil<String,String> ssMapUtil;
     @Autowired
     private Map<String,String> conf;
-    @Autowired
     public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
     public CatcherService() {
         System.out.println("CatcherService is building");

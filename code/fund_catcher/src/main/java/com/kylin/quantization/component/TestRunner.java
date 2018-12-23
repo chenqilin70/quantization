@@ -1,11 +1,14 @@
 package com.kylin.quantization.component;
 
+import com.kylin.quantization.service.CatcherService;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -23,6 +26,7 @@ import java.io.IOException;
  */
 @Component
 public class TestRunner  implements ApplicationRunner {
+    public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
@@ -39,7 +43,7 @@ public class TestRunner  implements ApplicationRunner {
         }
         try {
             boolean exist=admin.tableExists(TableName.valueOf("fund"));
-            System.out.println("---------"+exist);
+            logger.info("---------"+exist);
         } catch (IOException e) {
             e.printStackTrace();
         }
