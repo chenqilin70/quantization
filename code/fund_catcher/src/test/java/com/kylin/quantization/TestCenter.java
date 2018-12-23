@@ -25,7 +25,7 @@ import java.util.HashMap;
  */
 public class TestCenter {
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
-    @Test
+    /*@Test
     public void test(){
         // 建立连接
         Configuration conf = HBaseConfiguration.create();
@@ -47,5 +47,5 @@ public class TestCenter {
         }
 
 
-    }
+    }*/
 }
