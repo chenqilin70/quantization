@@ -41,6 +41,8 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             synchronized (this){
                 if(conn==null){
                     Configuration configuration = HBaseConfiguration.create();
+                    logger.info("hbase.rootdir:"+conf.get("hbase.rootdir"));
+                    logger.info("hbase.zookeeper.quorum:"+conf.get("hbase.zookeeper.quorum"));
                     configuration.set("hbase.rootdir", conf.get("hbase.rootdir"));
                     configuration.set("hbase.zookeeper.quorum", conf.get("hbase.zookeeper.quorum"));
                     Connection conn = null;
