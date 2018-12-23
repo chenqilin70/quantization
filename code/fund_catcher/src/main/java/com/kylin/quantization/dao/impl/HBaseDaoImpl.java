@@ -10,6 +10,7 @@ import org.apache.hadoop.hbase.HColumnDescriptor;
 import org.apache.hadoop.hbase.HTableDescriptor;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                     Configuration configuration = HBaseConfiguration.create();
                     configuration.addResource("hbase-site.xml");
                     configuration.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
-//                    DistributedFileSystem d;
+                    DistributedFileSystem d;
 //                    configuration.set("hbase.rootdir", conf.get("hbase.rootdir"));
 //                    configuration.set("hbase.zookeeper.quorum", conf.get("hbase.zookeeper.quorum"));
                     Connection conn = null;
