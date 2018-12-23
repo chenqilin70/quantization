@@ -4,7 +4,7 @@
 <configuration>
   <property>
     <name>hbase.rootdir</name>
-    <value>hdfs://nameservice1/hbase</value>
+    <value>hdfs://192.168.109.201:9000/hbase</value>
   </property>
   <property>
     <name>hbase.replication</name>
