@@ -3,6 +3,6 @@ logging:
   level:
     com.kylin.quantization: info #不同目录下的日志可配置不同级别
   file: log/log.log
-  # 指定文件中日志输出的格式
+  # 指定文件中日志输出的格式.
   pattern:
     file: '[%d{yyyy-MM-dd HH:mm:ss.SSS\} %-5p] [%t] {%c:%L}-%m%n'
