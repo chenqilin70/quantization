@@ -31,11 +31,12 @@ public class TestRunner  implements ApplicationRunner {
     private HBaseDao hBaseDao;
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        logger.info("existTable:"+hBaseDao.existTable("fund"));
-        logger.info("dropTable:"+hBaseDao.dropTable("fund"));
-        logger.info("existTable:"+hBaseDao.existTable("fund"));
-        logger.info("createTable:"+hBaseDao.createTable("fund","baseinfo"));
-        logger.info("existTable:"+hBaseDao.existTable("fund"));
+        logger.info(hBaseDao.getConn());
+//        logger.info("existTable:"+hBaseDao.existTable("fund"));
+//        logger.info("dropTable:"+hBaseDao.dropTable("fund"));
+//        logger.info("existTable:"+hBaseDao.existTable("fund"));
+//        logger.info("createTable:"+hBaseDao.createTable("fund","baseinfo"));
+//        logger.info("existTable:"+hBaseDao.existTable("fund"));
 
     }
 }
