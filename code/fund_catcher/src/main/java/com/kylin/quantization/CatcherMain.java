@@ -22,8 +22,6 @@ public class CatcherMain   {
         SpringApplication app=new SpringApplication(CatcherMain.class);
         app.setBannerMode(Banner.Mode.OFF); app.run(args);
 
-
-
     }
 
 

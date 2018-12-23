@@ -17,7 +17,7 @@ import java.util.Map;
 public class CatcherRunner  implements ApplicationRunner {
     public static Logger logger= LoggerFactory.getLogger(CatcherRunner.class);
     @Autowired
-    MapUtil<String,String> ssMapUtil;
+    private MapUtil<String,String> ssMapUtil;
     @Autowired
     private CatcherService service;
     @Override

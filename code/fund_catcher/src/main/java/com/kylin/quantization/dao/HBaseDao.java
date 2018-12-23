@@ -1,5 +1,8 @@
 package com.kylin.quantization.dao;
 
+import com.kylin.quantization.dao.impl.HBaseExecutors;
+import org.apache.hadoop.hbase.client.Connection;
+
 /**
  * ClassName: HBaseDao
  * Description:
@@ -11,4 +14,9 @@ package com.kylin.quantization.dao;
  */
 public interface HBaseDao extends BaseDao{
     boolean createTable(String tableName,String ... colums);
+    Connection getConn();
+    <T> T admin(HBaseExecutors.AdminExecutor<T> executor);
+    <T> T table(String tableName,HBaseExecutors.TableExecutor<T> executor);
+    boolean existTable(String tableName);
+
 }
