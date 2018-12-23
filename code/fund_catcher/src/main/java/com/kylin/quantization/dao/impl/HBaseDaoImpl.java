@@ -43,11 +43,10 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 if(conn==null){
                     Configuration configuration = HBaseConfiguration.create();
                     configuration.addResource("hbase-site.xml");
-                    configuration.addResource("hdfs-site.xml");
+//                    configuration.addResource("hdfs-site.xml");
 //                    configuration.set("fs.hdfs.impl", "org.apache.hadoop.hdfs.DistributedFileSystem");
 //                    configuration.set("hbase.rootdir", conf.get("hbase.rootdir"));
 //                    configuration.set("hbase.zookeeper.quorum", conf.get("hbase.zookeeper.quorum"));
-                    Connection conn = null;
                     try {
                         conn = ConnectionFactory.createConnection(configuration);
                     } catch (IOException e) {
