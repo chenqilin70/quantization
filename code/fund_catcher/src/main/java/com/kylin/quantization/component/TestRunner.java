@@ -11,6 +11,7 @@ import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.log4j.Logger;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.io.IOException;
  * 作者姓名 修改时间    版本号 描述
  */
 @Component
+@Order(2)
 public class TestRunner  implements ApplicationRunner {
     public static Logger logger= Logger.getLogger(TestRunner.class);
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
