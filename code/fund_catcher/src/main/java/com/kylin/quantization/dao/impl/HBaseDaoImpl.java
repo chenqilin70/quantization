@@ -40,12 +40,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         if(conn==null){
             synchronized (this){
                 if(conn==null){
-                    Configuration conf = HBaseConfiguration.create();
-                    conf.set("hbase.rootdir", conf.get("hbase.rootdir"));
-                    conf.set("hbase.zookeeper.quorum", conf.get("hbase.zookeeper.quorum"));
+                    Configuration configuration = HBaseConfiguration.create();
+                    configuration.set("hbase.rootdir", conf.get("hbase.rootdir"));
+                    configuration.set("hbase.zookeeper.quorum", conf.get("hbase.zookeeper.quorum"));
                     Connection conn = null;
                     try {
-                        conn = ConnectionFactory.createConnection(conf);
+                        conn = ConnectionFactory.createConnection(configuration);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

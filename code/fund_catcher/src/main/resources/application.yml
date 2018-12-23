@@ -1,1 +1,2 @@
-env: linux
+env: win
+#env: linux
