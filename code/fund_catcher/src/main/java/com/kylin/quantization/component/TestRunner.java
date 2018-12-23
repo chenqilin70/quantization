@@ -31,7 +31,7 @@ public class TestRunner  implements ApplicationRunner {
     private HBaseDao hBaseDao;
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        logger.info(hBaseDao.getConn());
+        logger.info(hBaseDao.getConn()+"============++++++++++++++++++");
 //        logger.info("existTable:"+hBaseDao.existTable("fund"));
 //        logger.info("dropTable:"+hBaseDao.dropTable("fund"));
 //        logger.info("existTable:"+hBaseDao.existTable("fund"));
