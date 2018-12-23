@@ -6,9 +6,9 @@ import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -26,19 +26,18 @@ import java.io.IOException;
  */
 @Component
 public class TestRunner  implements ApplicationRunner {
-    public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
+    public static Logger logger= Logger.getLogger(TestRunner.class);
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        logger.info("---------");
-        /*Configuration conf = HBaseConfiguration.create();
+        Configuration conf = HBaseConfiguration.create();
         conf.set("hbase.rootdir", "hdfs://192.168.109.201:9000/hbase");
         conf.set("hbase.zookeeper.quorum", ZKconnect);
         Connection conn = null;
         Admin admin = null;
         try {
-//            conn = ConnectionFactory.createConnection(conf);
-            admin = new HBaseAdmin(conf);
+            conn = ConnectionFactory.createConnection(conf);
+            admin = conn.getAdmin();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -47,6 +46,6 @@ public class TestRunner  implements ApplicationRunner {
             logger.info("---------"+exist);
         } catch (IOException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
