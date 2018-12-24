@@ -1,24 +1,30 @@
 package com.kylin.quantization.service;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.component.CatcherRunner;
+import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.HttpUtil;
 import com.kylin.quantization.util.MapUtil;
 import com.kylin.quantization.util.StringReplaceUtil;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,13 +33,15 @@ public class CatcherService {
     private MapUtil<String,String> ssMapUtil;
     @Autowired
     private Map<String,String> conf;
+    @Autowired
+    private Map<String,String> columnCode;
+    @Autowired
+    private HBaseDao hBaseDao;
     public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
-    public CatcherService() {
-        System.out.println("CatcherService is building");
-    }
 
 
     public List<Map<String, String>> getFundList() {
+        logger.info("getFundList start");
         List<Map<String, String>> result=new ArrayList<>();
         String listjson = HttpUtil.doGet(conf.get("fund_list"), null);
         if(StringUtils.isNotBlank(listjson)){
@@ -44,25 +52,40 @@ public class CatcherService {
                 result.add(fundMap);
             }
         }
+        logger.info("getFundList end");
         return result;
     }
 
-    public List<Map<String, String>> getFucndBase(Map<String, String> fund) {
+    public void getFundBase(Map<String, String> fund) {
+        logger.info("getFucndBase start,fund:"+ JSON.toJSONString(fund));
         String detailhtml = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("fund_detail"), fund), null);
-        Document html = Jsoup.parse(detailhtml);
-        Element table = html.getElementsByClass("info w790").get(0);
-        Elements trs = table.getElementsByTag("tr");
-        trs.forEach(tr->{
-            Elements allElements = tr.getAllElements();
-            String th1=allElements.get(1).text();
-            String td1=allElements.get(2).text();
-            String th2=allElements.get(3).text();
-            String td2=allElements.get(4).text();
-            logger.info(th1+":"+td1);
-            logger.info(th2+":"+td2);
-        });
-//        System.out.println(info_w790.toString());
-
-        return null;
+        if(StringUtils.isNotBlank(detailhtml)){
+            Document html = Jsoup.parse(detailhtml);
+            Element table = html.getElementsByClass("info w790").get(0);
+            Elements trs = table.getElementsByTag("tr");
+            Map<String,String> fundDetailMap=new HashMap<String,String>();
+            trs.forEach(tr->{
+                Elements ths = tr.getElementsByTag("th");
+                Elements tds = tr.getElementsByTag("td");
+                for(int i=0;i<ths.size();i++){
+                    Element th = ths.get(i);
+                    Element td = tds.get(i);
+                    fundDetailMap.put(columnCode.get(th.text().trim()),(  td==null?"":td.text()  ));
+                }
+            });
+            List<Put> puts = fundDetailMap.keySet().stream().map(k -> {
+                String jjdm = fundDetailMap.get("jjdm");
+                Put put = new Put(Bytes.toBytes(jjdm.hashCode() + "_" + jjdm))
+                        .addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(k), Bytes.toBytes(fundDetailMap.get(k)));
+                return put;
+            }).collect(Collectors.toList());
+            hBaseDao.putData("fund",puts);
+        }
+        logger.info("getFucndBase end,fund:"+ JSON.toJSONString(fund));
     }
+
+
+
+
+
 }

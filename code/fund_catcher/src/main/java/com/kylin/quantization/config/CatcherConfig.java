@@ -19,9 +19,8 @@ import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+
 @Configuration
 public class CatcherConfig  {
     public static Logger logger= LoggerFactory.getLogger(CatcherConfig.class);
@@ -29,23 +28,34 @@ public class CatcherConfig  {
     private String env;
     @Bean
     public Map<String,String> conf(){
-        Map<String,String> conf=new HashMap<>();
-        InputStream confin=CatcherConfig.class.getClassLoader().getResourceAsStream("conf.properties");
-        Properties confPro=new Properties();
-        try {
-            confPro.load(confin);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            IOUtils.closeQuietly(confin);
-        }
-        confPro.keySet().forEach(k->{
-            conf.put(k.toString(), confPro.get(k).toString());
-        });
+        Map<String,String> conf=proToMap("conf.properties");
         PropertyConfigurator.configure(CatcherMain.class.getClassLoader()
                 .getResourceAsStream("log4j_"+env+".properties"));
         logger.info("使用日志配置文件:log4j_"+env+".properties");
         return conf;
+    }
+
+
+    @Bean
+    public Map<String,String> columnCode(){
+        return proToMap("column.properties");
+    }
+
+    private Map<String,String> proToMap(String fileName){
+        Map<String,String> result=new HashMap<>();
+        InputStream in=CatcherConfig.class.getClassLoader().getResourceAsStream(fileName);
+        Properties pro=new Properties();
+        try {
+            pro.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            IOUtils.closeQuietly(in);
+        }
+        pro.keySet().forEach(k->{
+            result.put(k.toString(), pro.get(k).toString());
+        });
+        return result;
     }
 
     @Bean

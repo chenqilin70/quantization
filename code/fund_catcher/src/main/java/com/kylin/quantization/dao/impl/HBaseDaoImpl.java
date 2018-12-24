@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
@@ -148,23 +149,33 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     }
 
     @Override
+    public boolean putData(String tableName, List<Put> puts) {
+        return table(tableName,table->{
+            boolean flg=false;
+            try {
+                table.put(puts);
+                flg=true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return flg;
+        });
+    }
+
+    @Override
     public Result getData(String tableName, String rowKey) {
         return table(tableName,table->{
             Result result=null;
             try {
                 Get get=new Get(Bytes.toBytes(rowKey));
 //                get.addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("code"));
-                logger.info("开始get了");
                 result= table.get(get);
-                logger.info("get 结束了");
                 for (Cell cell : result.rawCells()) {
                     // 打印结果
                     logger.info(Bytes.toString(CellUtil.cloneFamily(cell)) + ":");
                     logger.info(Bytes.toString(CellUtil.cloneQualifier(cell)) + "->");
                     logger.info(Bytes.toString(CellUtil.cloneValue(cell)));
                 }
-
-                logger.info("=================="+result.toString());
             } catch (IOException e) {
                 e.printStackTrace();
             }

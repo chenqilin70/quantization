@@ -2,7 +2,10 @@ package com.kylin.quantization.dao;
 
 import com.kylin.quantization.dao.impl.HBaseExecutors;
 import org.apache.hadoop.hbase.client.Connection;
+import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+
+import java.util.List;
 
 /**
  * ClassName: HBaseDao
@@ -20,6 +23,7 @@ public interface HBaseDao extends BaseDao{
     <T> T table(String tableName,HBaseExecutors.TableExecutor<T> executor);
     boolean existTable(String tableName);
     boolean putData(String tableName,String rowKey,String family,String qualifier,String value);
+    boolean putData(String tableName,List<Put> puts);
     Result getData(String tableName, String rowKey);
 
 }
