@@ -160,9 +160,9 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 logger.info("get 结束了");
                 for (Cell cell : result.rawCells()) {
                     // 打印结果
-                    System.out.print(Bytes.toString(CellUtil.cloneFamily(cell)) + ":");
-                    System.out.print(Bytes.toString(CellUtil.cloneQualifier(cell)) + "->");
-                    System.out.print(Bytes.toString(CellUtil.cloneValue(cell)));
+                    logger.info(Bytes.toString(CellUtil.cloneFamily(cell)) + ":");
+                    logger.info(Bytes.toString(CellUtil.cloneQualifier(cell)) + "->");
+                    logger.info(Bytes.toString(CellUtil.cloneValue(cell)));
                 }
 
                 logger.info("=================="+result.toString());

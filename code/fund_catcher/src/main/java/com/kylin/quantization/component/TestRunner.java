@@ -38,6 +38,6 @@ public class TestRunner  implements ApplicationRunner {
         logger.info("createTable:"+hBaseDao.createTable("fund","baseinfo"));
         logger.info("existTable:"+hBaseDao.existTable("fund"));*/
 //        logger.info("putData:"+hBaseDao.putData("fund","161604".hashCode()+"_161604","baseinfo","pinyin:rongtongshenzheng100zhishu"));
-        logger.info("putData:"+hBaseDao.getData("fund","161604".hashCode()+"_161604").getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("code")));
+        logger.info("getData:"+hBaseDao.getData("fund","161604".hashCode()+"_161604").getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("code")));
     }
 }
