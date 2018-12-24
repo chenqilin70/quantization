@@ -73,12 +73,12 @@ public class CatcherService {
                     fundDetailMap.put(columnCode.get(th.text().trim()),(  td==null?"":td.text()  ));
                 }
             });
-            List<Put> puts = fundDetailMap.keySet().stream().map(k -> {
-                String jjdm = fundDetailMap.get("jjdm");
-                Put put = new Put(Bytes.toBytes(jjdm.hashCode() + "_" + jjdm))
-                        .addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(k), Bytes.toBytes(fundDetailMap.get(k)));
-                return put;
-            }).collect(Collectors.toList());
+            String code = fund.get("fundcode");
+            fundDetailMap.putAll(fund);
+            List<Put> puts = fundDetailMap.keySet().stream().map(k ->
+                 new Put(Bytes.toBytes(code.hashCode() + "_" + code))
+                         .addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(k), Bytes.toBytes(fundDetailMap.get(k)))
+            ).collect(Collectors.toList());
             hBaseDao.putData("fund",puts);
         }
         logger.info("getFucndBase end,fund:"+ JSON.toJSONString(fund));
