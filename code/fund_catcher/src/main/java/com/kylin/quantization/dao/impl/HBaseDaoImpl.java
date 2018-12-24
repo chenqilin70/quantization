@@ -147,4 +147,18 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             return flg;
         });
     }
+
+    @Override
+    public Result getData(String tableName, String rowKey) {
+        return table(tableName,table->{
+            Result result=null;
+            try {
+                result= table.get(new Get(Bytes.toBytes(rowKey)));
+                logger.info("=================="+result.toString());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return result;
+        });
+    }
 }
