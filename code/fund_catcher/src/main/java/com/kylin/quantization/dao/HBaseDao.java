@@ -18,5 +18,6 @@ public interface HBaseDao extends BaseDao{
     <T> T admin(HBaseExecutors.AdminExecutor<T> executor);
     <T> T table(String tableName,HBaseExecutors.TableExecutor<T> executor);
     boolean existTable(String tableName);
+    boolean putData(String tableName,String rowKey,String family,String qualifier);
 
 }

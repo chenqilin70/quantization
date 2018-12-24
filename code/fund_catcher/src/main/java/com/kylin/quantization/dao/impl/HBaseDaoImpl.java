@@ -5,11 +5,9 @@ import com.kylin.quantization.dao.BaseDao;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.ExceptionTool;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.HColumnDescriptor;
-import org.apache.hadoop.hbase.HTableDescriptor;
-import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,5 +129,22 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Override
     public boolean existTable(String tableName) {
         return admin(admin->admin.tableExists(TableName.valueOf(tableName)));
+    }
+
+    @Override
+    public boolean putData(String tableName,String rowKey,String family,String qualifier) {
+        return table(tableName,table->{
+            boolean flg=false;
+            try {
+                Put put = new Put(Bytes.toBytes(rowKey));
+                Cell cell=CellUtil.createCell(Bytes.toBytes(rowKey),Bytes.toBytes(family),Bytes.toBytes(qualifier));
+                put.add(cell);
+                table.put(put);
+                flg=true;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return flg;
+        });
     }
 }
