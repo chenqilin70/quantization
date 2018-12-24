@@ -41,7 +41,7 @@ public class CatcherConfig  {
         return proToMap("column.properties");
     }
 
-    private Map<String,String> proToMap(String fileName){
+    public static Map<String,String> proToMap(String fileName){
         Map<String,String> result=new HashMap<>();
         InputStream in=CatcherConfig.class.getClassLoader().getResourceAsStream(fileName);
         Properties pro=new Properties();

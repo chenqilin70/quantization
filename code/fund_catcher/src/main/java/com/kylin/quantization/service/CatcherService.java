@@ -1,6 +1,8 @@
 package com.kylin.quantization.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.component.CatcherRunner;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
@@ -85,7 +87,32 @@ public class CatcherService {
     }
 
 
+    public void getNetVal(Map<String, String> fund) {
+        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
+        //callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex={pageIndex}&pageSize={pageSize}&startDate=&endDate=&_={now}
+        Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode"),"now",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+"","callback","jQuery18305825951889735677_1545638648117");
+        String netValStr = HttpUtil.doGetWithHead(conf.get("net_val"), params,"head/netval_head.properties");
+        netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
+        JSONArray json = JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
+        List<Put> waitInsertPuts = json.stream().map(val -> {
+            JSONObject valObj = (JSONObject) val;
+            String rowkey = fund.get("fundcode") + "_" + valObj.getString("FSRQ");
+            rowkey = rowkey.hashCode() + "_" + rowkey;
+            final String finalrowkey = rowkey;
+            List<Put> puts = valObj.keySet().stream().map(key -> {
+                Put put = new Put(Bytes.toBytes(finalrowkey));
+                put.addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(key), Bytes.toBytes(valObj.getString(key)));
+                return put;
+            }).collect(Collectors.toList());
 
-
-
+            return puts;
+        }).reduce((a, b) -> {
+            List<Put> result = new ArrayList();
+            result.addAll(a);
+            result.addAll(b);
+            return result;
+        }).get();
+        hBaseDao.putData("netval",waitInsertPuts);
+        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
+    }
 }
