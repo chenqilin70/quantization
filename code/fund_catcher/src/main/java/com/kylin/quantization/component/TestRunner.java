@@ -25,7 +25,7 @@ import java.io.IOException;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-@Component
+//@Component
 public class TestRunner  implements ApplicationRunner {
     public static Logger logger= Logger.getLogger(TestRunner.class);
     @Autowired

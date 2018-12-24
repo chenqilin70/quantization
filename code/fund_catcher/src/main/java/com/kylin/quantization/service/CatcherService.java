@@ -93,7 +93,15 @@ public class CatcherService {
         Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode"),"now",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+"","callback","jQuery18305825951889735677_1545638648117");
         String netValStr = HttpUtil.doGetWithHead(conf.get("net_val"), params,"head/netval_head.properties");
         netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
-        JSONArray json = JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
+        JSONArray json=null;
+        try{
+            json= JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
+        }catch (Exception e){
+            logger.error("获取净值后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
+            return;
+        }
+
+//        logger.info(json.toJSONString());
         List<Put> waitInsertPuts = json.stream().map(val -> {
             JSONObject valObj = (JSONObject) val;
             String rowkey = fund.get("fundcode") + "_" + valObj.getString("FSRQ");
@@ -101,7 +109,7 @@ public class CatcherService {
             final String finalrowkey = rowkey;
             List<Put> puts = valObj.keySet().stream().map(key -> {
                 Put put = new Put(Bytes.toBytes(finalrowkey));
-                put.addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(key), Bytes.toBytes(valObj.getString(key)));
+                put.addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(key), Bytes.toBytes(valObj.getString(key)==null?"":valObj.getString(key)));
                 return put;
             }).collect(Collectors.toList());
 
