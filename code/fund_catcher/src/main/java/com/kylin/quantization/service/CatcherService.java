@@ -102,7 +102,7 @@ public class CatcherService {
         }
 
 //        logger.info(json.toJSONString());
-        List<Put> waitInsertPuts = json.stream().map(val -> {
+        json.forEach(val -> {
             JSONObject valObj = (JSONObject) val;
             String rowkey = fund.get("fundcode") + "_" + valObj.getString("FSRQ");
             rowkey = rowkey.hashCode() + "_" + rowkey;
@@ -112,15 +112,9 @@ public class CatcherService {
                 put.addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(key), Bytes.toBytes(valObj.getString(key)==null?"":valObj.getString(key)));
                 return put;
             }).collect(Collectors.toList());
+            hBaseDao.putData("netval",puts);
+        });
 
-            return puts;
-        }).reduce((a, b) -> {
-            List<Put> result = new ArrayList();
-            result.addAll(a);
-            result.addAll(b);
-            return result;
-        }).get();
-        hBaseDao.putData("netval",waitInsertPuts);
         logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
     }
 }
