@@ -132,13 +132,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     }
 
     @Override
-    public boolean putData(String tableName,String rowKey,String family,String qualifier) {
+    public boolean putData(String tableName,String rowKey,String family,String qualifier,String value) {
         return table(tableName,table->{
             boolean flg=false;
             try {
-                Put put = new Put(Bytes.toBytes(rowKey));
-                Cell cell=CellUtil.createCell(Bytes.toBytes(rowKey),Bytes.toBytes(family),Bytes.toBytes(qualifier));
-                put.add(cell);
+                Put put=new Put(Bytes.toBytes(rowKey));
+                put.addColumn(Bytes.toBytes(family),Bytes.toBytes(qualifier),Bytes.toBytes(value));
                 table.put(put);
                 flg=true;
             } catch (IOException e) {
@@ -154,7 +153,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             Result result=null;
             try {
                 Get get=new Get(Bytes.toBytes(rowKey));
-                get.addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("code"));
+//                get.addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("code"));
                 logger.info("开始get了");
                 result= table.get(get);
                 logger.info("get 结束了");
