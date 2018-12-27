@@ -169,12 +169,6 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             try {
                 Get get=new Get(Bytes.toBytes(rowKey));
                 result= table.get(get);
-                for (Cell cell : result.rawCells()) {
-                    // 打印结果
-                    logger.info(Bytes.toString(CellUtil.cloneFamily(cell)) + ":");
-                    logger.info(Bytes.toString(CellUtil.cloneQualifier(cell)) + "->");
-                    logger.info(Bytes.toString(CellUtil.cloneValue(cell)));
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
