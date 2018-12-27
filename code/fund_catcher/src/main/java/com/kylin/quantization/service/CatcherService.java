@@ -115,6 +115,6 @@ public class CatcherService {
             hBaseDao.putData("netval",puts);
         });
 
-        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
+        logger.info("getNetVal end,fund:"+ JSON.toJSONString(fund));
     }
 }

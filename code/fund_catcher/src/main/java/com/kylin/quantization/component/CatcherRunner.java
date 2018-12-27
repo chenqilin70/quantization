@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
-@Component
+//@Component
 public class CatcherRunner  implements ApplicationRunner {
     public static Logger logger= LoggerFactory.getLogger(CatcherRunner.class);
     @Autowired
