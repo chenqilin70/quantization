@@ -5,6 +5,7 @@ import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
@@ -37,7 +38,11 @@ public class TestRunner  implements ApplicationRunner {
         Result netval = hBaseDao.getData("netval", RowKeyUtil.getNetValRowKey("161604", "2018-12-20"));
         Cell[] cells = netval.rawCells();
         for(Cell c:cells){
-            logger.info(Bytes.toString(c.getQualifierArray())+":"+Bytes.toString(c.getValueArray()));
+            logger.info("cloneFamily->"+Bytes.toString(CellUtil.cloneFamily(c)));
+            logger.info("cloneQualifier->"+Bytes.toString(CellUtil.cloneQualifier(c)));
+            logger.info("cloneRow->"+Bytes.toString(CellUtil.cloneRow(c)));
+            logger.info("cloneValue->"+Bytes.toString(CellUtil.cloneValue(c)));
+            logger.info("==============================================================");
         }
 
     }
