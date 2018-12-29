@@ -253,10 +253,10 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     private void printResult(Result result){
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
-            System.out.println(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+            logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
         }
-        System.out.println(JSON.toJSONString(cells));
-        System.out.println("=============================================");
+        logger.info(JSON.toJSONString(cells));
+        logger.info("=============================================");
     }
 
 
