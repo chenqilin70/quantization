@@ -53,20 +53,23 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                         String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
                         admin= conn.getAdmin();
 
-                        admin.disableTable(fund);
                         HTableDescriptor htd = admin.getTableDescriptor(fund);
                         List<String> coprocessors = htd.getCoprocessors();
                         if(!coprocessors.contains(coprocessClassName)){
                             htd.addCoprocessor(coprocessClassName);
+                            if(admin.isTableEnabled(fund)){
+                                admin.disableTable(fund);
+                            }
+                            admin.modifyTable(fund, htd);
                         }
-
-                        admin.modifyTable(fund, htd);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }finally {
                         try {
-                            admin.enableTable(fund);
+                            if(!admin.isTableEnabled(fund)){
+                                admin.enableTable(fund);
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
