@@ -250,7 +250,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Override
     public String getNewestNetValDate(String code) {
         logger.info("getNewestNetValDate start");
-        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(code)));
+        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
         Scan scan = new Scan();
         scan.setFilter(filter);
         table("netval",table->{
