@@ -240,10 +240,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public String getNewestNetValDate(String code) {
+        logger.info("getNewestNetValDate start");
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(code)));
         Scan scan = new Scan();
         scan.setFilter(filter);
         table("netval",table->{
+            logger.info("table start");
             ResultScanner scanner = table.getScanner(scan);
             Result result=null;
             while(true){
@@ -263,6 +265,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return null;
     }
     private void printResult(Result result){
+        logger.info("printResult start");
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
             logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
