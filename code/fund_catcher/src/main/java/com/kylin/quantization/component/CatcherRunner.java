@@ -3,6 +3,7 @@ package com.kylin.quantization.component;
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.service.CatcherService;
+import com.kylin.quantization.thread.ForkJoinExecutor;
 import com.kylin.quantization.thread.FundBaseTask;
 import com.kylin.quantization.thread.NetValTask;
 import com.kylin.quantization.util.MapUtil;
@@ -28,14 +29,16 @@ public class CatcherRunner  implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         //get fundlist
-        List<Map<String,String>> fundList=service.getFundList();
-        //forEach list
-        ForkJoinPool pool=new ForkJoinPool(20);
+//        List<Map<String,String>> fundList=service.getFundList();
 
-//        FundBaseTask task=new FundBaseTask(fundList,800,service);
-        NetValTask task=new NetValTask(fundList,800,service);
+        //baseData   fundlist-delete->put,notinfundlist-noOpt
+        /*FundBaseTask baseInfotask=new FundBaseTask(fundList,800,service);
+        ForkJoinExecutor.exec(baseInfotask,20);*/
+        //netVal fundlist-append,notinfundlist-noOpt
+        /*NetValTask netValTask=new NetValTask(fundList,800,service);
+        ForkJoinExecutor.exec(netValTask,20);*/
+        service.test();
 
-        pool.invoke(task);
-        pool.shutdown();
+
     }
 }

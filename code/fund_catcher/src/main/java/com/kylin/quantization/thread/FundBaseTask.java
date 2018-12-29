@@ -7,7 +7,7 @@ import java.util.Map;
 
 /**
  * ClassName: FundBaseTask
- * Description:
+ * Description: fundlist-update,notinfundlist-noOpt
  * Author: aierxuan
  * Date: 2018-12-24 14:48
  * History:

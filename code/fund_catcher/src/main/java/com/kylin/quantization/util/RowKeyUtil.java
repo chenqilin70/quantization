@@ -17,4 +17,9 @@ public class RowKeyUtil {
         key=key.hashCode()+"_"+key;
         return key;
     }
+
+
+    public static String getBaseInfoRowKey(String fundcode){
+        return fundcode.hashCode() + "_" + fundcode;
+    }
 }

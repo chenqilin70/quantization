@@ -1,5 +1,6 @@
 package com.kylin.quantization.dao.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.BaseDao;
 import com.kylin.quantization.dao.HBaseDao;
@@ -7,6 +8,8 @@ import com.kylin.quantization.util.ExceptionTool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
 import org.slf4j.Logger;
@@ -32,6 +35,7 @@ import java.util.concurrent.ExecutorService;
 public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     public static Logger logger= LoggerFactory.getLogger(HBaseDaoImpl.class);
     private Connection conn=null;
+    private Configuration configuration=null;
     @Autowired
     public Map<String,String> conf;
 
@@ -40,18 +44,64 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         if(conn==null){
             synchronized (this){
                 if(conn==null){
-                    Configuration configuration = HBaseConfiguration.create();
-//                    configuration.addResource("hbase-site.xml");
+                    configuration = HBaseConfiguration.create();
+                    Admin admin=null;
                     try {
                         conn = ConnectionFactory.createConnection(configuration);
-                    } catch (IOException e) {
+
+                        //初始化
+                        String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
+                        admin= conn.getAdmin();
+                        TableName fund=TableName.valueOf("fund");
+                        admin.disableTable(fund);
+                        HTableDescriptor htd = admin.getTableDescriptor(fund);
+                        htd.addCoprocessor(coprocessClassName);
+                        admin.modifyTable(fund, htd);
+                        admin.enableTable(fund);
+                    } catch (Exception e) {
                         e.printStackTrace();
+                    }finally {
+                        if(admin!=null){
+                            try {
+                                admin.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
             }
         }
+
+
+
+
+
+
+
         return conn;
     }
+    public <T> T aggregate(HBaseExecutors.AggregateExecutor<T> executor){
+        AggregationClient ac = new AggregationClient(configuration);
+        T result=null;
+        try{
+            result=executor.doAgg(ac);
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if(ac!=null){
+                try {
+                    ac.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return result;
+    }
+
+
 
     @Override
     public <T> T admin(HBaseExecutors.AdminExecutor<T> executor) {
@@ -175,4 +225,39 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             return result;
         });
     }
+
+    @Override
+    public String getNewestNetValDate(String code) {
+        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new BinaryComparator(Bytes.toBytes(code)));
+        Scan scan = new Scan();
+        scan.setFilter(filter);
+        table("netval",table->{
+            ResultScanner scanner = table.getScanner(scan);
+            Result result=null;
+            while(true){
+                result=scanner.next();
+                if(result==null){
+                    break;
+                }
+                printResult(result);
+            }
+            return null;
+        });
+        /*aggregate(agg->{
+
+            agg.max()
+            return null;
+        });*/
+        return null;
+    }
+    private void printResult(Result result){
+        Cell[] cells = result.rawCells();
+        for(Cell c : cells){
+            System.out.println(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+        }
+        System.out.println(JSON.toJSONString(cells));
+        System.out.println("=============================================");
+    }
+
+
 }

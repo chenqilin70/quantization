@@ -8,10 +8,12 @@ import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.HttpUtil;
 import com.kylin.quantization.util.MapUtil;
+import com.kylin.quantization.util.RowKeyUtil;
 import com.kylin.quantization.util.StringReplaceUtil;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
@@ -58,6 +60,10 @@ public class CatcherService {
         return result;
     }
 
+    /**
+     * fundlist-delete->put,notinfundlist-noOpt
+     * @param fund
+     */
     public void getFundBase(Map<String, String> fund) {
         logger.info("getFucndBase start,fund:"+ JSON.toJSONString(fund));
         String detailhtml = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("fund_detail"), fund), null);
@@ -78,7 +84,7 @@ public class CatcherService {
             String code = fund.get("fundcode");
             fundDetailMap.putAll(fund);
             List<Put> puts = fundDetailMap.keySet().stream().map(k ->
-                 new Put(Bytes.toBytes(code.hashCode() + "_" + code))
+                 new Put(Bytes.toBytes(RowKeyUtil.getBaseInfoRowKey(code)))
                          .addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(k), Bytes.toBytes(fundDetailMap.get(k)))
             ).collect(Collectors.toList());
             hBaseDao.putData("fund",puts);
@@ -110,11 +116,18 @@ public class CatcherService {
             List<Put> puts = valObj.keySet().stream().map(key -> {
                 Put put = new Put(Bytes.toBytes(finalrowkey));
                 put.addColumn(Bytes.toBytes("baseinfo"), Bytes.toBytes(key), Bytes.toBytes(valObj.getString(key)==null?"":valObj.getString(key)));
+//                System.out.println("key:"+key+",val:"+valObj.getString(key));
                 return put;
             }).collect(Collectors.toList());
             hBaseDao.putData("netval",puts);
+
         });
 
         logger.info("getNetVal end,fund:"+ JSON.toJSONString(fund));
+    }
+
+    public void test() {
+
+        String date=hBaseDao.getNewestNetValDate("161604");
     }
 }

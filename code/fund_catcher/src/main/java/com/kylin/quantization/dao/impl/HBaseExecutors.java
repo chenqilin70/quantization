@@ -4,6 +4,7 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
 import org.apache.hadoop.hbase.client.HTable;
 import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 
 import java.io.IOException;
 
@@ -21,7 +22,10 @@ public interface  HBaseExecutors {
         T doAdmin(Admin admin) throws IOException;
     }
     public static interface TableExecutor<T>{
-        T doTable(Table admin);
+        T doTable(Table admin) throws IOException;
+    }
+    public static interface AggregateExecutor<T>{
+        T doAgg(AggregationClient aggClient);
     }
 
 
