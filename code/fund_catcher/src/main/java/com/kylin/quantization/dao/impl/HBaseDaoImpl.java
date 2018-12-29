@@ -18,8 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -254,9 +256,9 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         Scan scan = new Scan();
         scan.setFilter(filter);
         table("netval",table->{
-            logger.info("table start");
             ResultScanner scanner = table.getScanner(scan);
             Result result=null;
+            Set<String> ids=new HashSet<String>();
             while(true){
                 logger.info("while");
                 result=scanner.next();
@@ -264,8 +266,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                     logger.info("result为null,break");
                     break;
                 }
-                printResult(result);
+                logger.info(Bytes.toString(result.getRow()));
+                ids.add(Bytes.toString(result.getRow()));
             }
+            logger.info("=====================================================================");
+            ids.forEach(s->{
+                logger.info(s);
+            });
             return null;
         });
         /*aggregate(agg->{
