@@ -56,11 +56,17 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                         HTableDescriptor htd = admin.getTableDescriptor(fund);
                         List<String> coprocessors = htd.getCoprocessors();
                         if(!coprocessors.contains(coprocessClassName)){
+                            logger.info(fund.toString()+"Aggregate Coprocessors 不存在");
                             htd.addCoprocessor(coprocessClassName);
                             if(admin.isTableEnabled(fund)){
+                                logger.info("将"+fund.toString()+"置为disable状态");
                                 admin.disableTable(fund);
+                            }else{
+                                logger.info(""+fund.toString()+"已经是disable状态");
                             }
                             admin.modifyTable(fund, htd);
+                        }else{
+                            logger.info(fund.toString()+"Aggregate 已存在");
                         }
 
                     } catch (Exception e) {
@@ -68,7 +74,10 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                     }finally {
                         try {
                             if(!admin.isTableEnabled(fund)){
+                                logger.info("将"+fund.toString()+"恢复为enable状态");
                                 admin.enableTable(fund);
+                            }else{
+                                logger.info(""+fund.toString()+"已经是enable状态");
                             }
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -249,6 +258,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             ResultScanner scanner = table.getScanner(scan);
             Result result=null;
             while(true){
+                logger.info("while");
                 result=scanner.next();
                 if(result==null){
                     logger.info("result为null,break");
