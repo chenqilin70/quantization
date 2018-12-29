@@ -251,6 +251,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             while(true){
                 result=scanner.next();
                 if(result==null){
+                    logger.info("result为null,break");
                     break;
                 }
                 printResult(result);
