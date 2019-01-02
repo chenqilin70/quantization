@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-
+@Repository
 public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     public static Logger logger= LoggerFactory.getLogger(HBaseDaoImpl.class);
     private Connection conn=null;
@@ -48,6 +48,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         }
         return configuration;
     }
+    @Deprecated
     public HBaseDaoImpl init(){
         logger.info("HBaseDaoImpl is init……");
         Admin admin=null;
@@ -268,19 +269,25 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public String getNewestNetValDate(String code) {
-        init();
         String tableName="netval";
         logger.info("getNewestNetValDate start");
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
         Scan scan = new Scan();
         scan.setFilter(filter);
-        Date maxDate = aggregate(agg -> {
-            LongColumnInterpreter l;
-            DateColumnInterpreter interpreter = new DateColumnInterpreter();
-            Date max = agg.max(TableName.valueOf(tableName), interpreter, scan);
-            return max;
+        String lastRow = table(tableName, table -> {
+            ResultScanner scanner = table.getScanner(scan);
+            Result lastResult = null;
+            while (true) {
+                Result next = scanner.next();
+                if (next != null) {
+                    lastResult = next;
+                } else {
+                    break;
+                }
+            }
+            return Bytes.toString(lastResult.getRow());
         });
-        return new SimpleDateFormat("yyyy-MM-dd").format(maxDate);
+        return lastRow;
     }
     private void printResult(Result result){
         logger.info("printResult start");

@@ -63,10 +63,10 @@ public class CatcherConfig  {
     public MapUtil<String,String> ssMapUtil(){
         return new MapUtil<String,String>();
     }
-    @Bean
+    /*@Bean
     public HBaseDaoImpl hBaseDaoImpl(){
-        return new HBaseDaoImpl();
-    }
+        return new HBaseDaoImpl().init();
+    }*/
 
 
 }
