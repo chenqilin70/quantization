@@ -270,7 +270,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Override
     public String getNewestNetValDate(String code) {
         Admin admin=null;
-        TableName fund=TableName.valueOf("netval");
+        TableName fund=TableName.valueOf("fund");
         try {
             //初始化
             String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
