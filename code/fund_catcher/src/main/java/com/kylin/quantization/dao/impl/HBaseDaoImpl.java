@@ -45,6 +45,9 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     public HBaseDaoImpl() {
         init();
     }
+    {
+        logger.info("{} is running ……");
+    }
 
     public Configuration getConfiguration() {
         if(configuration==null){
