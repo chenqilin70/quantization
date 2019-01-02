@@ -266,26 +266,6 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
         Scan scan = new Scan();
         scan.setFilter(filter);
-        /*table(tableName,table->{
-            ResultScanner scanner = table.getScanner(scan);
-            Result result=null;
-            Set<String> ids=new HashSet<String>();
-            while(true){
-                logger.info("while");
-                result=scanner.next();
-                if(result==null){
-                    logger.info("result为null,break");
-                    break;
-                }
-                logger.info(Bytes.toString(result.getRow()));
-                ids.add(Bytes.toString(result.getRow()));
-            }
-            logger.info("=====================================================================");
-            ids.forEach(s->{
-                logger.info(s);
-            });
-            return null;
-        });*/
         Date maxDate = aggregate(agg -> {
             DateColumnInterpreter interpreter = new DateColumnInterpreter();
             Date max = agg.max(TableName.valueOf(tableName), interpreter, scan);

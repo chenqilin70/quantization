@@ -24,6 +24,7 @@ public class DateColumnInterpreter extends ColumnInterpreter<Date,Date,Message,M
 
     @Override
     public Date getValue(byte[] colFamily, byte[] colQualifier, Cell c) throws IOException {
+        System.out.println("getValue……"+Bytes.toString(colFamily)+","+Bytes.toString(colQualifier));
         String val = Bytes.toString(c.getValueArray());
         Date result=null;
         if(StringUtils.isNotBlank(val)){
@@ -70,6 +71,7 @@ public class DateColumnInterpreter extends ColumnInterpreter<Date,Date,Message,M
 
     @Override
     public int compare(Date l1, Date l2) {
+        System.out.println("compare……");
         long result=l1.getTime()-l2.getTime();
         return result>0?1:result<0?-1:0;
     }
