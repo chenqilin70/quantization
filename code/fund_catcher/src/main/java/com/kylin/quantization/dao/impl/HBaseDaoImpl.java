@@ -44,7 +44,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     public Configuration getConfiguration() {
         if(configuration==null){
-            getConn();
+            configuration=HBaseConfiguration.create();
         }
         return configuration;
     }
@@ -53,7 +53,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         if(conn==null){
             synchronized (this){
                 if(conn==null){
-                    configuration = HBaseConfiguration.create();
+                    configuration = getConfiguration();
                     Admin admin=null;
                     TableName fund=TableName.valueOf("netval");
                     try {
@@ -112,7 +112,8 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return conn;
     }
     public <T> T aggregate(HBaseExecutors.AggregateExecutor<T> executor){
-        AggregationClient ac = new AggregationClient(configuration);
+        logger.info("++++"+configuration);
+        AggregationClient ac = new AggregationClient(getConfiguration());
         T result=null;
         try{
             result=executor.doAgg(ac);
