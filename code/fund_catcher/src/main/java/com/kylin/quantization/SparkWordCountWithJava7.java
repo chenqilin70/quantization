@@ -27,7 +27,9 @@ import scala.Tuple2;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,16 +46,33 @@ public class SparkWordCountWithJava7 {
         JavaSparkContext context = getSparkContext();
         Configuration hconf = getHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable,Result>, String, Integer>() {
+        List<Tuple2<ImmutableBytesWritable, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, ImmutableBytesWritable, Date>() {
+
             @Override
-            public Iterable<Tuple2<String, Integer>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                byte[] o = tuple._2().getValue( Bytes.toBytes("baseinfo"),Bytes.toBytes("FSRQ"));
+            public Iterable<Tuple2<ImmutableBytesWritable, Date>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+                System.out.println("_1:::" + Bytes.toString(tuple._1.get()));
+                List<Tuple2<ImmutableBytesWritable, Date>> result = new ArrayList<>();
+                byte[] o = tuple._2().getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("FSRQ"));
                 if (o != null) {
-//                    return new Tuple2<Integer, Integer>(Bytes.toInt(o), 1);
+                    String date = Bytes.toString(o);
+                    result.add(new Tuple2<ImmutableBytesWritable, Date>(tuple._1, new SimpleDateFormat("yyyy-MM-dd").parse(date)));
                 }
-                return null;
+                return result;
             }
-        });
+        }).reduceByKey(new Function2<Date, Date, Date>() {
+            @Override
+            public Date call(Date date, Date date2) throws Exception {
+                if (date.getTime() > date2.getTime()) {
+                    return date;
+                } else {
+                    return date2;
+                }
+            }
+        }).collect();
+        for(Tuple2<ImmutableBytesWritable, Date> t: collect){
+            System.out.println(Bytes.toString(t._1.get())+":::::"+t._2.toLocaleString());
+
+        }
 
         /*List<Tuple2<String, Integer>> result = hbaseRdd.flatMapToPair(new PairFlatMapFunction<String, String, Integer>() {
             @Override
@@ -111,8 +130,13 @@ public class SparkWordCountWithJava7 {
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("161604"));
         Scan scan = new Scan().setFilter(filter);
-        hconf.set(TableInputFormat.SCAN, TableMapReduceUtil.convertScanToString(scan));
+        hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         return hconf;
+    }
+
+    public static String convertScanToString(Scan scan) throws IOException {
+        ClientProtos.Scan proto = ProtobufUtil.toScan(scan);
+        return Bytes.toString(java.util.Base64.getEncoder().encode(proto.toByteArray()));
     }
 
 
