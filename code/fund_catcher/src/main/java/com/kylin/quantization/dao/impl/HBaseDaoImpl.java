@@ -42,11 +42,61 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Autowired
     public Map<String,String> conf;
 
+    public HBaseDaoImpl() {
+        init();
+    }
+
     public Configuration getConfiguration() {
         if(configuration==null){
             configuration=HBaseConfiguration.create();
         }
         return configuration;
+    }
+    public void init(){
+        Admin admin=null;
+        TableName fund=TableName.valueOf("netval");
+        try {
+            //初始化
+            String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
+            admin= getConn().getAdmin();
+
+            HTableDescriptor htd = admin.getTableDescriptor(fund);
+            List<String> coprocessors = htd.getCoprocessors();
+            if(!coprocessors.contains(coprocessClassName)){
+                logger.info(fund.toString()+"Aggregate Coprocessors 不存在");
+                htd.addCoprocessor(coprocessClassName);
+                if(admin.isTableEnabled(fund)){
+                    logger.info("将"+fund.toString()+"置为disable状态");
+                    admin.disableTable(fund);
+                }else{
+                    logger.info(""+fund.toString()+"已经是disable状态");
+                }
+                admin.modifyTable(fund, htd);
+            }else{
+                logger.info(fund.toString()+"Aggregate 已存在");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(!admin.isTableEnabled(fund)){
+                    logger.info("将"+fund.toString()+"恢复为enable状态");
+                    admin.enableTable(fund);
+                }else{
+                    logger.info(""+fund.toString()+"已经是enable状态");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(admin!=null){
+                try {
+                    admin.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public Connection getConn() {
@@ -54,50 +104,10 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             synchronized (this){
                 if(conn==null){
                     configuration = getConfiguration();
-                    Admin admin=null;
-                    TableName fund=TableName.valueOf("netval");
                     try {
                         conn = ConnectionFactory.createConnection(configuration);
-                        //初始化
-                        String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
-                        admin= conn.getAdmin();
-
-                        HTableDescriptor htd = admin.getTableDescriptor(fund);
-                        List<String> coprocessors = htd.getCoprocessors();
-                        if(!coprocessors.contains(coprocessClassName)){
-                            logger.info(fund.toString()+"Aggregate Coprocessors 不存在");
-                            htd.addCoprocessor(coprocessClassName);
-                            if(admin.isTableEnabled(fund)){
-                                logger.info("将"+fund.toString()+"置为disable状态");
-                                admin.disableTable(fund);
-                            }else{
-                                logger.info(""+fund.toString()+"已经是disable状态");
-                            }
-                            admin.modifyTable(fund, htd);
-                        }else{
-                            logger.info(fund.toString()+"Aggregate 已存在");
-                        }
-
                     } catch (Exception e) {
                         e.printStackTrace();
-                    }finally {
-                        try {
-                            if(!admin.isTableEnabled(fund)){
-                                logger.info("将"+fund.toString()+"恢复为enable状态");
-                                admin.enableTable(fund);
-                            }else{
-                                logger.info(""+fund.toString()+"已经是enable状态");
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        if(admin!=null){
-                            try {
-                                admin.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
                     }
                 }
             }
@@ -267,6 +277,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         Scan scan = new Scan();
         scan.setFilter(filter);
         Date maxDate = aggregate(agg -> {
+            LongColumnInterpreter l;
             DateColumnInterpreter interpreter = new DateColumnInterpreter();
             Date max = agg.max(TableName.valueOf(tableName), interpreter, scan);
             return max;
