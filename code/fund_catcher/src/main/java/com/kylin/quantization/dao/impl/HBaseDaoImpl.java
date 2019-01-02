@@ -53,6 +53,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return configuration;
     }
     public void init(){
+        logger.info("HBaseDaoImpl is init……");
         Admin admin=null;
         TableName fund=TableName.valueOf("netval");
         try {
@@ -122,7 +123,6 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return conn;
     }
     public <T> T aggregate(HBaseExecutors.AggregateExecutor<T> executor){
-        logger.info("++++"+configuration);
         AggregationClient ac = new AggregationClient(getConfiguration());
         T result=null;
         try{
