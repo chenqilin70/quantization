@@ -65,7 +65,7 @@ public class CatcherConfig  {
     }
     @Bean
     public HBaseDaoImpl hBaseDaoImpl(){
-        return new HBaseDaoImpl().init();
+        return new HBaseDaoImpl();
     }
 
 
