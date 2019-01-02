@@ -27,6 +27,7 @@ import scala.Tuple2;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,21 +42,28 @@ import java.util.List;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class SparkWordCountWithJava7 {
+public class SparkWordCountWithJava7 implements Serializable{
+    private static final long serialVersionUID = 4125096758372084309L;
+
+
     public static  void main(String[] args) throws IOException {
         JavaSparkContext context = getSparkContext();
         Configuration hconf = getHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        List<Tuple2<ImmutableBytesWritable, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, ImmutableBytesWritable, Date>() {
+        List<Tuple2<String, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
 
             @Override
-            public Iterable<Tuple2<ImmutableBytesWritable, Date>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+            public Iterable<Tuple2<String, Date>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 System.out.println("_1:::" + Bytes.toString(tuple._1.get()));
-                List<Tuple2<ImmutableBytesWritable, Date>> result = new ArrayList<>();
+                List<Tuple2<String, Date>> result = new ArrayList<>();
                 byte[] o = tuple._2().getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("FSRQ"));
                 if (o != null) {
                     String date = Bytes.toString(o);
-                    result.add(new Tuple2<ImmutableBytesWritable, Date>(tuple._1, new SimpleDateFormat("yyyy-MM-dd").parse(date)));
+                    String code=Bytes.toString(tuple._1.get());
+                    code=code.substring(code.indexOf("_"));
+                    code=code.substring(0,code.lastIndexOf("_"));
+                    code=code.replaceAll("_","");
+                    result.add(new Tuple2<String, Date>(code, new SimpleDateFormat("yyyy-MM-dd").parse(date)));
                 }
                 return result;
             }
@@ -69,33 +77,11 @@ public class SparkWordCountWithJava7 {
                 }
             }
         }).collect();
-        for(Tuple2<ImmutableBytesWritable, Date> t: collect){
-            System.out.println(Bytes.toString(t._1.get())+":::::"+t._2.toLocaleString());
+        for(Tuple2<String, Date> t: collect){
+            System.out.println(t._1+":::::"+t._2.toLocaleString());
 
         }
 
-        /*List<Tuple2<String, Integer>> result = hbaseRdd.flatMapToPair(new PairFlatMapFunction<String, String, Integer>() {
-            @Override
-            public Iterable<Tuple2<String, Integer>> call(String arg0)
-                    throws Exception {
-                ArrayList<Tuple2<String, Integer>> list = new ArrayList<Tuple2<String, Integer>>();
-                String[] array = arg0.split(",");
-                for (String temper : array) {
-                    list.add(new Tuple2<String, Integer>(temper, 1));
-                }
-                return list;
-            }
-
-        }).reduceByKey(new Function2<Integer, Integer, Integer>() {
-
-            @Override
-            public Integer call(Integer arg0, Integer arg1)
-                    throws Exception {
-                return arg0 + arg1;
-            }
-
-        }).collect();*/
-        //打印结果
 
         context.stop();
     }
@@ -111,7 +97,7 @@ public class SparkWordCountWithJava7 {
              /*yarn-client模式*/
         conf.setMaster("yarn-client");
         //设置程序包
-        conf.setJars(new String[]{"/usr/local/workspace/wc/wc.jar"});
+        conf.setJars(new String[]{"/usr/local/workspace/wc/fund_catcher-1.0-SNAPSHOT.jar"});
         //设置SparkHOME
         conf.setSparkHome("/opt/cloudera/parcels/CDH-5.13.3-1.cdh5.13.3.p0.2/lib/spark");
         //设置运行资源参数

@@ -9,6 +9,10 @@ import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.RowFilter;
+import org.apache.hadoop.hbase.filter.SubstringComparator;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
@@ -27,9 +31,7 @@ import org.springframework.stereotype.Component;
 import scala.Tuple2;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -49,8 +51,26 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-//        new SparkWordCountWithJava7().test();
-        logger.info("================================="+hBaseDao.getNewestNetValDate("161604"));
+        hBaseDao.table("netval",table->{
+            Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("161604"));
+            Scan scan = new Scan().setFilter(filter);
+            ResultScanner scanner = table.getScanner(scan);
+            Set<String> result=new HashSet<String>();
+            scanner.forEach(r->{
+
+                String code=Bytes.toString(r.getRow());
+                String rowKey=new String(code);
+                code=code.substring(code.indexOf("_"));
+                code=code.substring(0,code.lastIndexOf("_"));
+                code=code.replaceAll("_","");
+                if(!result.contains(code)){
+                    System.out.println(rowKey);
+                    result.add(code);
+                }
+            });
+            return null;
+        });
+
 
     }
 
