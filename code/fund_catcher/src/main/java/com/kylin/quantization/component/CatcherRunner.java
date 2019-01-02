@@ -37,7 +37,7 @@ public class CatcherRunner  implements ApplicationRunner {
         //netVal fundlist-append,notinfundlist-noOpt
         /*NetValTask netValTask=new NetValTask(fundList,800,service);
         ForkJoinExecutor.exec(netValTask,20);*/
-        service.test();
+//        service.test();
 
 
     }
