@@ -1,4 +1,4 @@
-package com.kylin.quantization;
+package com.kylin.quantization.computors;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -15,6 +15,7 @@ import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
 import org.apache.hadoop.hbase.util.Base64;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
@@ -22,6 +23,8 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
 import java.io.ByteArrayOutputStream;
@@ -42,13 +45,16 @@ import java.util.List;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class SparkWordCountWithJava7 implements Serializable{
-    private static final long serialVersionUID = 4125096758372084309L;
+@Service
+public class SparkComputor implements Serializable{
+    public static Logger logger = Logger.getLogger(SparkComputor.class);
+    @Autowired
+    private SparkConf sparkConf;
 
 
-    public static  void main(String[] args) throws IOException {
-        JavaSparkContext context = getSparkContext();
-        Configuration hconf = getHconf();
+    public void getNewestNetValDate()  {
+        JavaSparkContext context = new JavaSparkContext(sparkConf);
+        Configuration hconf = getMaxNetValHconf("161604");
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         List<Tuple2<String, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
 
@@ -78,7 +84,7 @@ public class SparkWordCountWithJava7 implements Serializable{
             }
         }).collect();
         for(Tuple2<String, Date> t: collect){
-            System.out.println(t._1+":::::"+t._2.toLocaleString());
+            logger.info(t._1+":::::"+t._2.toLocaleString());
 
         }
 
@@ -88,42 +94,25 @@ public class SparkWordCountWithJava7 implements Serializable{
 
 
 
-    public static JavaSparkContext getSparkContext(){
-        SparkConf conf = new SparkConf().setAppName("Spark");
-            /*独立模式
-            conf.setMaster("spark://master56:7077");
-            conf.set("spark.cores.max", "48");
-            */
-             /*yarn-client模式*/
-        conf.setMaster("yarn-client");
-        //设置程序包
-        conf.setJars(new String[]{"/usr/local/workspace/wc/fund_catcher-1.0-SNAPSHOT.jar"});
-        //设置SparkHOME
-        conf.setSparkHome("/opt/cloudera/parcels/CDH-5.13.3-1.cdh5.13.3.p0.2/lib/spark");
-        //设置运行资源参数
-        conf.set("spark.executor.instances", "30");
-        conf.set("spark.executor.cores", "3");
-        conf.set("spark.executor.memory", "500M");
-        conf.set("spark.driver.memory", "300M");
-        conf.set("spark.driver.maxResultSize", "1G");
-        JavaSparkContext context = new JavaSparkContext(conf);
-        return context;
-    }
-    public static Configuration getHconf() throws IOException {
+    private   Configuration getMaxNetValHconf(String code)  {
         Configuration hconf= HBaseConfiguration.create();
         //需要读取的hbase表名
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("161604"));
+        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
         Scan scan = new Scan().setFilter(filter);
-        hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
+        try {
+            hconf.set(TableInputFormat.SCAN, TableMapReduceUtil.convertScanToString(scan));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return hconf;
     }
 
-    public static String convertScanToString(Scan scan) throws IOException {
+    /*public static String convertScanToString(Scan scan) throws IOException {
         ClientProtos.Scan proto = ProtobufUtil.toScan(scan);
         return Bytes.toString(java.util.Base64.getEncoder().encode(proto.toByteArray()));
-    }
+    }*/
 
 
 }

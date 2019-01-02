@@ -38,16 +38,11 @@ import java.util.concurrent.ExecutorService;
 public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     public static Logger logger= LoggerFactory.getLogger(HBaseDaoImpl.class);
     private Connection conn=null;
-    private Configuration configuration=null;
+    @Autowired
+    private Configuration hconfiguration=null;
     @Autowired
     public Map<String,String> conf;
 
-    public Configuration getConfiguration() {
-        if(configuration==null){
-            configuration=HBaseConfiguration.create();
-        }
-        return configuration;
-    }
     @Deprecated
     public HBaseDaoImpl init(){
         logger.info("HBaseDaoImpl is init……");
@@ -102,9 +97,8 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         if(conn==null){
             synchronized (this){
                 if(conn==null){
-                    configuration = getConfiguration();
                     try {
-                        conn = ConnectionFactory.createConnection(configuration);
+                        conn = ConnectionFactory.createConnection(hconfiguration);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -121,7 +115,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return conn;
     }
     public <T> T aggregate(HBaseExecutors.AggregateExecutor<T> executor){
-        AggregationClient ac = new AggregationClient(getConfiguration());
+        AggregationClient ac = new AggregationClient(hconfiguration);
         T result=null;
         try{
             result=executor.doAgg(ac);
@@ -267,21 +261,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         });
     }
 
-    @Override
-    public String getNewestNetValDate(String code) {
-        String tableName="netval";
-        logger.info("getNewestNetValDate start");
-        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
-        Scan scan = new Scan();
-        scan.setFilter(filter);
-        Date maxDate = aggregate(agg -> {
-            LongColumnInterpreter l;
-            DateColumnInterpreter interpreter = new DateColumnInterpreter();
-            Date max = agg.max(TableName.valueOf(tableName), interpreter, scan);
-            return max;
-        });
-        return new SimpleDateFormat("yyyy-MM-dd").format(maxDate);
-    }
+
     private void printResult(Result result){
         logger.info("printResult start");
         Cell[] cells = result.rawCells();

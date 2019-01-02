@@ -1,5 +1,6 @@
 package com.kylin.quantization.component;
 
+import com.kylin.quantization.computors.SparkComputor;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.RowKeyUtil;
@@ -48,30 +49,12 @@ public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
     private HBaseDao hBaseDao;
+    @Autowired
+    private SparkComputor sparkComputor;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        hBaseDao.table("netval",table->{
-            Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("161604"));
-            Scan scan = new Scan().setFilter(filter);
-            ResultScanner scanner = table.getScanner(scan);
-            Set<String> result=new HashSet<String>();
-            scanner.forEach(r->{
-
-                String code=Bytes.toString(r.getRow());
-                String rowKey=new String(code);
-                code=code.substring(code.indexOf("_"));
-                code=code.substring(0,code.lastIndexOf("_"));
-                code=code.replaceAll("_","");
-                if(!result.contains(code)){
-                    System.out.println(rowKey);
-                    result.add(code);
-                }
-            });
-            return null;
-        });
-
-
+        sparkComputor.getNewestNetValDate();
     }
 
 

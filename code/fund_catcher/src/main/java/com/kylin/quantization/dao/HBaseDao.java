@@ -26,5 +26,4 @@ public interface HBaseDao extends BaseDao{
     boolean putData(String tableName,List<Put> puts);
     Result getData(String tableName, String rowKey);
 
-    String getNewestNetValDate(String code);
 }
