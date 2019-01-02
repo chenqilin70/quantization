@@ -14,24 +14,15 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
 import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
-import org.apache.hadoop.hbase.util.Base64;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
-import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
-import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.eclipse.jetty.security.PropertyUserStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -46,8 +37,8 @@ import java.util.*;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class SparkComputor implements Serializable{
-    public static Logger logger = Logger.getLogger(SparkComputor.class);
+public class GetNewestNetValDate implements Serializable{
+    public static Logger logger = Logger.getLogger(GetNewestNetValDate.class);
 
 
     public static void main(String[] args) {
@@ -58,7 +49,6 @@ public class SparkComputor implements Serializable{
 
             @Override
             public Iterable<Tuple2<String, Date>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                System.out.println("_1:::" + Bytes.toString(tuple._1.get()));
                 List<Tuple2<String, Date>> result = new ArrayList<>();
                 byte[] o = tuple._2().getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("FSRQ"));
                 if (o != null) {
@@ -100,7 +90,7 @@ public class SparkComputor implements Serializable{
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
         Scan scan = new Scan().setFilter(filter);
         try {
-            hconf.set(TableInputFormat.SCAN, TableMapReduceUtil.convertScanToString(scan));
+            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -126,10 +116,10 @@ public class SparkComputor implements Serializable{
         return conf;
     }
 
-    /*public static String convertScanToString(Scan scan) throws IOException {
+    public static String convertScanToString(Scan scan) throws IOException {
         ClientProtos.Scan proto = ProtobufUtil.toScan(scan);
         return Bytes.toString(java.util.Base64.getEncoder().encode(proto.toByteArray()));
-    }*/
+    }
 
 
 }
