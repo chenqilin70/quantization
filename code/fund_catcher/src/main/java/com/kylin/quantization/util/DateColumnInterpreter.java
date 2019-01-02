@@ -46,12 +46,24 @@ public class DateColumnInterpreter extends ColumnInterpreter<Date,Date,Message,M
 
     @Override
     public Date getMaxValue() {
-        return null;
+        Date date=null;
+        try {
+            date= new SimpleDateFormat("yyyyMMdd").parse("30000101");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     @Override
     public Date getMinValue() {
-        return null;
+        Date date=null;
+        try {
+            date= new SimpleDateFormat("yyyyMMdd").parse("19700101");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     @Override
@@ -66,7 +78,7 @@ public class DateColumnInterpreter extends ColumnInterpreter<Date,Date,Message,M
 
     @Override
     public Date castToReturnType(Date o) {
-        return null;
+        return o;
     }
 
     @Override
