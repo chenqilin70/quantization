@@ -7,6 +7,7 @@ import com.kylin.quantization.thread.ForkJoinExecutor;
 import com.kylin.quantization.thread.FundBaseTask;
 import com.kylin.quantization.thread.NetValTask;
 import com.kylin.quantization.util.MapUtil;
+import org.apache.spark.deploy.SparkSubmit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,7 @@ public class CatcherRunner  implements ApplicationRunner {
         /*NetValTask netValTask=new NetValTask(fundList,800,service);
         ForkJoinExecutor.exec(netValTask,20);*/
 //        service.test();
+//        SparkSubmit.main();
 
 
     }

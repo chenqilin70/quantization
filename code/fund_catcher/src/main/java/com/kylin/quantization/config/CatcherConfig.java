@@ -26,30 +26,11 @@ import java.io.InputStream;
 import java.util.*;
 
 @Configuration
-@PropertySource(value = { "classpath:/spark.properties"})
 public class CatcherConfig  {
     public static Logger logger= LoggerFactory.getLogger(CatcherConfig.class);
     @Value("${env}")
     private String env;
-    @Value("${spark.driver.maxResultSize}")
-    private String driverMaxResultSize;
 
-    @Value("${spark.master}")
-    private String master;
-    @Value("${spark.jar}")
-    private String jar;
-    @Value("${spark.sparkhome}")
-    private String sparkhome;
-    @Value("${spark.executor.instances}")
-    private String executorInstances;
-    @Value("${spark.executor.cores}")
-    private String executorCores;
-    @Value("${spark.executor.memory}")
-    private String executorMemory;
-    @Value("${spark.driver.memory}")
-    private String driverMemory;
-    @Value("${spark.appName}")
-    private String appName;
 
     @Bean
     public Map<String,String> conf(){
@@ -93,23 +74,7 @@ public class CatcherConfig  {
         return HBaseConfiguration.create();
     }
 
-    @Bean
-    public SparkConf sparkConf(){
-        SparkConf conf = new SparkConf().setAppName(appName);
-        /*yarn-client模式*/
-        conf.setMaster(master);
-        //设置程序包
-        conf.setJars(new String[]{jar});
-        //设置SparkHOME
-        conf.setSparkHome(sparkhome);
-        //设置运行资源参数
-        conf.set("spark.executor.instances", executorInstances);
-        conf.set("spark.executor.cores", executorCores);
-        conf.set("spark.executor.memory", executorMemory);
-        conf.set("spark.driver.memory", driverMemory);
-        conf.set("spark.driver.maxResultSize", driverMaxResultSize);
-        return conf;
-    }
+
 
 
 }

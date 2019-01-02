@@ -1,5 +1,6 @@
 package com.kylin.quantization.computors;
 
+import com.kylin.quantization.config.CatcherConfig;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -23,7 +24,9 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.eclipse.jetty.security.PropertyUserStore;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import scala.Tuple2;
 
@@ -32,9 +35,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * ClassName: SparkWordCountWithJava7
@@ -45,15 +46,12 @@ import java.util.List;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-@Service
 public class SparkComputor implements Serializable{
     public static Logger logger = Logger.getLogger(SparkComputor.class);
-    @Autowired
-    private SparkConf sparkConf;
 
 
-    public void getNewestNetValDate()  {
-        JavaSparkContext context = new JavaSparkContext(sparkConf);
+    public static void main(String[] args) {
+        JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getMaxNetValHconf("161604");
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         List<Tuple2<String, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
@@ -94,7 +92,7 @@ public class SparkComputor implements Serializable{
 
 
 
-    private   Configuration getMaxNetValHconf(String code)  {
+    private static   Configuration getMaxNetValHconf(String code)  {
         Configuration hconf= HBaseConfiguration.create();
         //需要读取的hbase表名
         String tableName = "netval";
@@ -107,6 +105,25 @@ public class SparkComputor implements Serializable{
             e.printStackTrace();
         }
         return hconf;
+    }
+
+
+    public static SparkConf sparkConf(){
+        Map<String, String> sparkMap = CatcherConfig.proToMap("spark.properties");
+        SparkConf conf = new SparkConf().setAppName(sparkMap.get("spark.appName"));
+        /*yarn-client模式*/
+        conf.setMaster(sparkMap.get("spark.master"));
+        //设置程序包
+        conf.setJars(new String[]{sparkMap.get("spark.jar")});
+        //设置SparkHOME
+        conf.setSparkHome(sparkMap.get("spark.sparkhome"));
+        //设置运行资源参数
+        conf.set("spark.executor.instances", sparkMap.get("spark.executor.instances"));
+        conf.set("spark.executor.cores", sparkMap.get("spark.executor.cores"));
+        conf.set("spark.executor.memory", sparkMap.get("spark.executor.memory"));
+        conf.set("spark.driver.memory", sparkMap.get("spark.driver.memory"));
+        conf.set("spark.driver.maxResultSize", sparkMap.get("spark.driver.maxResultSize"));
+        return conf;
     }
 
     /*public static String convertScanToString(Scan scan) throws IOException {

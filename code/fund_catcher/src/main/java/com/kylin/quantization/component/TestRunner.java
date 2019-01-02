@@ -49,12 +49,10 @@ public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
     private HBaseDao hBaseDao;
-    @Autowired
-    private SparkComputor sparkComputor;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        sparkComputor.getNewestNetValDate();
+        System.out.println("OK");
     }
 
 
