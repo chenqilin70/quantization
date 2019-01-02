@@ -126,8 +126,5 @@ public class CatcherService {
         logger.info("getNetVal end,fund:"+ JSON.toJSONString(fund));
     }
 
-    public void test() {
 
-        String date=hBaseDao.getNewestNetValDate("161604");
-    }
 }
