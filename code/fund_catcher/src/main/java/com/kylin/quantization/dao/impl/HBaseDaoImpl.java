@@ -279,6 +279,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             Result lastResult = null;
             while (true) {
                 Result next = scanner.next();
+                logger.info(Bytes.toString(lastResult.getRow()));
                 if (next != null) {
                     lastResult = next;
                 } else {
