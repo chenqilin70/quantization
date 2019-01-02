@@ -2,6 +2,7 @@ package com.kylin.quantization.config;
 
 import com.kylin.quantization.CatcherMain;
 import com.kylin.quantization.component.CatcherRunner;
+import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.util.MapUtil;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.PropertyConfigurator;
@@ -61,6 +62,10 @@ public class CatcherConfig  {
     @Bean
     public MapUtil<String,String> ssMapUtil(){
         return new MapUtil<String,String>();
+    }
+    @Bean
+    public HBaseDaoImpl hBaseDaoImpl(){
+        return new HBaseDaoImpl().init();
     }
 
 

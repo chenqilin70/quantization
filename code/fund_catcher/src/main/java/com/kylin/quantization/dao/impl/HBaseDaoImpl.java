@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutorService;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-@Repository
+
 public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     public static Logger logger= LoggerFactory.getLogger(HBaseDaoImpl.class);
     private Connection conn=null;
@@ -42,20 +42,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Autowired
     public Map<String,String> conf;
 
-    public HBaseDaoImpl() {
-        init();
-    }
-    {
-        logger.info("{} is running ……");
-    }
-
     public Configuration getConfiguration() {
         if(configuration==null){
             configuration=HBaseConfiguration.create();
         }
         return configuration;
     }
-    public void init(){
+    public HBaseDaoImpl init(){
         logger.info("HBaseDaoImpl is init……");
         Admin admin=null;
         TableName fund=TableName.valueOf("netval");
@@ -101,6 +94,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 }
             }
         }
+        return this;
     }
 
     public Connection getConn() {
