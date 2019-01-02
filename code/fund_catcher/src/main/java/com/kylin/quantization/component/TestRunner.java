@@ -50,7 +50,7 @@ public class TestRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
 //        new SparkWordCountWithJava7().test();
-        hBaseDao.getNewestNetValDate("161604");
+        logger.info("================================="+hBaseDao.getNewestNetValDate("161604"));
 
     }
 

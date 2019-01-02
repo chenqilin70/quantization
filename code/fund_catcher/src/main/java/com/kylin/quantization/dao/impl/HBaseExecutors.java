@@ -25,7 +25,7 @@ public interface  HBaseExecutors {
         T doTable(Table admin) throws IOException;
     }
     public static interface AggregateExecutor<T>{
-        T doAgg(AggregationClient aggClient);
+        T doAgg(AggregationClient aggClient) throws Throwable;
     }
 
 

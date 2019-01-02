@@ -4,11 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.BaseDao;
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.util.DateColumnInterpreter;
 import com.kylin.quantization.util.ExceptionTool;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
+import org.apache.hadoop.hbase.client.coprocessor.LongColumnInterpreter;
+import org.apache.hadoop.hbase.coprocessor.ColumnInterpreter;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -18,10 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -48,7 +49,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 if(conn==null){
                     configuration = HBaseConfiguration.create();
                     Admin admin=null;
-                    TableName fund=TableName.valueOf("fund");
+                    TableName fund=TableName.valueOf("netval");
                     try {
                         conn = ConnectionFactory.createConnection(configuration);
                         //初始化
@@ -111,7 +112,9 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             result=executor.doAgg(ac);
         }catch (Exception e){
             e.printStackTrace();
-        }finally {
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        } finally {
             if(ac!=null){
                 try {
                     ac.close();
@@ -251,11 +254,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public String getNewestNetValDate(String code) {
+        String tableName="netval";
         logger.info("getNewestNetValDate start");
         Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
         Scan scan = new Scan();
         scan.setFilter(filter);
-        table("netval",table->{
+        /*table(tableName,table->{
             ResultScanner scanner = table.getScanner(scan);
             Result result=null;
             Set<String> ids=new HashSet<String>();
@@ -274,13 +278,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 logger.info(s);
             });
             return null;
-        });
-        /*aggregate(agg->{
-
-            agg.max()
-            return null;
         });*/
-        return null;
+        Date maxDate = aggregate(agg -> {
+            DateColumnInterpreter interpreter = new DateColumnInterpreter();
+            Date max = agg.max(TableName.valueOf(tableName), interpreter, scan);
+            return max;
+        });
+        return new SimpleDateFormat("yyyy-MM-dd").format(maxDate);
     }
     private void printResult(Result result){
         logger.info("printResult start");
