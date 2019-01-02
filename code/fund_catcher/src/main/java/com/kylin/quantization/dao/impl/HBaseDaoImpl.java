@@ -42,6 +42,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Autowired
     public Map<String,String> conf;
 
+    public Configuration getConfiguration() {
+        if(configuration==null){
+            getConn();
+        }
+        return configuration;
+    }
 
     public Connection getConn() {
         if(conn==null){
