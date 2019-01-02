@@ -103,8 +103,6 @@ public class GetNewestNetValDate implements Serializable{
         SparkConf conf = new SparkConf().setAppName(sparkMap.get("spark.appName"));
         /*yarn-client模式*/
         conf.setMaster(sparkMap.get("spark.master"));
-        //设置程序包
-        conf.setJars(new String[]{sparkMap.get("spark.jar")});
         //设置SparkHOME
         conf.setSparkHome(sparkMap.get("spark.sparkhome"));
         //设置运行资源参数
