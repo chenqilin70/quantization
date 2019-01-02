@@ -282,14 +282,14 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 //                htd.addCoprocessor(coprocessClassName);
                 htd.removeCoprocessor(coprocessClassName);
                 if(admin.isTableEnabled(fund)){
-                    logger.info("将"+fund.toString()+"置为disable状态");
+                    logger.info("将"+fund.toString()+"置为disable状态!!");
                     admin.disableTable(fund);
                 }else{
-                    logger.info(""+fund.toString()+"已经是disable状态");
+                    logger.info(""+fund.toString()+"已经是disable状态!!");
                 }
                 admin.modifyTable(fund, htd);
             }else{
-                logger.info(fund.toString()+"Aggregate 不存在");
+                logger.info(fund.toString()+"Aggregate 不存在!!");
             }
 
         } catch (Exception e) {
@@ -297,10 +297,10 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         }finally {
             try {
                 if(!admin.isTableEnabled(fund)){
-                    logger.info("将"+fund.toString()+"恢复为enable状态");
+                    logger.info("将"+fund.toString()+"恢复为enable状态!!");
                     admin.enableTable(fund);
                 }else{
-                    logger.info(""+fund.toString()+"已经是enable状态");
+                    logger.info(""+fund.toString()+"已经是enable状态!!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
