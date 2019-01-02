@@ -269,26 +269,51 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public String getNewestNetValDate(String code) {
-        String tableName="netval";
-        logger.info("getNewestNetValDate start");
-        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator(code));
-        Scan scan = new Scan();
-        scan.setFilter(filter);
-        String lastRow = table(tableName, table -> {
-            ResultScanner scanner = table.getScanner(scan);
-            Result lastResult = null;
-            while (true) {
-                Result next = scanner.next();
-                if (next != null) {
-                    lastResult = next;
-                    logger.info(Bytes.toString(next.getRow()));
-                } else {
-                    break;
+        Admin admin=null;
+        TableName fund=TableName.valueOf("netval");
+        try {
+            //初始化
+            String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
+            admin= getConn().getAdmin();
+
+            HTableDescriptor htd = admin.getTableDescriptor(fund);
+            List<String> coprocessors = htd.getCoprocessors();
+            if(coprocessors.contains(coprocessClassName)){
+//                htd.addCoprocessor(coprocessClassName);
+                htd.removeCoprocessor(coprocessClassName);
+                if(admin.isTableEnabled(fund)){
+                    logger.info("将"+fund.toString()+"置为disable状态");
+                    admin.disableTable(fund);
+                }else{
+                    logger.info(""+fund.toString()+"已经是disable状态");
+                }
+                admin.modifyTable(fund, htd);
+            }else{
+                logger.info(fund.toString()+"Aggregate 不存在");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if(!admin.isTableEnabled(fund)){
+                    logger.info("将"+fund.toString()+"恢复为enable状态");
+                    admin.enableTable(fund);
+                }else{
+                    logger.info(""+fund.toString()+"已经是enable状态");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(admin!=null){
+                try {
+                    admin.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            return Bytes.toString(lastResult.getRow());
-        });
-        return lastRow;
+        }
+        return null;
     }
     private void printResult(Result result){
         logger.info("printResult start");
