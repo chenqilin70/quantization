@@ -44,7 +44,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         List<String> collect = hbaseRdd.map(tuple -> {
-            sleep();
+//            sleep();
             byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
             byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
             String fundcode=Bytes.toString(fundcodeArr);
