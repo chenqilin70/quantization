@@ -1,11 +1,14 @@
 package com.kylin.quantization.component;
 
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.service.CatcherService;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * ClassName: TestRunner
@@ -20,11 +23,11 @@ import org.springframework.stereotype.Component;
 public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
-    private HBaseDao hBaseDao;
+    private CatcherService service;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        System.out.println("OK");
+        List<String> codes=service.getNoNetValCodes();
     }
 
 

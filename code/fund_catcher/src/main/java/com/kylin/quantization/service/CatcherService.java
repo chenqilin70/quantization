@@ -13,8 +13,8 @@ import com.kylin.quantization.util.StringReplaceUtil;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.*;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -127,4 +127,23 @@ public class CatcherService {
     }
 
 
+    public List<String> getNoNetValCodes() {
+        hBaseDao.table("fund",table->{
+            //for each fund code
+            Scan scan=new Scan();
+            Filter filter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
+            scan.setFilter(filter);
+            ResultScanner scanner = table.getScanner(scan);
+            scanner.forEach(f->{
+                byte[] fundcode = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
+                byte[] jjqc = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
+                logger.info("fundcode:"+Bytes.toString(fundcode));
+                logger.info("fundcode:"+Bytes.toString(jjqc));
+            });
+            //filter from netval
+            //if not exist then save
+            return null;
+        });
+        return null;
+    }
 }
