@@ -42,16 +42,20 @@ public class NoNetValCodes extends  BaseSparkMain{
     }*/
     public static void main(String[] args) {
         JavaSparkContext context = new JavaSparkContext(sparkConf());
-        Configuration hconf =getFundListHconf();
+        Configuration hconf =getNetValHconf("161604");
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        List<String> collect = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
+        List<Tuple2<String, String>> collect = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
             @Override
             public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
 
-                byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
+                byte[] ljjz = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
+                String ljjzStr = Bytes.toString(ljjz);
+
+
+                /*byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
                 byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
                 String fundcode = Bytes.toString(fundcodeArr);
-                String jjqc = Bytes.toString(jjqcArr);
+                String jjqc = Bytes.toString(jjqcArr);*/
             /*Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
             Scan netvalScan = new Scan().setFilter(netvalFilter);
             String result = hBaseDao.table("netval", nvtable -> {
@@ -62,11 +66,12 @@ public class NoNetValCodes extends  BaseSparkMain{
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
 
-                return new Tuple2<String, String>(fundcode, jjqc);
+                return new Tuple2<String, String>(Bytes.toString(tuple._1.get()), ljjzStr);
             }
-        }).map(new Function<Tuple2<String, String>, String>() {
+        })/*.map(new Function<Tuple2<String, String>, String>() {
             @Override
             public String call(Tuple2<String, String> tuple) throws Exception {
+                System.out.println("sdfdsfdsf");
                 String fundcode = tuple._1;
                 String jjqc = tuple._2;
                 Configuration netValHconf = getNetValHconf(fundcode);
@@ -79,10 +84,10 @@ public class NoNetValCodes extends  BaseSparkMain{
                 }
                 return "";
             }
-        }).collect();
-        collect.remove("");
+        })*/.collect();
+       /* collect.remove("");*/
         collect.forEach(c->{
-            System.out.println(c);
+            System.out.println(c._1()+","+c._2);
         });
         context.close();
     }
