@@ -23,6 +23,7 @@ import scala.Tuple2;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * ClassName: NoNetValCodes
@@ -43,6 +44,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         List<String> collect = hbaseRdd.map(tuple -> {
+            sleep();
             byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
             byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
             String fundcode=Bytes.toString(fundcodeArr);
@@ -69,6 +71,12 @@ public class NoNetValCodes extends  BaseSparkMain{
         context.close();
     }
 
+    private static void sleep() {
+        for(int j=0;j<100;j++){
+            int i = new Random().nextInt(1000)+300;
+            System.out.println(i);
+        }
+    }
 
 
     private static Configuration getFundListHconf()  {
