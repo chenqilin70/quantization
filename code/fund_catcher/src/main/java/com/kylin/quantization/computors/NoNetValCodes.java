@@ -59,7 +59,8 @@ public class NoNetValCodes extends  BaseSparkMain{
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
             Configuration netValHconf = getNetValHconf(Bytes.toString(fundcodeArr));
-            JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+            JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
+            JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = netvalcontext.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
             List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
             if(nets.size()==0){
                 return fundcode+"("+jjqc+")";
