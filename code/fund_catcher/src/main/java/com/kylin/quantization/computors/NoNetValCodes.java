@@ -18,6 +18,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.apache.spark.api.java.function.PairFunction;
 import scala.Tuple2;
 
 import java.io.IOException;
@@ -43,12 +44,14 @@ public class NoNetValCodes extends  BaseSparkMain{
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        List<String> collect = hbaseRdd.map(tuple -> {
-//            sleep();
-            byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
-            byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
-            String fundcode=Bytes.toString(fundcodeArr);
-            String jjqc=Bytes.toString(jjqcArr);
+        List<String> collect = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
+            @Override
+            public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+
+                byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
+                byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
+                String fundcode = Bytes.toString(fundcodeArr);
+                String jjqc = Bytes.toString(jjqcArr);
             /*Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
             Scan netvalScan = new Scan().setFilter(netvalFilter);
             String result = hBaseDao.table("netval", nvtable -> {
@@ -58,16 +61,24 @@ public class NoNetValCodes extends  BaseSparkMain{
                 nvScanner.close();
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
-            Configuration netValHconf = getNetValHconf(Bytes.toString(fundcodeArr));
-            JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
-            JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = netvalcontext.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-            List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
-            netvalcontext.close();
-            if(nets.size()==0){
-                return fundcode+"("+jjqc+")";
-            }
 
-            return "";
+                return new Tuple2<String, String>(fundcode, jjqc);
+            }
+        }).map(new Function<Tuple2<String, String>, String>() {
+            @Override
+            public String call(Tuple2<String, String> tuple) throws Exception {
+                String fundcode = tuple._1;
+                String jjqc = tuple._2;
+                Configuration netValHconf = getNetValHconf(fundcode);
+                JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
+                JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = netvalcontext.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+                List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
+                netvalcontext.close();
+                if (nets.size() == 0) {
+                    return fundcode + "(" + jjqc + ")";
+                }
+                return "";
+            }
         }).collect();
         collect.remove("");
         collect.forEach(c->{
