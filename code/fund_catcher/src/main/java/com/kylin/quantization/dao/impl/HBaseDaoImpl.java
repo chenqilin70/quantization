@@ -43,6 +43,14 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Autowired
     public Map<String,String> conf;
 
+    public void setConn(Connection conn) {
+        this.conn = conn;
+    }
+
+    public void setHconfiguration(Configuration hconfiguration) {
+        this.hconfiguration = hconfiguration;
+    }
+
     @Deprecated
     public HBaseDaoImpl init(){
         logger.info("HBaseDaoImpl is init……");

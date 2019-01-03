@@ -1,6 +1,7 @@
 package com.kylin.quantization.dao;
 
 import com.kylin.quantization.dao.impl.HBaseExecutors;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
@@ -25,5 +26,7 @@ public interface HBaseDao extends BaseDao{
     boolean putData(String tableName,String rowKey,String family,String qualifier,String value);
     boolean putData(String tableName,List<Put> puts);
     Result getData(String tableName, String rowKey);
+    void setConn(Connection conn);
+    void setHconfiguration(Configuration hconfiguration);
 
 }

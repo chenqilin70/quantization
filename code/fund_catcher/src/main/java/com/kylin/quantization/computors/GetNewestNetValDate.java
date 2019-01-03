@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * 获取fund的最新netval日期
  * ClassName: SparkWordCountWithJava7
  * Description:
  * Author: aierxuan
@@ -37,7 +38,7 @@ import java.util.*;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class GetNewestNetValDate implements Serializable{
+public class GetNewestNetValDate extends BaseSparkMain{
     public static Logger logger = Logger.getLogger(GetNewestNetValDate.class);
 
 
@@ -96,28 +97,5 @@ public class GetNewestNetValDate implements Serializable{
         }
         return hconf;
     }
-
-
-    public static SparkConf sparkConf(){
-        Map<String, String> sparkMap = CatcherConfig.proToMap("spark.properties");
-        SparkConf conf = new SparkConf().setAppName(sparkMap.get("spark.appName"));
-        /*yarn-client模式*/
-        conf.setMaster(sparkMap.get("spark.master"));
-        //设置SparkHOME
-        conf.setSparkHome(sparkMap.get("spark.sparkhome"));
-        //设置运行资源参数
-        conf.set("spark.executor.instances", sparkMap.get("spark.executor.instances"));
-        conf.set("spark.executor.cores", sparkMap.get("spark.executor.cores"));
-        conf.set("spark.executor.memory", sparkMap.get("spark.executor.memory"));
-        conf.set("spark.driver.memory", sparkMap.get("spark.driver.memory"));
-        conf.set("spark.driver.maxResultSize", sparkMap.get("spark.driver.maxResultSize"));
-        return conf;
-    }
-
-    public static String convertScanToString(Scan scan) throws IOException {
-        ClientProtos.Scan proto = ProtobufUtil.toScan(scan);
-        return Bytes.toString(java.util.Base64.getEncoder().encode(proto.toByteArray()));
-    }
-
 
 }

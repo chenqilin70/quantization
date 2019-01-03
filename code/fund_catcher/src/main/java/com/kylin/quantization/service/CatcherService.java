@@ -147,7 +147,7 @@ public class CatcherService {
                     Result next = nvScanner.next();
                     if(next==null){
                         //if not exist then save
-                        logger.info("fundcode:"+fundcode+",jjqc:"+jjqc);
+                        logger.warn("not exist fundcode:"+fundcode+",jjqc:"+jjqc);
                     }
                     nvScanner.close();
                     return null;
