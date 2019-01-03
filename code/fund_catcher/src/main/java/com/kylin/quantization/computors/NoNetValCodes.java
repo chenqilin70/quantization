@@ -40,8 +40,8 @@ public class NoNetValCodes extends  BaseSparkMain{
     static {
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
     }*/
+    private static JavaSparkContext  context = new JavaSparkContext(sparkConf());
     public static void main(String[] args) {
-        JavaSparkContext context = new JavaSparkContext(sparkConf());
 //        JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
