@@ -131,17 +131,29 @@ public class CatcherService {
         hBaseDao.table("fund",table->{
             //for each fund code
             Scan scan=new Scan();
-            Filter filter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
-            scan.setFilter(filter);
+            Filter fundcodeFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
+            Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjqc")));
+            FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter);
+            scan.setFilter(filterList);
             ResultScanner scanner = table.getScanner(scan);
             scanner.forEach(f->{
                 byte[] fundcode = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
                 byte[] jjqc = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
-                logger.info("fundcode:"+Bytes.toString(fundcode));
-                logger.info("fundcode:"+Bytes.toString(jjqc));
+                //filter from netval .
+                Filter netvalFilter=new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+fundcode+"_"));
+                Scan netvalScan=new Scan().setFilter(netvalFilter);
+                hBaseDao.table("netval",nvtable->{
+                    ResultScanner nvScanner = nvtable.getScanner(netvalScan);
+                    Result next = nvScanner.next();
+                    if(next==null){
+                        //if not exist then save
+                        logger.info("fundcode:"+fundcode+",jjqc:"+jjqc);
+                    }
+                    nvScanner.close();
+                    return null;
+                });
+
             });
-            //filter from netval .
-            //if not exist then save
             return null;
         });
         return null;
