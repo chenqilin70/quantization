@@ -140,7 +140,7 @@ public class CatcherService {
                 logger.info("fundcode:"+Bytes.toString(fundcode));
                 logger.info("fundcode:"+Bytes.toString(jjqc));
             });
-            //filter from netval
+            //filter from netval .
             //if not exist then save
             return null;
         });

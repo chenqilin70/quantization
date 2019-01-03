@@ -23,11 +23,12 @@ import java.util.List;
 public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
-    private CatcherService service;
+    private CatcherService service ;
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
         List<String> codes=service.getNoNetValCodes();
+        logger.info("OVER");
     }
 
 
