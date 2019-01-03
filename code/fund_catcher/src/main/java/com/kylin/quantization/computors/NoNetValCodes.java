@@ -49,7 +49,7 @@ public class NoNetValCodes extends  BaseSparkMain{
             byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
             String fundcode=Bytes.toString(fundcodeArr);
             String jjqc=Bytes.toString(jjqcArr);
-            Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
+            /*Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
             Scan netvalScan = new Scan().setFilter(netvalFilter);
             String result = hBaseDao.table("netval", nvtable -> {
                 ResultScanner nvScanner = nvtable.getScanner(netvalScan);
@@ -57,12 +57,12 @@ public class NoNetValCodes extends  BaseSparkMain{
                 boolean flag = next == null;
                 nvScanner.close();
                 return flag ? fundcode+"("+jjqc+")" : "";
-            });
+            });*/
             /*Configuration netValHconf = getNetValHconf(Bytes.toString(fundcodeArr));
             JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
             List<Integer> collect = netvalbaseRdd.map(t -> 1).collect();
             collect.size()*/
-            return result;
+            return fundcode+"("+jjqc+")";
         }).collect();
         collect.remove("");
         collect.forEach(c->{
