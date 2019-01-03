@@ -24,6 +24,7 @@ public abstract class BaseSparkMain {
     public static SparkConf sparkConf(){
         Map<String, String> sparkMap = CatcherConfig.proToMap("spark.properties");
         SparkConf conf = new SparkConf().setAppName(sparkMap.get("spark.appName"));
+//        conf.setMaster("local");
         /*yarn-client模式*/
         conf.setMaster(sparkMap.get("spark.master"));
         //设置SparkHOME
