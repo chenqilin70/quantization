@@ -42,8 +42,10 @@ public class NoNetValCodes extends  BaseSparkMain{
     }*/
     public static void main(String[] args) {
         JavaSparkContext context = new JavaSparkContext(sparkConf());
+        JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+
         List<Tuple2<String, String>> collect = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
             @Override
             public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
@@ -62,9 +64,9 @@ public class NoNetValCodes extends  BaseSparkMain{
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
                 Configuration netValHconf = getNetValHconf(fundcode);
-                JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
-                /*JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = netvalcontext.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-                List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
+
+                JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = netvalcontext.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+                /*List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
                 netvalcontext.close();
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
