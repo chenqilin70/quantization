@@ -35,10 +35,10 @@ import java.util.Random;
  * 作者姓名 修改时间    版本号 描述
  */
 public class NoNetValCodes extends  BaseSparkMain{
-    public static HBaseDao hBaseDao=new HBaseDaoImpl();
+    /*public static HBaseDao hBaseDao=new HBaseDaoImpl();
     static {
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
-    }
+    }*/
     public static void main(String[] args) {
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf =getFundListHconf();
@@ -87,8 +87,10 @@ public class NoNetValCodes extends  BaseSparkMain{
         Scan scan=new Scan();
         Filter fundcodeFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
         Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjqc")));
-        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter);
-        scan.setFilter(filterList);
+        Filter pageFilter=new PageFilter(2);
+        FilterList conditionList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter,pageFilter);
+        FilterList allList=new FilterList(FilterList.Operator.MUST_PASS_ALL,conditionList,pageFilter);
+        scan.setFilter(allList);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {
@@ -104,6 +106,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter netvalFilter=new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+fundcode+"_"));
+//        Filter pageFilter=new PageFilter(0);
         Scan netvalScan=new Scan().setFilter(netvalFilter);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(netvalScan));
