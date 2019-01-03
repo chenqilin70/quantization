@@ -58,11 +58,13 @@ public class NoNetValCodes extends  BaseSparkMain{
                 nvScanner.close();
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
-            /*Configuration netValHconf = getNetValHconf(Bytes.toString(fundcodeArr));
+            Configuration netValHconf = getNetValHconf(Bytes.toString(fundcodeArr));
             JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-            List<Integer> collect = netvalbaseRdd.map(t -> 1).collect();
-            collect.size()*/
-            return fundcode+"("+jjqc+")";
+            List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
+            if(nets.size()==0){
+                return fundcode+"("+jjqc+")";
+            }
+            return "";
         }).collect();
         collect.remove("");
         collect.forEach(c->{
@@ -87,10 +89,8 @@ public class NoNetValCodes extends  BaseSparkMain{
         Scan scan=new Scan();
         Filter fundcodeFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
         Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjqc")));
-        Filter pageFilter=new PageFilter(2);
         FilterList conditionList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter);
-        FilterList allList=new FilterList(FilterList.Operator.MUST_PASS_ALL,conditionList,pageFilter);
-        scan.setFilter(allList);
+        scan.setFilter(conditionList);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {
@@ -106,8 +106,8 @@ public class NoNetValCodes extends  BaseSparkMain{
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter netvalFilter=new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+fundcode+"_"));
-//        Filter pageFilter=new PageFilter(0);
-        Scan netvalScan=new Scan().setFilter(netvalFilter);
+        Filter pageFilter=new PageFilter(2);
+        Scan netvalScan=new Scan().setFilter(new FilterList(FilterList.Operator.MUST_PASS_ALL,pageFilter,netvalFilter));
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(netvalScan));
         } catch (IOException e) {
