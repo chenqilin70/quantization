@@ -81,7 +81,7 @@ public class NoNetValCodes extends  BaseSparkMain{
                     netvalscanner.close();
                     return flg ? "1" : "0";
                 });
-                return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull);
+                return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull );
             }
         }).collect();
        /* collect.remove("");*/
