@@ -78,9 +78,6 @@ public class NoNetValCodes extends  BaseSparkMain{
         collect.forEach(c->{
             System.out.println(c._1+":"+c._2._1+":"+c._2._2.orNull());
         });
-
-
-
         context.close();
     }
 
@@ -99,7 +96,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Scan scan=new Scan();
         Filter fundcodeFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
-        Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjqc")));
+        Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjjc")));
         FilterList conditionList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter);
 //        Filter pageFilter=new PageFilter(10);
 //        FilterList allList=new FilterList(FilterList.Operator.MUST_PASS_ALL,conditionList,pageFilter);
