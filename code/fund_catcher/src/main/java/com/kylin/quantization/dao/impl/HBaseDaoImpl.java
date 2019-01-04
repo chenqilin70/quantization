@@ -270,11 +270,14 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     }
 
     @Override
-    public void printResult(Result result){
+    public void printResult(Result result,String ... qualifiers){
+        List<String> qs=Arrays.asList(qualifiers);
         logger.info("printResult start");
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
-            logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+            if(qs.contains(Bytes.toString(c.getQualifierArray()))){
+                logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+            }
         }
         logger.info(JSON.toJSONString(cells));
         logger.info("=============================================");

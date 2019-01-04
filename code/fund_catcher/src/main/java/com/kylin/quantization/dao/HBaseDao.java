@@ -28,6 +28,6 @@ public interface HBaseDao extends BaseDao{
     Result getData(String tableName, String rowKey);
     void setConn(Connection conn);
     void setHconfiguration(Configuration hconfiguration);
-    void printResult(Result result);
+    void printResult(Result result,String ... qualifiers);
 
 }
