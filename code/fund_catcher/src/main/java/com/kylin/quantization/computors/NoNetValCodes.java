@@ -16,10 +16,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.FlatMapFunction;
-import org.apache.spark.api.java.function.Function;
-import org.apache.spark.api.java.function.PairFlatMapFunction;
-import org.apache.spark.api.java.function.PairFunction;
+import org.apache.spark.api.java.function.*;
 import scala.Tuple2;
 
 import java.io.IOException;
@@ -51,7 +48,6 @@ public class NoNetValCodes extends  BaseSparkMain{
         JavaPairRDD<String, String> fundRdd = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
             @Override
             public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-
                 byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
                 byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
                 String fundcode = Bytes.toString(fundcodeArr);
@@ -60,22 +56,28 @@ public class NoNetValCodes extends  BaseSparkMain{
             }
         });
         JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(getNetValHconf(), TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaPairRDD<String, String> netvalRdd = netvalbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
+        JavaPairRDD<String, Integer> netvalRdd = netvalbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, Integer>() {
             @Override
-            public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+            public Tuple2<String, Integer> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 String rowkey = Bytes.toString(tuple._1().get());
                 String fundcode = rowkey.substring(rowkey.indexOf("_") + 1, rowkey.lastIndexOf("_"));
-                return new Tuple2<String, String>(fundcode, "1");
+                return new Tuple2<String, Integer>(fundcode, 1);
             }
-        });
-        JavaPairRDD<String, Tuple2<String, Optional<String>>> joinRdd = fundRdd.leftOuterJoin(netvalRdd);
-        JavaPairRDD<String, Tuple2<String, Optional<String>>> resultrdd = joinRdd.filter(new Function<Tuple2<String, Tuple2<String, Optional<String>>>, Boolean>() {
+        }).reduceByKey(new Function2<Integer, Integer, Integer>() {
             @Override
-            public Boolean call(Tuple2<String, Tuple2<String, Optional<String>>> v1) throws Exception {
-                return StringUtils.isBlank(v1._2._2.orNull());
+            public Integer call(Integer integer, Integer integer2) throws Exception {
+                return integer+integer2;
             }
         });
-        List<Tuple2<String, Tuple2<String, Optional<String>>>> collect = resultrdd.collect();
+        JavaPairRDD<String, Tuple2<String, Optional<Integer>>> joinRdd = fundRdd.leftOuterJoin(netvalRdd);
+        JavaPairRDD<String, Tuple2<String, Optional<Integer>>> resultrdd = joinRdd.filter(new Function<Tuple2<String, Tuple2<String, Optional<Integer>>>, Boolean>() {
+            @Override
+            public Boolean call(Tuple2<String, Tuple2<String, Optional<Integer>>> v1) throws Exception {
+                Integer integer = v1._2._2.orNull();
+                return integer==null || integer==0;
+            }
+        });
+        List<Tuple2<String, Tuple2<String, Optional<Integer>>>> collect = resultrdd.collect();
         collect.forEach(c->{
             System.out.println(c._1+":"+c._2._1+":"+c._2._2.orNull());
         });
