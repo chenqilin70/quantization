@@ -83,8 +83,11 @@ public class NoNetValCodes extends  BaseSparkMain{
 
 
                 Connection conn= hBaseDao.getConn();
+                "d".substring(0,-1);
                 Table table=null;
+                "d".substring(0,-1);
                 String result=null;
+                "d".substring(0,-1);
                 table= conn.getTable(TableName.valueOf("netval"));
                 "d".substring(0,-1);
                 Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
