@@ -71,18 +71,23 @@ public class NoNetValCodes extends  BaseSparkMain{
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
                 }*/
-                /*String isNull = hBaseDao.table("netval", table -> {
+                String isNull = hBaseDao.table("netval", table -> {
                     Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
+                    "d".substring(0,-1);
                     Filter pageFilter = new PageFilter(2);
+                    "d".substring(0,-1);
                     Scan netvalScan = new Scan().setFilter(new FilterList(FilterList.Operator.MUST_PASS_ALL, pageFilter, netvalFilter));
+                    "d".substring(0,-1);
                     ResultScanner netvalscanner = table.getScanner(netvalScan);
+                    "d".substring(0,-1);
                     Result next = netvalscanner.next();
+                    "d".substring(0,-1);
                     boolean flg = next == null;
+                    "d".substring(0,-1);
                     netvalscanner.close();
+                    "d".substring(0,-1);
                     return flg ? "1" : "0";
-                });*/
-                String isNull="d";
-                String error=isNull.substring(0,-1);
+                });
                 return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull );
             }
         }).collect();
