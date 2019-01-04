@@ -38,10 +38,13 @@ import java.util.Random;
 public class NoNetValCodes extends  BaseSparkMain{
     public static HBaseDao hBaseDao=new HBaseDaoImpl();
     static {
+        System.out.println("00000000000000000000000000000000000000");
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
+        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
     }
     private static JavaSparkContext  context = new JavaSparkContext(sparkConf());
     public static void main(String[] args) {
+        System.out.println("1111111111111111111111111111111111111");
 //        JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
         Configuration hconf =getFundListHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
@@ -49,7 +52,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         List<Tuple2<String, String>> collect = hbaseRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, String>() {
             @Override
             public Tuple2<String, String> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                System.out.println("1111111111111111111111111111111111111");
+
                 byte[] fundcodeArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
                 byte[] jjqcArr = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
                 String fundcode = Bytes.toString(fundcodeArr);
