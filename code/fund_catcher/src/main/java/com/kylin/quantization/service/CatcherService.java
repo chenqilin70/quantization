@@ -155,7 +155,7 @@ public class CatcherService {
             String baseInfoRowKey = RowKeyUtil.getBaseInfoRowKey(c);
             hBaseDao.table("fund",table->{
                 Result result = table.get(new Get(Bytes.toBytes(baseInfoRowKey)));
-                hBaseDao.printResult(result,"jjdm");
+                hBaseDao.printResult(result,"jjdm","fundtype");
                 return null;
             });
         });
