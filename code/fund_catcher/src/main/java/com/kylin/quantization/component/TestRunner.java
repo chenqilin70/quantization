@@ -8,6 +8,7 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,8 +27,9 @@ public class TestRunner implements ApplicationRunner {
     private CatcherService service ;
 
     @Override
-    public void run(ApplicationArguments applicationArguments) throws Exception {
-        service.test();
+    public void run(ApplicationArguments args) throws Exception {
+//        service.test();
+        logger.info(Arrays.toString(args.getSourceArgs()));
     }
 
 

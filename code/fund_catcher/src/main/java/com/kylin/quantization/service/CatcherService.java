@@ -62,7 +62,7 @@ public class CatcherService {
     }
 
     /**
-     * fundlist-delete->put,notinfundlist-noOpt
+     * fundlist-update,notinfundlist-noOpt
      * @param fund
      */
     public void getFundBase(Map<String, String> fund) {
