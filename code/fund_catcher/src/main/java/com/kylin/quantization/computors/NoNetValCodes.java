@@ -70,7 +70,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         JavaPairRDD<String, Tuple2<String, Optional<String>>> joinRdd = fundRdd.leftOuterJoin(netvalRdd);
         List<Tuple2<String, Tuple2<String, Optional<String>>>> collect = joinRdd.collect();
         collect.forEach(c->{
-            System.out.println(c._1+":"+c._2._1+":"+c._2._2.get());
+            System.out.println(c._1+":"+c._2._1+":"+c._2._2.orNull());
         });
 
 
