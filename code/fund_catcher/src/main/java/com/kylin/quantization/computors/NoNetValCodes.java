@@ -4,6 +4,7 @@ import com.google.common.base.Optional;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.TableName;
@@ -68,7 +69,13 @@ public class NoNetValCodes extends  BaseSparkMain{
             }
         });
         JavaPairRDD<String, Tuple2<String, Optional<String>>> joinRdd = fundRdd.leftOuterJoin(netvalRdd);
-        List<Tuple2<String, Tuple2<String, Optional<String>>>> collect = joinRdd.collect();
+        JavaPairRDD<String, Tuple2<String, Optional<String>>> resultrdd = joinRdd.filter(new Function<Tuple2<String, Tuple2<String, Optional<String>>>, Boolean>() {
+            @Override
+            public Boolean call(Tuple2<String, Tuple2<String, Optional<String>>> v1) throws Exception {
+                return StringUtils.isBlank(v1._2._2.orNull());
+            }
+        });
+        List<Tuple2<String, Tuple2<String, Optional<String>>>> collect = resultrdd.collect();
         collect.forEach(c->{
             System.out.println(c._1+":"+c._2._1+":"+c._2._2.orNull());
         });
@@ -112,7 +119,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         //需要读取的hbase表名
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Scan netvalScan=new Scan().setFilter(new PageFilter(10000));
+        Scan netvalScan=new Scan();
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(netvalScan));
         } catch (IOException e) {
