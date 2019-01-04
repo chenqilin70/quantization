@@ -112,7 +112,7 @@ public class NoNetValCodes extends  BaseSparkMain{
         //需要读取的hbase表名
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Scan netvalScan=new Scan();
+        Scan netvalScan=new Scan().setFilter(new PageFilter(10000));
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(netvalScan));
         } catch (IOException e) {
