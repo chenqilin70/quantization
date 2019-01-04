@@ -21,6 +21,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,20 +95,10 @@ public class CatcherService {
 
 
     public void getNetVal(Map<String, String> fund) {
-        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
-        //callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex={pageIndex}&pageSize={pageSize}&startDate=&endDate=&_={now}
-        Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode"),"now",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+"","callback","jQuery18305825951889735677_1545638648117");
-        String netValStr = HttpUtil.doGetWithHead(conf.get("net_val"), params,"head/netval_head.properties");
-        netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
-        JSONArray json=null;
-        try{
-            json= JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
-        }catch (Exception e){
-            logger.error("获取净值后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
-            return;
+        JSONArray json=getNetValJson(fund);
+        if(json==null){
+            return ;
         }
-
-//        logger.info(json.toJSONString());
         json.forEach(val -> {
             JSONObject valObj = (JSONObject) val;
             String rowkey = fund.get("fundcode") + "_" + valObj.getString("FSRQ");
@@ -159,12 +150,30 @@ public class CatcherService {
         return null;
     }
     public Object test(){
-        String baseInfoRowKey = RowKeyUtil.getBaseInfoRowKey("006733");
+        String baseInfoRowKey = RowKeyUtil.getBaseInfoRowKey("213007");
         hBaseDao.table("fund",table->{
             Result result = table.get(new Get(Bytes.toBytes(baseInfoRowKey)));
             hBaseDao.printResult(result);
             return null;
         });
+
+//        System.out.println(getNetValJson(ssMapUtil.create("fundcode","213907")).toJSONString());;
+
         return null;
+    }
+
+    private JSONArray getNetValJson(Map<String,String> fund){
+        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
+        //callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex={pageIndex}&pageSize={pageSize}&startDate=&endDate=&_={now}
+        Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode"),"_",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+"","callback","jQuery18305825951889735677_1545638648117");
+        String netValStr = HttpUtil.doGetWithHead(conf.get("net_val"), params,"head/netval_head.properties");
+        netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
+        JSONArray json=null;
+        try{
+            json= JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
+        }catch (Exception e){
+            logger.error("获取净值后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
+        }
+        return json;
     }
 }

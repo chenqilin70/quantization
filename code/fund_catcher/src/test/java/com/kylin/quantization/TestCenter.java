@@ -35,6 +35,6 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-        System.out.println(RowKeyUtil.getBaseInfoRowKey("006733"));;
+        System.out.println(new Date().getTime());;
     }
 }
