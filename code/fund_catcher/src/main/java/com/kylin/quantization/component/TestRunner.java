@@ -27,8 +27,7 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        List<String> codes=service.getNoNetValCodes();
-        logger.info("OVER");
+        service.test();
     }
 
 

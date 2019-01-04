@@ -158,4 +158,13 @@ public class CatcherService {
         });
         return null;
     }
+    public Object test(){
+        String baseInfoRowKey = RowKeyUtil.getBaseInfoRowKey("006733");
+        hBaseDao.table("fund",table->{
+            Result result = table.get(new Get(Bytes.toBytes(baseInfoRowKey)));
+            hBaseDao.printResult(result);
+            return null;
+        });
+        return null;
+    }
 }

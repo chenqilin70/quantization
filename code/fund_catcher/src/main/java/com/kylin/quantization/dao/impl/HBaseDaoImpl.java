@@ -269,8 +269,8 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         });
     }
 
-
-    private void printResult(Result result){
+    @Override
+    public void printResult(Result result){
         logger.info("printResult start");
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
