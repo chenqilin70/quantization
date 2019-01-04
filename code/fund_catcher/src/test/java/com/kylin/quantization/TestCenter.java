@@ -17,6 +17,9 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -35,6 +38,17 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-        System.out.println(new Date().getTime());;
+        SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+        String startDate="";
+        try {
+            Date date = sf.parse("2018-12-31");
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE,1);
+            startDate=sf.format(calendar.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        System.out.println(startDate);
     }
 }

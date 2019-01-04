@@ -3,6 +3,7 @@ package com.kylin.quantization.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.kylin.quantization.component.CatcherRunner;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,12 +97,25 @@ public class CatcherService {
 
 
     public void getNetVal(Map<String, String> fund) {
-        JSONArray json=getNetValJson(fund);
+        String fundcode=fund.get("fundcode");
+        String zxrq=getZxrq(fundcode);
+        SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+        String startDate="";
+        try {
+            Date date = sf.parse(zxrq);
+            Calendar calendar=Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DATE,1);
+            startDate=sf.format(calendar.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        //&startDate=2019-01-02&endDate=2019-01-04
+        JSONArray json=getNetValJson(fund,startDate);
         if(json==null){
             return ;
         }
-        String fundcode=fund.get("fundcode");
-        String zxrq=getZxrq(fundcode);
         json.forEach(val -> {
             JSONObject valObj = (JSONObject) val;
             String rowkey = fundcode + "_" + valObj.getString("FSRQ");
@@ -132,7 +148,7 @@ public class CatcherService {
         });
     }
 
-
+    @Deprecated
     public List<String> getNoNetValCodes() {
         hBaseDao.table("fund",table->{
             //for each fund code
@@ -179,10 +195,12 @@ public class CatcherService {
         return null;
     }
 
-    private JSONArray getNetValJson(Map<String,String> fund){
+    private JSONArray getNetValJson(Map<String,String> fund,String startdate){
         logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
         //callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex={pageIndex}&pageSize={pageSize}&startDate=&endDate=&_={now}
-        Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode"),"_",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+"","callback","jQuery18305825951889735677_1545638648117");
+        Map<String,String> params=ssMapUtil.create("fundcode",fund.get("fundcode")
+                ,"_",new Date().getTime()+"","pageIndex","1","pageSize",Integer.MAX_VALUE+""
+                ,"callback","jQuery18305825951889735677_1545638648117","startDate",startdate,"endDate","");
         String netValStr = HttpUtil.doGetWithHead(conf.get("net_val"), params,"head/netval_head.properties");
         netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
         JSONArray json=null;

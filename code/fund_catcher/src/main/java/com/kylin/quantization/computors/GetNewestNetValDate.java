@@ -5,10 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
 import org.apache.hadoop.hbase.client.Scan;
-import org.apache.hadoop.hbase.filter.CompareFilter;
-import org.apache.hadoop.hbase.filter.Filter;
-import org.apache.hadoop.hbase.filter.RowFilter;
-import org.apache.hadoop.hbase.filter.SubstringComparator;
+import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
@@ -44,7 +41,7 @@ public class GetNewestNetValDate extends BaseSparkMain{
 
     public static void main(String[] args) {
         JavaSparkContext context = new JavaSparkContext(sparkConf());
-        Configuration hconf = getMaxNetValHconf("161604");
+        Configuration hconf = getMaxNetValHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         List<Tuple2<String, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
 
@@ -83,12 +80,13 @@ public class GetNewestNetValDate extends BaseSparkMain{
 
 
 
-    private static   Configuration getMaxNetValHconf(String code)  {
+    private static   Configuration getMaxNetValHconf()  {
         Configuration hconf= HBaseConfiguration.create();
         //需要读取的hbase表名
         String tableName = "netval";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
+//        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
+        Filter filter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("FSRQ"));
         Scan scan = new Scan().setFilter(filter);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
