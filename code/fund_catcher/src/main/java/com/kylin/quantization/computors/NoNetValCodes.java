@@ -74,7 +74,7 @@ public class NoNetValCodes extends  BaseSparkMain{
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
                 }*/
-                String isNull = hBaseDao.table("netval", table -> {
+                /*String isNull = hBaseDao.table("netval", table -> {
                     "d".substring(0,-1);
                     Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
                     "d".substring(0,-1);
@@ -91,8 +91,8 @@ public class NoNetValCodes extends  BaseSparkMain{
                     netvalscanner.close();
                     "d".substring(0,-1);
                     return flg ? "1" : "0";
-                });
-                return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull );
+                });*/
+                return new Tuple2<String, String>(fundcode+"("+jjqc+")", "d" );
             }
         }).collect();
        /* collect.remove("");*/
