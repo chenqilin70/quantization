@@ -74,7 +74,6 @@ public class NoNetValCodes extends  BaseSparkMain{
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
                 }*/
-                "d".substring(0,-1);
                 String isNull = hBaseDao.table("netval", table -> {
                     "d".substring(0,-1);
                     Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
