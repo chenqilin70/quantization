@@ -1,6 +1,9 @@
 package com.kylin.quantization.computors;
 
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.dao.impl.HBaseDaoImpl;
+import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -18,6 +21,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFlatMapFunction;
+import org.apache.spark.api.java.function.VoidFunction;
 import scala.Tuple2;
 
 import java.io.IOException;
@@ -37,13 +41,17 @@ import java.util.*;
  */
 public class GetNewestNetValDate extends BaseSparkMain{
     public static Logger logger = Logger.getLogger(GetNewestNetValDate.class);
+    private static HBaseDao hBaseDao=new HBaseDaoImpl();
+    static {
+        hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
+    }
 
 
     public static void main(String[] args) {
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getMaxNetValHconf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        List<Tuple2<String, Date>> collect = hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
+       hbaseRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, Date>() {
 
             @Override
             public Iterable<Tuple2<String, Date>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
@@ -68,11 +76,21 @@ public class GetNewestNetValDate extends BaseSparkMain{
                     return date2;
                 }
             }
-        }).collect();
-        for(Tuple2<String, Date> t: collect){
+        }).foreach(new VoidFunction<Tuple2<String, Date>>() {
+            @Override
+            public void call(Tuple2<String, Date> tuple) throws Exception {
+                String code = tuple._1;
+                Date date = tuple._2;
+                SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+                String zxrq = sf.format(date);
+                hBaseDao.putData("fund", RowKeyUtil.getBaseInfoRowKey(code), "baseinfo", "zxrq", zxrq);
+            }
+        });
+        /*for(Tuple2<String, Date> t: collect){
             logger.info(t._1+":::::"+t._2.toLocaleString());
 
-        }
+        }*/
+        logger.info("spark OK!");
 
 
         context.stop();
