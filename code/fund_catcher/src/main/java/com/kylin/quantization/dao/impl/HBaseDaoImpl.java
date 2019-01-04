@@ -279,7 +279,11 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             String family= Bytes.toString(c.getFamilyArray(),c.getFamilyOffset(),c.getFamilyLength());
             String column= Bytes.toString(c.getQualifierArray(),c.getQualifierOffset(),c.getQualifierLength());
             String value = Bytes.toString(c.getValueArray(), c.getValueOffset(), c.getValueLength());
-            if(qs.contains(column)){
+            if(qualifiers!=null && qualifiers.length!=0 ){
+                if(qs.contains(column)){
+                    logger.info(row+"\t"+family+"\t"+column+"\t"+value);
+                }
+            }else{
                 logger.info(row+"\t"+family+"\t"+column+"\t"+value);
             }
         }
