@@ -81,7 +81,6 @@ public class NoNetValCodes extends  BaseSparkMain{
 
 
 
-                "d".substring(0,-1);
                 Connection conn= hBaseDao.getConn();
                 "d".substring(0,-1);
                 Table table=null;
