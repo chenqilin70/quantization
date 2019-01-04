@@ -279,7 +279,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
 //                logger.info(Bytes.toString(c.getValueArray()));
             }else{
-                logger.info(" not contain ==>"+Bytes.toString(c.getQualifierArray()));
+                logger.info(" not contain ==>"+new String(c.getQualifierArray()));
             }
         }
 //        logger.info(JSON.toJSONString(cells));
