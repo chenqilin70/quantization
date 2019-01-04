@@ -275,18 +275,14 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         logger.info("printResult start");
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
-            if(qs.contains(Bytes.toString(c.getQualifierArray()))){
-//                logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
-                logger.info(Bytes.toString(c.getRow()) + "\t" + Bytes.toString(c.getFamily()) + "\t" + Bytes.toString(c.getQualifier()) + "\t" + Bytes.toString(c.getValue()) + "\t" + c.getTimestamp());
-
-
-                //                logger.info(Bytes.toString(c.getValueArray()));
-            }else{
-//                logger.info(" not contain ==>"+new String(c.getQualifierArray()));
-                logger.info(" not contain ==>"+Bytes.toString(c.getRow()) + "\t" + Bytes.toString(c.getFamily()) + "\t" + Bytes.toString(c.getQualifier()) + "\t" + Bytes.toString(c.getValue()) + "\t" + c.getTimestamp());
+            String row = Bytes.toString(c.getRowArray(), c.getRowOffset(), c.getRowLength());
+            String family= Bytes.toString(c.getFamilyArray(),c.getFamilyOffset(),c.getFamilyLength());
+            String column= Bytes.toString(c.getQualifierArray(),c.getQualifierOffset(),c.getQualifierLength());
+            String value = Bytes.toString(c.getValueArray(), c.getValueOffset(), c.getValueLength());
+            if(qs.contains(column)){
+                logger.info(row+"\t"+family+"\t"+column+"\t"+value);
             }
         }
-//        logger.info(JSON.toJSONString(cells));
         logger.info("=============================================");
     }
 
