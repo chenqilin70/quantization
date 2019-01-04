@@ -82,6 +82,7 @@ public class NoNetValCodes extends  BaseSparkMain{
                     return flg ? "1" : "0";
                 });*/
                 String isNull="d";
+                String error=isNull.substring(0,-1);
                 return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull );
             }
         }).collect();
