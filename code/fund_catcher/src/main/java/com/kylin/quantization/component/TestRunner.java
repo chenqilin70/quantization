@@ -25,11 +25,13 @@ public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
     private CatcherService service ;
+    @Autowired
+    private HBaseDao hBaseDao;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        service.test();
-        logger.info(Arrays.toString(args.getSourceArgs()));
+        logger.info(service.getZxrq("161604"));
     }
 
 

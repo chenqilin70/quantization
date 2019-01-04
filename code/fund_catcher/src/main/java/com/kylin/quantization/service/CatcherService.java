@@ -6,13 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.component.CatcherRunner;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
-import com.kylin.quantization.util.HttpUtil;
-import com.kylin.quantization.util.MapUtil;
-import com.kylin.quantization.util.RowKeyUtil;
-import com.kylin.quantization.util.StringReplaceUtil;
+import com.kylin.quantization.util.*;
 import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.hbase.Cell;
+import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -99,9 +98,11 @@ public class CatcherService {
         if(json==null){
             return ;
         }
+        String fundcode=fund.get("fundcode");
+        String zxrq=getZxrq(fundcode);
         json.forEach(val -> {
             JSONObject valObj = (JSONObject) val;
-            String rowkey = fund.get("fundcode") + "_" + valObj.getString("FSRQ");
+            String rowkey = fundcode + "_" + valObj.getString("FSRQ");
             rowkey = rowkey.hashCode() + "_" + rowkey;
             final String finalrowkey = rowkey;
             List<Put> puts = valObj.keySet().stream().map(key -> {
@@ -115,6 +116,20 @@ public class CatcherService {
         });
 
         logger.info("getNetVal end,fund:"+ JSON.toJSONString(fund));
+    }
+
+    public String getZxrq(String fundcode) {
+        return hBaseDao.table("fund",table->{
+            String result="";
+            Get get = new Get(Bytes.toBytes(RowKeyUtil.getBaseInfoRowKey(fundcode)));
+            get= get.addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("zxrq"));
+            Result r = table.get(get);
+            Cell[] cells = r.rawCells();
+            if(cells!=null && cells.length!=0){
+                result = CellTools.val(cells[0]);
+            }
+            return result;
+        });
     }
 
 
