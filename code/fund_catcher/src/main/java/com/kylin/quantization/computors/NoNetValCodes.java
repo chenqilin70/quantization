@@ -5,9 +5,8 @@ import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.client.Result;
-import org.apache.hadoop.hbase.client.ResultScanner;
-import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.TableName;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
@@ -74,24 +73,38 @@ public class NoNetValCodes extends  BaseSparkMain{
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
                 }*/
-                /*String isNull = hBaseDao.table("netval", table -> {
-                    "d".substring(0,-1);
-                    Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
-                    "d".substring(0,-1);
-                    Filter pageFilter = new PageFilter(2);
-                    "d".substring(0,-1);
-                    Scan netvalScan = new Scan().setFilter(new FilterList(FilterList.Operator.MUST_PASS_ALL, pageFilter, netvalFilter));
-                    "d".substring(0,-1);
-                    ResultScanner netvalscanner = table.getScanner(netvalScan);
-                    "d".substring(0,-1);
-                    Result next = netvalscanner.next();
-                    "d".substring(0,-1);
-                    boolean flg = next == null;
-                    "d".substring(0,-1);
-                    netvalscanner.close();
-                    "d".substring(0,-1);
-                    return flg ? "1" : "0";
-                });*/
+
+
+
+
+
+
+
+
+
+                Connection conn= hBaseDao.getConn();
+                Table table=null;
+                String result=null;
+                table= conn.getTable(TableName.valueOf("netval"));
+                "d".substring(0,-1);
+                Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
+                "d".substring(0,-1);
+                Filter pageFilter = new PageFilter(2);
+                "d".substring(0,-1);
+                Scan netvalScan = new Scan().setFilter(new FilterList(FilterList.Operator.MUST_PASS_ALL, pageFilter, netvalFilter));
+                "d".substring(0,-1);
+                ResultScanner netvalscanner = table.getScanner(netvalScan);
+                "d".substring(0,-1);
+                Result next = netvalscanner.next();
+                "d".substring(0,-1);
+                boolean flg = next == null;
+                "d".substring(0,-1);
+                netvalscanner.close();
+                "d".substring(0,-1);
+                if(table!=null){
+                    table.close();
+                }
+
                 return new Tuple2<String, String>(fundcode+"("+jjqc+")", "d" );
             }
         }).collect();
