@@ -279,9 +279,11 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 //                logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
                 logger.info(Bytes.toString(c.getRow()) + "\t" + Bytes.toString(c.getFamily()) + "\t" + Bytes.toString(c.getQualifier()) + "\t" + Bytes.toString(c.getValue()) + "\t" + c.getTimestamp());
 
+
                 //                logger.info(Bytes.toString(c.getValueArray()));
             }else{
-                logger.info(" not contain ==>"+new String(c.getQualifierArray()));
+//                logger.info(" not contain ==>"+new String(c.getQualifierArray()));
+                logger.info(" not contain ==>"+Bytes.toString(c.getRow()) + "\t" + Bytes.toString(c.getFamily()) + "\t" + Bytes.toString(c.getQualifier()) + "\t" + Bytes.toString(c.getValue()) + "\t" + c.getTimestamp());
             }
         }
 //        logger.info(JSON.toJSONString(cells));
