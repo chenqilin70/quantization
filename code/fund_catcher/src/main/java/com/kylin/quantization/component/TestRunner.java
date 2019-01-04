@@ -31,7 +31,7 @@ public class TestRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 //        service.test();
-        logger.info(service.getZxrq("161604"));
+        logger.info("=========="+service.getZxrq("161604"));
     }
 
 
