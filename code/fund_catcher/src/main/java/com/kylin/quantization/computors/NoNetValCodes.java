@@ -36,10 +36,10 @@ import java.util.Random;
  * 作者姓名 修改时间    版本号 描述
  */
 public class NoNetValCodes extends  BaseSparkMain{
-    /*public static HBaseDao hBaseDao=new HBaseDaoImpl();
+    public static HBaseDao hBaseDao=new HBaseDaoImpl();
     static {
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
-    }*/
+    }
     private static JavaSparkContext  context = new JavaSparkContext(sparkConf());
     public static void main(String[] args) {
 //        JavaSparkContext netvalcontext = new JavaSparkContext(sparkConf());
@@ -63,16 +63,25 @@ public class NoNetValCodes extends  BaseSparkMain{
                 nvScanner.close();
                 return flag ? fundcode+"("+jjqc+")" : "";
             });*/
-                Configuration netValHconf = getNetValHconf(fundcode);
+                /*Configuration netValHconf = getNetValHconf(fundcode);
 
-                JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+                JavaPairRDD<ImmutableBytesWritable, Result> netvalbaseRdd = context.newAPIHadoopRDD(netValHconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);*/
                 /*List<Integer> nets = netvalbaseRdd.map(t -> 1).collect();
                 netvalcontext.close();
                 if (nets.size() == 0) {
                     return fundcode + "(" + jjqc + ")";
                 }*/
-
-                return new Tuple2<String, String>(fundcode, jjqc);
+                String isNull = hBaseDao.table("netval", table -> {
+                    Filter netvalFilter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + fundcode + "_"));
+                    Filter pageFilter = new PageFilter(2);
+                    Scan netvalScan = new Scan().setFilter(new FilterList(FilterList.Operator.MUST_PASS_ALL, pageFilter, netvalFilter));
+                    ResultScanner netvalscanner = table.getScanner(netvalScan);
+                    Result next = netvalscanner.next();
+                    boolean flg = next == null;
+                    netvalscanner.close();
+                    return flg ? "1" : "0";
+                });
+                return new Tuple2<String, String>(fundcode+"("+jjqc+")", isNull);
             }
         }).collect();
        /* collect.remove("");*/
