@@ -276,7 +276,8 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
             if(qs.contains(Bytes.toString(c.getQualifierArray()))){
-                logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+//                logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+                logger.info(Bytes.toString(c.getValueArray()));
             }
         }
         logger.info(JSON.toJSONString(cells));
