@@ -8,7 +8,9 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ClassName: TestRunner
@@ -24,11 +26,18 @@ public class TestRunner implements ApplicationRunner {
     public static Logger logger = Logger.getLogger(TestRunner.class);
     @Autowired
     private CatcherService service ;
+    @Autowired
+    private HBaseDao hBaseDao;
 
     @Override
-    public void run(ApplicationArguments applicationArguments) throws Exception {
-        List<String> codes=service.getNoNetValCodes();
-        logger.info("OVER");
+    public void run(ApplicationArguments args) throws Exception {
+//        service.test();
+        List<Map<String,String>> fundList=service.getFundList();
+        for(Map<String,String> m:fundList){
+            String fundcode=m.get("fundcode");
+            logger.info("=========="+service.getZxrq(fundcode));
+        }
+
     }
 
 

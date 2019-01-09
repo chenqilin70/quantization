@@ -269,14 +269,24 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         });
     }
 
-
-    private void printResult(Result result){
+    @Override
+    public void printResult(Result result,String ... qualifiers){
+        List<String> qs=Arrays.asList(qualifiers);
         logger.info("printResult start");
         Cell[] cells = result.rawCells();
         for(Cell c : cells){
-            logger.info(Bytes.toString(c.getRowArray())+" | "+Bytes.toString(c.getFamilyArray())+" | "+Bytes.toString(c.getQualifierArray())+" | "+Bytes.toString(c.getValueArray()));
+            String row = Bytes.toString(c.getRowArray(), c.getRowOffset(), c.getRowLength());
+            String family= Bytes.toString(c.getFamilyArray(),c.getFamilyOffset(),c.getFamilyLength());
+            String column= Bytes.toString(c.getQualifierArray(),c.getQualifierOffset(),c.getQualifierLength());
+            String value = Bytes.toString(c.getValueArray(), c.getValueOffset(), c.getValueLength());
+            if(qualifiers!=null && qualifiers.length!=0 ){
+                if(qs.contains(column)){
+                    logger.info(row+"\t"+family+"\t"+column+"\t"+value);
+                }
+            }else{
+                logger.info(row+"\t"+family+"\t"+column+"\t"+value);
+            }
         }
-        logger.info(JSON.toJSONString(cells));
         logger.info("=============================================");
     }
 

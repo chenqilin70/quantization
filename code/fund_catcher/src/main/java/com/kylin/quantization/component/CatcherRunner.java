@@ -19,28 +19,41 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ForkJoinPool;
 
-//@Component
-public class CatcherRunner  implements ApplicationRunner {
+
+public abstract  class CatcherRunner  implements ApplicationRunner {
     public static Logger logger= LoggerFactory.getLogger(CatcherRunner.class);
-    @Autowired
-    private MapUtil<String,String> ssMapUtil;
-    @Autowired
-    private CatcherService service;
+
+
+    protected abstract  String getTask();
+    protected abstract  void doTask();
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        //get fundlist
-//        List<Map<String,String>> fundList=service.getFundList();
+        String[] sourceArgs = args.getSourceArgs();
+        if(sourceArgs==null || sourceArgs.length==0){
+            logger.error(getTask()+"启动未传入参数");
+        }else if(getTask().equals(sourceArgs[0])){
+            doTask();
+        }
 
-        //baseData   fundlist-delete->put,notinfundlist-noOpt
-        /*FundBaseTask baseInfotask=new FundBaseTask(fundList,800,service);
-        ForkJoinExecutor.exec(baseInfotask,20);*/
-        //netVal fundlist-append,notinfundlist-noOpt
-        /*NetValTask netValTask=new NetValTask(fundList,800,service);
-        ForkJoinExecutor.exec(netValTask,20);*/
+    }
+
+    /*@Override
+    public void run(ApplicationArguments args) throws Exception {
+        //get fundlist
+        List<Map<String,String>> fundList=service.getFundList();
+
+        //baseData   fundlist-update,notinfundlist-noOpt
+        FundBaseTask baseInfotask=new FundBaseTask(fundList,800,service);
+        ForkJoinExecutor.exec(baseInfotask,20);
+
+
 //        service.test();
 //        SparkSubmit.main();
 
 
-    }
+    }*/
+
+
+
 }

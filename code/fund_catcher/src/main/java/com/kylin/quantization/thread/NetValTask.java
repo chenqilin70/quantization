@@ -1,6 +1,10 @@
 package com.kylin.quantization.thread;
 
+import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.service.CatcherService;
+import com.kylin.quantization.util.ExceptionTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +20,7 @@ import java.util.Map;
  */
 public class NetValTask extends BaseRecursiveTask<Map<String,String>,Object>{
     private CatcherService service;
+    public static Logger logger= LoggerFactory.getLogger(NetValTask.class);
     public NetValTask(List<Map<String, String>> datas, int THRESHOLD_NUM, CatcherService service) {
         super(datas, THRESHOLD_NUM);
         this.service=service;
@@ -24,7 +29,12 @@ public class NetValTask extends BaseRecursiveTask<Map<String,String>,Object>{
     @Override
     public Object run(List<Map<String, String>> perIncrementList) {
         perIncrementList.forEach(fund->{
-            service.getNetVal(fund);
+            try {
+                service.getNetVal(fund);
+            }catch (Exception e){
+                logger.info(ExceptionTool.toString(e));
+            }
+
         });
         return null;
     }
