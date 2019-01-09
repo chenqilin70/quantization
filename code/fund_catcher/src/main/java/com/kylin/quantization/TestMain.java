@@ -1,12 +1,19 @@
 package com.kylin.quantization;
+import org.apache.hadoop.hbase.util.FSHDFSUtils;
 
-import org.apache.commons.lang3.StringUtils;
+import  java.io.File;
+import java.io.IOException;
+
 
 public class TestMain {
     public static void main(String[] args) {
-        String s="sdfsd";
-        if(StringUtils.isNotBlank(s)){
-            System.out.println("kylin test");
+        File f=new File("/OK.txt");
+        if(!f.exists()){
+            try {
+                f.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
