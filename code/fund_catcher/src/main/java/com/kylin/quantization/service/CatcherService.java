@@ -109,7 +109,7 @@ public class CatcherService {
             calendar.add(Calendar.DATE,1);
             startDate=sf.format(calendar.getTime());
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.warn("该fund没有zxrq，startDate将以空字符串处理，fund:"+JSON.toJSONString(fund));
         }
 
         //&startDate=2019-01-02&endDate=2019-01-04
@@ -182,7 +182,7 @@ public class CatcherService {
         return null;
     }
     public Object test(){
-        hBaseDao.createTable("testtable","f1");
+        System.out.println(getFundList().size());
         return null;
     }
 
@@ -198,7 +198,7 @@ public class CatcherService {
         try{
             json= JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList");
         }catch (Exception e){
-            logger.error("获取净值后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
+            logger.error("获取netval后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
         }
         return json;
     }
