@@ -78,7 +78,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(ExceptionTool.toString(e));
         }finally {
             try {
                 if(!admin.isTableEnabled(fund)){
@@ -88,13 +88,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                     logger.info(""+fund.toString()+"已经是enable状态");
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(ExceptionTool.toString(e));
             }
             if(admin!=null){
                 try {
                     admin.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(ExceptionTool.toString(e));
                 }
             }
         }
@@ -108,7 +108,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                     try {
                         conn = ConnectionFactory.createConnection(hconfiguration);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        logger.error(ExceptionTool.toString(e));
                     }
                 }
             }
@@ -128,15 +128,15 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         try{
             result=executor.doAgg(ac);
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(ExceptionTool.toString(e));
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            logger.error(ExceptionTool.toString(throwable));
         } finally {
             if(ac!=null){
                 try {
                     ac.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(ExceptionTool.toString(e));
                 }
             }
 
@@ -155,13 +155,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             admin= conn.getAdmin();
             result= executor.doAdmin(admin);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(ExceptionTool.toString(e));
         }finally {
             if(admin!=null){
                 try {
                     admin.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(ExceptionTool.toString(e));
                 }
             }
         }
@@ -177,13 +177,13 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             table= conn.getTable(TableName.valueOf(tableName));
             result= executor.doTable(table);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(ExceptionTool.toString(e));
         }finally {
             if(table!=null){
                 try {
                     table.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(ExceptionTool.toString(e));
                 }
             }
         }
@@ -201,7 +201,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 admin.createTable(tableDescriptor);
                 flg=true;
             }catch (Exception e){
-                logger.error("",ExceptionTool.toString(e));
+                logger.error(ExceptionTool.toString(e));
             }
             return flg;
         });
@@ -215,7 +215,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 admin.deleteTable(TableName.valueOf(tableName));
                 result=true;
             }catch (Exception e){
-                logger.error("", ExceptionTool.toString(e));
+                logger.error(ExceptionTool.toString(e));
             }
             return result;
         });
@@ -235,7 +235,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 table.put(put);
                 flg=true;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(ExceptionTool.toString(e));
             }
             return flg;
         });
@@ -249,7 +249,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 table.put(puts);
                 flg=true;
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(ExceptionTool.toString(e));
             }
             return flg;
         });
@@ -263,7 +263,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 Get get=new Get(Bytes.toBytes(rowKey));
                 result= table.get(get);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(ExceptionTool.toString(e));
             }
             return result;
         });
