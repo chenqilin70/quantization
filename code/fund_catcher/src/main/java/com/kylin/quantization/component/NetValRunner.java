@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
-//@Component
+@Component
 public class NetValRunner extends CatcherRunner{
     @Autowired
     private MapUtil<String,String> ssMapUtil;
