@@ -184,13 +184,14 @@ public class CatcherService {
     public Object test(){
         Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
         Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
-        Filter filter3=new PageFilter(5);
+        Filter filter3=new PageFilter(10);
         FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2,filter3);
         Scan scan = new Scan().setFilter(filterList);
         hBaseDao.table("fund",table->{
             ResultScanner scanner = table.getScanner(scan);
+            logger.info("start_______________________________");
             scanner.forEach(r->{
-                logger.info(Bytes.toString(r.getRow()));
+                logger.info(Bytes.toString(r.getRow()),Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq"))));
             });
             return null;
         });
