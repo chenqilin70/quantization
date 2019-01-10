@@ -102,8 +102,9 @@ public class FXSort extends BaseSparkMain{
         JavaPairRDD<String, BigDecimal> eRdd = codeValRdd.leftOuterJoin(avgRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.subtract(tuple._2._2.get()).pow(2)));
         JavaPairRDD<String, BigDecimal> fxRdd = eRdd.leftOuterJoin(countRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.divide(tuple._2._2.orNull())));
         List<Tuple2<String, BigDecimal>> collect = fxRdd.collect();
+        logger.info("collect size:"+collect.size());
         collect.forEach(t->{
-            System.out.println("code:"+t._1+",fx:"+t._2);
+            logger.info("code:"+t._1+",fx:"+t._2);
         });
         logger.info("spark OK!");
         context.stop();
