@@ -26,9 +26,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import scala.Tuple2;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -191,31 +193,31 @@ public class CatcherService {
             ResultScanner scanner = table.getScanner(scan);
             logger.info("start_______________________________");
             scanner.forEach(r->{
+                List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
+                String code = RowKeyUtil.getCodeFromRowkey(r.getRow());
+                Filter filtera = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
+                Filter filterb = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+                Filter filterc = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
+                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterb, filterc);
+                FilterList allFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, qualifierFilter, filtera);
+                Scan scan2 = new Scan().setFilter(allFilter);
+                hBaseDao.table("netval", t -> {
+                    ResultScanner scanner2 = t.getScanner(scan2);
+                    scanner2.forEach(re -> {
+                        byte[] value = re.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
+                        if (value != null && value.length != 0) {
+                            Tuple2<String, BigDecimal> tt = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
+                            result.add(tt);
+                        }
+                    });
+                    return null;
+                });
 
+                result.forEach(v->{
+                    logger.info(v._1+"->"+v._2.toString());
+                });
 
-
-                boolean flg = false;
-                byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fxrq"));
-                SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
-                if (value != null && value.length != 0) {
-                    String fxrq = Bytes.toString(value);
-                    Date fxrqDate = null;
-                    try {
-                        fxrqDate = sf.parse(fxrq);
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                    Calendar ago = Calendar.getInstance();
-                    ago.add(Calendar.YEAR, -1);
-                    if (ago.getTime().getTime() >= fxrqDate.getTime()) {
-                        flg = true;
-                    }
-
-                }
-
-
-
-                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq")))+",flg:"+flg);
+//                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq")))+",flg:"+flg);
             });
             return null;
         });
