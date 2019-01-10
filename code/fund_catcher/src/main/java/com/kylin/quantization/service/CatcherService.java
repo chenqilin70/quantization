@@ -191,7 +191,31 @@ public class CatcherService {
             ResultScanner scanner = table.getScanner(scan);
             logger.info("start_______________________________");
             scanner.forEach(r->{
-                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq"))));
+
+
+
+                boolean flg = false;
+                byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fxrq"));
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
+                if (value != null && value.length != 0) {
+                    String fxrq = Bytes.toString(value);
+                    Date fxrqDate = null;
+                    try {
+                        fxrqDate = sf.parse(fxrq);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Calendar ago = Calendar.getInstance();
+                    ago.add(Calendar.YEAR, -1);
+                    if (ago.getTime().getTime() >= fxrqDate.getTime()) {
+                        flg = true;
+                    }
+
+                }
+
+
+
+                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq")))+",flg:"+flg);
             });
             return null;
         });
