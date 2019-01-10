@@ -97,6 +97,7 @@ public class CatcherService {
 
 
     public void getNetVal(Map<String, String> fund) {
+        logger.info("getNetVal start,fund:"+ JSON.toJSONString(fund));
         String fundcode=fund.get("fundcode");
         String zxrq=getZxrq(fundcode);
         SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
