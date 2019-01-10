@@ -1,5 +1,6 @@
 package com.kylin.quantization.util;
 
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 
 /**
@@ -21,5 +22,16 @@ public class RowKeyUtil {
 
     public static String getBaseInfoRowKey(String fundcode){
         return fundcode.hashCode() + "_" + fundcode;
+    }
+
+    public static String getCodeFromRowkey(ImmutableBytesWritable immutableBytesWritable){
+        return getCodeFromRowkey(immutableBytesWritable.get());
+    }
+    public static String getCodeFromRowkey(byte[] bytes){
+        String code=Bytes.toString(bytes);
+        code=code.substring(code.indexOf("_"));
+        code=code.substring(0,code.lastIndexOf("_"));
+        code=code.replaceAll("_","");
+        return code;
     }
 }

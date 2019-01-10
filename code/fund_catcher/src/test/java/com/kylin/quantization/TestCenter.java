@@ -16,6 +16,7 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
@@ -34,7 +35,7 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-
+        System.out.println(new BigDecimal("3").pow(2));
         /*System.out.println(Integer.MAX_VALUE);
         String url="http://api.fund.eastmoney.com/f10/lsjz?callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex=1&pageSize=10000000&startDate=&endDate=&_="+new Date().getTime();
         String netValStr = HttpUtil.doGetWithHead(StringReplaceUtil.replace(url,ssMapUtil.create("fundcode","161604")), null,"head/netval_head.properties");
