@@ -191,7 +191,7 @@ public class CatcherService {
             ResultScanner scanner = table.getScanner(scan);
             logger.info("start_______________________________");
             scanner.forEach(r->{
-                logger.info(Bytes.toString(r.getRow()),Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq"))));
+                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq"))));
             });
             return null;
         });
