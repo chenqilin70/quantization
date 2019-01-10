@@ -191,8 +191,9 @@ public class CatcherService {
         Scan scan = new Scan().setFilter(filterList);
         hBaseDao.table("fund",table->{
             ResultScanner scanner = table.getScanner(scan);
-            logger.info("start_______________________________");
+
             scanner.forEach(r->{
+                logger.info("start_______________________________");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(r.getRow());
                 Filter filtera = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
