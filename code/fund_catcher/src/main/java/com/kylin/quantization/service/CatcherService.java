@@ -197,11 +197,11 @@ public class CatcherService {
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(r.getRow());
                 Filter filtera = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
-                Filter filterb = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
-                Filter filterc = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterb, filterc);
-                FilterList allFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, qualifierFilter, filtera);
-                Scan scan2 = new Scan().setFilter(allFilter);
+//                Filter filterb = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+//                Filter filterc = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
+//                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterb, filterc);
+//                FilterList allFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, qualifierFilter, filtera);
+                Scan scan2 = new Scan().setFilter(filtera);
                 hBaseDao.table("netval", t -> {
                     ResultScanner scanner2 = t.getScanner(scan2);
                     scanner2.forEach(re -> {
