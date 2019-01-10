@@ -182,7 +182,18 @@ public class CatcherService {
         return null;
     }
     public Object test(){
-        System.out.println(getFundList().size());
+        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
+        Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
+        Filter filter3=new PageFilter(5);
+        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2,filter3);
+        Scan scan = new Scan().setFilter(filterList);
+        hBaseDao.table("fund",table->{
+            ResultScanner scanner = table.getScanner(scan);
+            scanner.forEach(r->{
+                logger.info(Bytes.toString(r.getRow()));
+            });
+            return null;
+        });
         return null;
     }
 

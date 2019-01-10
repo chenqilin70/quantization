@@ -95,14 +95,15 @@ public class FXSort extends BaseSparkMain{
             }
         });
 
-
-        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
+        JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
+        List<Tuple2<String, BigDecimal>> collect = sumRdd.collect();
+        logger.info("size:"+collect.size());
         collect.forEach(t->{
             logger.info("_1:"+t._1+",_2:"+t._2);
         });
 
 
-        /*JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
+        /*
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));
         JavaPairRDD<String, BigDecimal> avgRdd=sumRdd.leftOuterJoin(countRdd).mapToPair(tuple->new Tuple2<>(tuple._1,tuple._2._1.divide(tuple._2._2.get())));
         JavaPairRDD<String, BigDecimal> eRdd = codeValRdd.leftOuterJoin(avgRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.subtract(tuple._2._2.get()).pow(2)));
@@ -127,7 +128,7 @@ public class FXSort extends BaseSparkMain{
 //        Filter filter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("FSRQ"));
         Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
         Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
-        Filter filter3=new PageFilter(10);
+        Filter filter3=new PageFilter(5);
         FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2,filter3);
         Scan scan = new Scan().setFilter(filterList);
         try {
