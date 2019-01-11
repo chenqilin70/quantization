@@ -211,12 +211,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     }
     @Override
     public void scanForEach(String tableName,Scan scan,HBaseExecutors.ScanForEachExecutor executor){
-        logger.info("scanForEach running");
         scan(tableName,scan,scanner->{
+            putData("testtable","1232","baseinfo","161604"+new Random().nextInt(1000),"val:scan"+new Random().nextInt(1000));
             while(true){
                 Result next = scanner.next();
                 if(next==null){
-                    logger.info("foreach break");
+                    putData("testtable","1232","baseinfo","161604"+new Random().nextInt(1000),"val:break"+new Random().nextInt(1000));
                     break;
                 }
                 executor.doEach(next);

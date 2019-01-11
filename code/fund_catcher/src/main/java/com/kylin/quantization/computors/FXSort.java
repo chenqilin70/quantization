@@ -88,7 +88,7 @@ public class FXSort extends BaseSparkMain{
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
 
                 hBaseDao.scanForEach("netval", scan, r -> {
-                    hBaseDao.putData("testtable","1232","baseinfo",code+new Random().nextInt(1000),"val"+new Random().nextInt(1000));
+
                     byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
                     if (value != null && value.length != 0) {
                         Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
