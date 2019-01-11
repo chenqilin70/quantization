@@ -185,7 +185,7 @@ public class CatcherService {
     }
     public Object test(){
         hBaseDao.admin(admin -> {
-            admin.flush(TableName.valueOf("fund"));
+            admin.compact(TableName.valueOf("fund"));
             return null;
         });
         return null;
