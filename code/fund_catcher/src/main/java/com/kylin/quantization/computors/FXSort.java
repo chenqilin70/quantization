@@ -130,7 +130,7 @@ public class FXSort extends BaseSparkMain{
 //        Filter filter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("FSRQ"));
         Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
         Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
-        Filter filter3=new PageFilter(5);
+        Filter filter3=new PageFilter(1000);
         FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2,filter3);
         Scan scan = new Scan().setFilter(filterList);
         try {
