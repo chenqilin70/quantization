@@ -190,6 +190,39 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
         return result;
     }
 
+    @Override
+    public <T> T scan(String tableName, Scan scan, HBaseExecutors.ScanExecutor<T> executor) {
+        return table(tableName,table->{
+            ResultScanner scanner = null;
+            T result=null;
+            try {
+                scanner=table.getScanner(scan);
+                result=executor.doScan(scanner);
+            } catch (Throwable throwable) {
+                logger.error(ExceptionTool.toString(throwable));
+            }finally {
+                if(scanner!=null){
+                    scanner.close();
+                }
+            }
+            return result;
+        });
+    }
+    @Override
+    public void scanForEach(String tableName,Scan scan,HBaseExecutors.ScanForEachExecutor executor){
+        scan(tableName,scan,scanner->{
+            while(true){
+                Result next = scanner.next();
+                if(next==null){
+                    break;
+                }
+                executor.doEach(next);
+            }
+            return null;
+        });
+
+    }
+
     public boolean createTable(String tableName, String ... colums) {
         return admin(admin->{
             boolean flg=false;

@@ -5,6 +5,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
 
 import java.util.List;
 
@@ -22,6 +23,8 @@ public interface HBaseDao extends BaseDao{
     Connection getConn();
     <T> T admin(HBaseExecutors.AdminExecutor<T> executor);
     <T> T table(String tableName,HBaseExecutors.TableExecutor<T> executor);
+    <T> T scan(String tableName, Scan scan,HBaseExecutors.ScanExecutor<T> executor);
+    void scanForEach(String tableName,Scan scan,HBaseExecutors.ScanForEachExecutor executor);
     boolean existTable(String tableName);
     boolean putData(String tableName,String rowKey,String family,String qualifier,String value);
     boolean putData(String tableName,List<Put> puts);

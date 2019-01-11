@@ -1,9 +1,6 @@
 package com.kylin.quantization.dao.impl;
 
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.client.HTable;
-import org.apache.hadoop.hbase.client.Table;
+import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.client.coprocessor.AggregationClient;
 
 import java.io.IOException;
@@ -26,6 +23,12 @@ public interface  HBaseExecutors {
     }
     public static interface AggregateExecutor<T>{
         T doAgg(AggregationClient aggClient) throws Throwable;
+    }
+    public static interface ScanExecutor<T>{
+        T doScan(ResultScanner scanner) throws Throwable;
+    }
+    public static interface ScanForEachExecutor{
+        void doEach(Result result) throws Throwable;
     }
 
 

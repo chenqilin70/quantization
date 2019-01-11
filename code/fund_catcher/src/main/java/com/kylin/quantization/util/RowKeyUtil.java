@@ -24,6 +24,11 @@ public class RowKeyUtil {
         return key;
     }
 
+    public static byte[] getNetValRowKeyArray(String fundcode, String time){
+        String key=getNetValRowKey("-","");
+        return Bytes.toBytes(key);
+    }
+
 
     public static String getBaseInfoRowKey(String fundcode){
         return fundcode.hashCode() + "_" + fundcode;

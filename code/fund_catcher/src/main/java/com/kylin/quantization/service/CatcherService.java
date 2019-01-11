@@ -151,39 +151,16 @@ public class CatcherService {
         });
     }
 
-    @Deprecated
-    public List<String> getNoNetValCodes() {
-        hBaseDao.table("fund",table->{
-            //for each fund code
-            Scan scan=new Scan();
-            Filter fundcodeFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("fundcode")));
-            Filter jjqcFilter=new QualifierFilter(CompareFilter.CompareOp.EQUAL,new BinaryComparator(Bytes.toBytes("jjqc")));
-            FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ONE,fundcodeFilter,jjqcFilter);
-            scan.setFilter(filterList);
-            ResultScanner scanner = table.getScanner(scan);
-            scanner.forEach(f->{
-                byte[] fundcode = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fundcode"));
-                byte[] jjqc = f.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjqc"));
-                //filter from netval .
-                Filter netvalFilter=new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+fundcode+"_"));
-                Scan netvalScan=new Scan().setFilter(netvalFilter);
-                hBaseDao.table("netval",nvtable->{
-                    ResultScanner nvScanner = nvtable.getScanner(netvalScan);
-                    Result next = nvScanner.next();
-                    if(next==null){
-                        //if not exist then save
-                        logger.warn("not exist fundcode:"+fundcode+",jjqc:"+jjqc);
-                    }
-                    nvScanner.close();
-                    return null;
-                });
 
-            });
-            return null;
-        });
-        return null;
-    }
     public Object test(){
+        Scan scan=new Scan()
+                .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-01"))
+                .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-31"));
+        hBaseDao.scanForEach("netval",scan,result -> {
+            String fsrq = ResultUtil.strVal(result, "baseinfo", "FSRQ");
+            String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
+            logger.info(fsrq+"==>"+ljjz);
+        });
 
         return null;
     }
