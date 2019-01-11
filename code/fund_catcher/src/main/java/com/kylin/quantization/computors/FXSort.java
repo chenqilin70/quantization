@@ -97,10 +97,10 @@ public class FXSort extends BaseSparkMain{
         });*/
 
 
-        List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+        /*List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                /*boolean flg = false;
+                *//*boolean flg = false;
                 byte[] value = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fxrq"));
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
                 if (value != null && value.length != 0) {
@@ -112,10 +112,11 @@ public class FXSort extends BaseSparkMain{
                         flg = true;
                     }
 
-                }*/
+                }*//*
                 return true;
             }
-        }).collect();
+        }).collect();*/
+        List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
             logger.info("_1:"+Bytes.toString(t._1.get())+",_2:"+t._2);
