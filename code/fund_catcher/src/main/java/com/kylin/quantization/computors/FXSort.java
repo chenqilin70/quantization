@@ -5,6 +5,7 @@ import com.google.common.base.Optional;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
+import com.kylin.quantization.dao.impl.HBaseExecutors;
 import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -51,7 +52,8 @@ public class FXSort extends BaseSparkMain{
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getFundListConf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaPairRDD<String, BigDecimal> codeValRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+
+        JavaPairRDD<ImmutableBytesWritable, Result> filteredRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 boolean flg = false;
@@ -69,7 +71,10 @@ public class FXSort extends BaseSparkMain{
                 }
                 return flg;
             }
-        }).flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
+        });
+
+
+        /*filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
@@ -81,24 +86,21 @@ public class FXSort extends BaseSparkMain{
                 Scan scan = new Scan().setFilter(qualifierFilter)
                         .setStartRow(RowKeyUtil.getNetValRowKeyArray(code,"1970-01-01"))
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code,sf.format(new Date())));
-                hBaseDao.table("netval", table -> {
-                    ResultScanner scanner = table.getScanner(scan);
-                    scanner.forEach(r -> {
-                        byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
-                        if (value != null && value.length != 0) {
-                            Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
-                            result.add(t);
-                        }
-                    });
-                    return null;
+                
+                hBaseDao.scanForEach("netval",scan,  r->{
+                    byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
+                    if (value != null && value.length != 0) {
+                        Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
+                        result.add(t);
+                    }
                 });
                 return result;
             }
-        });
+        });*/
 
 
 
-       List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
+       List<Tuple2<ImmutableBytesWritable, Result>> collect = filteredRdd.collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
             logger.info("_1:"+t._1+",_2:"+t._2);
