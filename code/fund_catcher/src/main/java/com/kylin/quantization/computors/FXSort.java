@@ -80,10 +80,10 @@ public class FXSort extends BaseSparkMain{
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
-                Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+                /*Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
                 Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter2, filter3);
-                Scan scan = new Scan().setFilter(qualifierFilter)
+                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter2, filter3);*/
+                Scan scan = new Scan()/*.setFilter(qualifierFilter)*/
                         .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
 
