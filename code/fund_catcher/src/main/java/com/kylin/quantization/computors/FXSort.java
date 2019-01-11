@@ -97,7 +97,7 @@ public class FXSort extends BaseSparkMain{
         });*/
 
 
-        List<Tuple2<String, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+        List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 boolean flg = false;
@@ -115,16 +115,10 @@ public class FXSort extends BaseSparkMain{
                 }
                 return flg;
             }
-        }).mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable,Result>, String, Result>() {
-
-            @Override
-            public Tuple2<String, Result> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                return new Tuple2<>(Bytes.toString(tuple._1.get()),tuple._2);
-            }
         }).collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
-            logger.info("_1:"+t._1+",_2:"+t._2);
+            logger.info("_1:"+Bytes.toString(t._1.get())+",_2:"+t._2);
         });
 
 
