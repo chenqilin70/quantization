@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
+import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -183,43 +184,8 @@ public class CatcherService {
         return null;
     }
     public Object test(){
-        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
-        Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
-        Filter filter3=new PageFilter(10);
-        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2,filter3);
-        Scan scan = new Scan().setFilter(filterList);
-        hBaseDao.table("fund",table->{
-            ResultScanner scanner = table.getScanner(scan);
-
-            scanner.forEach(r->{
-
-                List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
-                String code = RowKeyUtil.getCodeFromRowkey(r.getRow());
-                logger.info("start_______________________________");
-                Filter filtera = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
-//                Filter filterb = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
-//                Filter filterc = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-//                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filterb, filterc);
-//                FilterList allFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, qualifierFilter, filtera);
-                Scan scan2 = new Scan().setFilter(filtera);
-                hBaseDao.table("netval", t -> {
-                    ResultScanner scanner2 = t.getScanner(scan2);
-                    scanner2.forEach(re -> {
-                        byte[] value = re.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
-                        if (value != null && value.length != 0) {
-                            Tuple2<String, BigDecimal> tt = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
-                            result.add(tt);
-                        }
-                    });
-                    return null;
-                });
-
-                result.forEach(v->{
-                    logger.info(v._1+"->"+v._2.toString());
-                });
-
-//                logger.info(Bytes.toString(r.getRow())+",fxrq:"+Bytes.toString(r.getValue(Bytes.toBytes("baseinfo"),Bytes.toBytes("fxrq")))+",flg:"+flg);
-            });
+        hBaseDao.admin(admin -> {
+            admin.flush(TableName.valueOf("fund"));
             return null;
         });
         return null;
