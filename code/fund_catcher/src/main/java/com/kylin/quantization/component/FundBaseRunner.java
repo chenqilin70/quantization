@@ -34,6 +34,7 @@ public class FundBaseRunner extends CatcherRunner {
         //baseData   fundlist-update,notinfundlist-noOpt
         FundBaseTask baseInfotask=new FundBaseTask(fundList,800,service);
         ForkJoinExecutor.exec(baseInfotask,20);
+        service.flushAndCompact("fund");
     }
 
 }

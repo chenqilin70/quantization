@@ -184,10 +184,7 @@ public class CatcherService {
         return null;
     }
     public Object test(){
-        hBaseDao.admin(admin -> {
-            admin.compact(TableName.valueOf("fund"));
-            return null;
-        });
+
         return null;
     }
 
@@ -206,5 +203,13 @@ public class CatcherService {
             logger.error("获取netval后解析json报错：fund"+JSON.toJSONString(fund)+",json:"+netValStr,e);
         }
         return json;
+    }
+
+    public void flushAndCompact(String tableName) {
+        hBaseDao.admin(admin -> {
+            admin.flush(TableName.valueOf(tableName));
+            admin.majorCompact(TableName.valueOf(tableName));
+            return null;
+        });
     }
 }
