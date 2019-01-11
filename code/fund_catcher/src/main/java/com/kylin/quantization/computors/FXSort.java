@@ -77,6 +77,7 @@ public class FXSort extends BaseSparkMain{
         JavaPairRDD<String, BigDecimal> netvalRdd = filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+                hBaseDao.putData("testtable","161604"+new Random().nextInt(1000),"baseinfo","abc","val:netvalRdd"+new Random().nextInt(1000));
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
@@ -86,7 +87,7 @@ public class FXSort extends BaseSparkMain{
                 Scan scan = new Scan().setFilter(qualifierFilter)
                         .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
-                hBaseDao.putData("testtable","1232","baseinfo","161604"+new Random().nextInt(1000),"val:netvalRdd"+new Random().nextInt(1000));
+
                 hBaseDao.scanForEach("netval", scan, r -> {
 
                     byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
