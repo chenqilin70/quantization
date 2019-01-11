@@ -115,6 +115,11 @@ public class FXSort extends BaseSparkMain{
                 }
                 return flg;
             }
+        }).mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable,Result>, ImmutableBytesWritable, Result>() {
+            @Override
+            public Tuple2<ImmutableBytesWritable, Result> call(Tuple2<ImmutableBytesWritable, Result> immutableBytesWritableResultTuple2) throws Exception {
+                return immutableBytesWritableResultTuple2;
+            }
         }).collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
