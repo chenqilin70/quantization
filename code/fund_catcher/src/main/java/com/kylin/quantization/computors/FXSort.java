@@ -92,6 +92,7 @@ public class FXSort extends BaseSparkMain{
                     byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
                     if (value != null && value.length != 0) {
                         Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
+                        hBaseDao.putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:add"+new Random().nextInt(1000));
                         result.add(t);
 
                     }
