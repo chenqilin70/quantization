@@ -51,7 +51,7 @@ public class FXSort extends BaseSparkMain{
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getFundListConf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        /*JavaPairRDD<String, BigDecimal> codeValRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+        JavaPairRDD<String, BigDecimal> codeValRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 boolean flg = false;
@@ -74,7 +74,7 @@ public class FXSort extends BaseSparkMain{
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
-                String code = RowKeyUtil.getCodeFromRowkey(tuple._1);
+                String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
                 Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
                 Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
                 FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
@@ -94,32 +94,14 @@ public class FXSort extends BaseSparkMain{
                 });
                 return result;
             }
-        });*/
+        });
 
 
-        /*List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
-            @Override
-            public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                *//*boolean flg = false;
-                byte[] value = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fxrq"));
-                SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
-                if (value != null && value.length != 0) {
-                    String fxrq = Bytes.toString(value);
-                    Date fxrqDate = sf.parse(fxrq);
-                    Calendar ago = Calendar.getInstance();
-                    ago.add(Calendar.YEAR, -1);
-                    if (ago.getTime().getTime() >= fxrqDate.getTime()) {
-                        flg = true;
-                    }
 
-                }*//*
-                return true;
-            }
-        }).collect();*/
-        List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.collect();
+       List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
-            logger.info("_1:"+Bytes.toString(t._1.get())+",_2:"+t._2);
+            logger.info("_1:"+t._1+",_2:"+t._2);
         });
 
 
@@ -145,13 +127,10 @@ public class FXSort extends BaseSparkMain{
         //需要读取的hbase表名
         String tableName = "fund";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-//        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
-//        Filter filter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("FSRQ"));
-//        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
-//        Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
-//        Filter filter3=new PageFilter(1000);
-//        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2);
-        Scan scan = new Scan()/*.setFilter(filter1)*/;
+        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
+        Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
+        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2);
+        Scan scan = new Scan().setFilter(filterList);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {

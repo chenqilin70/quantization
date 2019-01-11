@@ -34,9 +34,7 @@ public class RowKeyUtil {
         return fundcode.hashCode() + "_" + fundcode;
     }
 
-    public static String getCodeFromRowkey(ImmutableBytesWritable immutableBytesWritable){
-        return getCodeFromRowkey(immutableBytesWritable.get());
-    }
+
     public static String getCodeFromRowkey(byte[] bytes){
         String code=Bytes.toString(bytes);
         code=code.substring(0,code.indexOf("_"));
