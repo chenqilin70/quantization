@@ -155,7 +155,7 @@ public class CatcherService {
     public Object test(){
         Scan scan=new Scan()
                 .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-03"))
-                .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-28"));
+               /* .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-28"))*/;
         hBaseDao.scanForEach("netval",scan,result -> {
             String fsrq = ResultUtil.strVal(result, "baseinfo", "FSRQ");
             String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
