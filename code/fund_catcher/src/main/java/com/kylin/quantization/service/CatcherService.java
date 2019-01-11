@@ -121,8 +121,7 @@ public class CatcherService {
         }
         json.forEach(val -> {
             JSONObject valObj = (JSONObject) val;
-            String rowkey = fundcode + "_" + valObj.getString("FSRQ");
-            rowkey = rowkey.hashCode() + "_" + rowkey;
+            String rowkey = RowKeyUtil.getNetValRowKey(fundcode,valObj.getString("FSRQ"));
             final String finalrowkey = rowkey;
             List<Put> puts = valObj.keySet().stream().map(key -> {
                 Put put = new Put(Bytes.toBytes(finalrowkey));
@@ -193,9 +192,10 @@ public class CatcherService {
             ResultScanner scanner = table.getScanner(scan);
 
             scanner.forEach(r->{
-                logger.info("start_______________________________");
+
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(r.getRow());
+                logger.info("start_______________________________");
                 Filter filtera = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
 //                Filter filterb = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
 //                Filter filterc = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));

@@ -13,9 +13,14 @@ import org.apache.hadoop.hbase.util.Bytes;
  * 作者姓名 修改时间    版本号 描述
  */
 public class RowKeyUtil {
+    /**
+     *
+     * @param fundcode   161604
+     * @param time      2018-12-12
+     * @return
+     */
     public static String getNetValRowKey(String fundcode,String time){
-        String key=fundcode+"_"+time;
-        key=key.hashCode()+"_"+key;
+        String key=fundcode+"_"+time.replaceAll("-","");
         return key;
     }
 
@@ -29,9 +34,7 @@ public class RowKeyUtil {
     }
     public static String getCodeFromRowkey(byte[] bytes){
         String code=Bytes.toString(bytes);
-        code=code.substring(code.indexOf("_"));
-        code=code.substring(0,code.lastIndexOf("_"));
-        code=code.replaceAll("_","");
+        code=code.substring(0,code.indexOf("_"));
         return code;
     }
 }
