@@ -59,7 +59,7 @@ public class GetNewestNetValDate extends BaseSparkMain{
                 byte[] o = tuple._2().getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("FSRQ"));
                 if (o != null) {
                     String date = Bytes.toString(o);
-                    String code=RowKeyUtil.getCodeFromRowkey(tuple._1);
+                    String code=RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
                     result.add(new Tuple2<String, Date>(code, new SimpleDateFormat("yyyy-MM-dd").parse(date)));
                 }
                 return result;
