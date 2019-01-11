@@ -74,12 +74,10 @@ public class FXSort extends BaseSparkMain{
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._1);
-                Filter filter1 = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_" + code + "_"));
                 Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
                 Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
                 FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
-                FilterList allFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, qualifierFilter, filter1);
-                Scan scan = new Scan().setFilter(allFilter);
+                Scan scan = new Scan().setFilter(qualifierFilter).setStartRow(RowKeyUtil.getNetValRowKeyArray(code,"1970-01-01"));
                 hBaseDao.table("netval", table -> {
                     ResultScanner scanner = table.getScanner(scan);
                     scanner.forEach(r -> {
@@ -95,8 +93,8 @@ public class FXSort extends BaseSparkMain{
             }
         });
 
-        JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
-        List<Tuple2<String, BigDecimal>> collect = sumRdd.collect();
+
+        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
             logger.info("_1:"+t._1+",_2:"+t._2);
@@ -104,6 +102,7 @@ public class FXSort extends BaseSparkMain{
 
 
         /*
+        JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));
         JavaPairRDD<String, BigDecimal> avgRdd=sumRdd.leftOuterJoin(countRdd).mapToPair(tuple->new Tuple2<>(tuple._1,tuple._2._1.divide(tuple._2._2.get())));
         JavaPairRDD<String, BigDecimal> eRdd = codeValRdd.leftOuterJoin(avgRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.subtract(tuple._2._2.get()).pow(2)));
