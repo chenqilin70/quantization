@@ -153,13 +153,26 @@ public class CatcherService {
 
 
     public Object test(){
-        Scan scan=new Scan()
+        /*Scan scan=new Scan()
                 .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-01"))
                 .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-28"));
         hBaseDao.scanForEach("netval",scan,result -> {
             String fsrq = ResultUtil.strVal(result, "baseinfo", "FSRQ");
             String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
             logger.info(ResultUtil.row(result)+"=="+fsrq+"==>"+ljjz);
+        });*/
+        Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+        Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
+        FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
+        Scan scan = new Scan().setFilter(qualifierFilter)
+                .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604", "1970-01-01"))
+                .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604", "2018-12-12"));
+
+        hBaseDao.scanForEach("netval", scan, r -> {
+            byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
+            if (value != null && value.length != 0) {
+                logger.info(""+new BigDecimal(Bytes.toString(value)));
+            }
         });
 
         return null;
