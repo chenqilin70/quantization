@@ -72,12 +72,15 @@ public class FXSort extends BaseSparkMain{
         }).flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+                SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._1);
                 Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
                 Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
                 FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
-                Scan scan = new Scan().setFilter(qualifierFilter).setStartRow(RowKeyUtil.getNetValRowKeyArray(code,"1970-01-01"));
+                Scan scan = new Scan().setFilter(qualifierFilter)
+                        .setStartRow(RowKeyUtil.getNetValRowKeyArray(code,"1970-01-01"))
+                        .setStopRow(RowKeyUtil.getNetValRowKeyArray(code,sf.format(new Date())));
                 hBaseDao.table("netval", table -> {
                     ResultScanner scanner = table.getScanner(scan);
                     scanner.forEach(r -> {
