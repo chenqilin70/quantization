@@ -147,11 +147,11 @@ public class FXSort extends BaseSparkMain{
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
 //        Filter filter = new RowFilter(CompareFilter.CompareOp.EQUAL, new SubstringComparator("_"+code+"_"));
 //        Filter filter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("FSRQ"));
-        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
+//        Filter filter1 =new SingleColumnValueFilter(Bytes.toBytes("baseinfo"),Bytes.toBytes("jjlx"),CompareFilter.CompareOp.EQUAL,new RegexStringComparator("股票型"));
 //        Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
 //        Filter filter3=new PageFilter(1000);
 //        FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2);
-        Scan scan = new Scan().setFilter(filter1);
+        Scan scan = new Scan()/*.setFilter(filter1)*/;
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {
