@@ -80,23 +80,20 @@ public class FXSort extends BaseSparkMain{
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
-                /*Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+                Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
                 Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter2, filter3);*/
-                Scan scan = new Scan()/*.setFilter(qualifierFilter)*/
+                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
+                Scan scan = new Scan().setFilter(qualifierFilter)
                         .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
 
-                /*hBaseDao.scanForEach("netval", scan, r -> {
+                hBaseDao.scanForEach("netval", scan, r -> {
                     byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
                     if (value != null && value.length != 0) {
                         Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
                         result.add(t);
                     }
-                });*/
-
-                Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal("24163"));
-                result.add(t);
+                });
                 return result;
             }
         });
