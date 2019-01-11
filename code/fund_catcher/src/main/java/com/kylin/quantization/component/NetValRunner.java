@@ -27,5 +27,6 @@ public class NetValRunner extends CatcherRunner{
         //netVal fundlist-append,notinfundlist-noOpt
         NetValTask netValTask=new NetValTask(fundList,800,service);
         ForkJoinExecutor.exec(netValTask,20);
+        service.flushAndCompact("netval");
     }
 }
