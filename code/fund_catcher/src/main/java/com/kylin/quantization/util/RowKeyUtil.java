@@ -25,7 +25,7 @@ public class RowKeyUtil {
     }
 
     public static byte[] getNetValRowKeyArray(String fundcode, String time){
-        String key=getNetValRowKey("-","");
+        String key=getNetValRowKey(fundcode,time);
         return Bytes.toBytes(key);
     }
 
