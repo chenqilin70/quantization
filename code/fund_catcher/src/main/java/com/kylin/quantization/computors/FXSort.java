@@ -86,7 +86,7 @@ public class FXSort extends BaseSparkMain{
                 Scan scan = new Scan().setFilter(qualifierFilter)
                         .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
                         .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
-
+                hBaseDao.putData("testtable","1232","baseinfo","161604"+new Random().nextInt(1000),"val:netvalRdd"+new Random().nextInt(1000));
                 hBaseDao.scanForEach("netval", scan, r -> {
 
                     byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
