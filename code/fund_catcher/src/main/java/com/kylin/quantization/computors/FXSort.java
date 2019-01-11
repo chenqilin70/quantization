@@ -51,7 +51,7 @@ public class FXSort extends BaseSparkMain{
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getFundListConf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaPairRDD<String, BigDecimal> codeValRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+        /*JavaPairRDD<String, BigDecimal> codeValRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 boolean flg = false;
@@ -94,13 +94,31 @@ public class FXSort extends BaseSparkMain{
                 });
                 return result;
             }
-        });
+        });*/
 
 
-        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
+        List<Tuple2<ImmutableBytesWritable, Result>> collect = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+            @Override
+            public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
+                boolean flg = false;
+                byte[] value = tuple._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("fxrq"));
+                SimpleDateFormat sf = new SimpleDateFormat("yyyy年MM月dd日");
+                if (value != null && value.length != 0) {
+                    String fxrq = Bytes.toString(value);
+                    Date fxrqDate = sf.parse(fxrq);
+                    Calendar ago = Calendar.getInstance();
+                    ago.add(Calendar.YEAR, -1);
+                    if (ago.getTime().getTime() >= fxrqDate.getTime()) {
+                        flg = true;
+                    }
+
+                }
+                return flg;
+            }
+        }).collect();
         logger.info("size:"+collect.size());
         collect.forEach(t->{
-            logger.info("_1:"+t._1+",_2:"+t._2);
+            logger.info("_1:"+Bytes.toString(t._1.get())+",_2:"+t._2);
         });
 
 
