@@ -192,7 +192,6 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public <T> T scan(String tableName, Scan scan, HBaseExecutors.ScanExecutor<T> executor) {
-        putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:scan"+new Random().nextInt(1000));
         return table(tableName,table->{
             ResultScanner scanner = null;
             T result=null;
@@ -212,13 +211,14 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     @Override
     public void scanForEach(String tableName,Scan scan,HBaseExecutors.ScanForEachExecutor executor){
         scan(tableName,scan,scanner->{
-            putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:scanforeach"+new Random().nextInt(1000));
+
             while(true){
                 Result next = scanner.next();
                 if(next==null){
                     putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:break"+new Random().nextInt(1000));
                     break;
                 }
+                putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:doEach"+new Random().nextInt(1000));
                 executor.doEach(next);
             }
             return null;
