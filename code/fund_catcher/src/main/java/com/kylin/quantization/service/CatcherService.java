@@ -163,7 +163,7 @@ public class CatcherService {
         });*/
         Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
         Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-        FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
+        FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter2, filter3);
         Scan scan = new Scan().setFilter(qualifierFilter)
                 .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604", "1970-01-01"))
                 .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604", "2018-12-12"));
