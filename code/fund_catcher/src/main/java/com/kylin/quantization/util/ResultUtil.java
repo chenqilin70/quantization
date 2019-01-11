@@ -19,4 +19,7 @@ public class ResultUtil {
     public static String strVal(Result result,String family,String qualifier){
         return Bytes.toString(arrVal(result,family,qualifier));
     }
+    public static String row(Result result){
+        return Bytes.toString(result.getRow());
+    }
 }

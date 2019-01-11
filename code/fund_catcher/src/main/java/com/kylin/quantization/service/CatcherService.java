@@ -160,7 +160,7 @@ public class CatcherService {
         hBaseDao.scanForEach("netval",scan,result -> {
             String fsrq = ResultUtil.strVal(result, "baseinfo", "FSRQ");
             String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
-            logger.info(fsrq+"==>"+ljjz);
+            logger.info(ResultUtil.row(result)+"=="+fsrq+"==>"+ljjz);
         });
 
         return null;
