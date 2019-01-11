@@ -192,6 +192,7 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
 
     @Override
     public <T> T scan(String tableName, Scan scan, HBaseExecutors.ScanExecutor<T> executor) {
+        logger.info("scan running");
         return table(tableName,table->{
             ResultScanner scanner = null;
             T result=null;
@@ -210,10 +211,12 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
     }
     @Override
     public void scanForEach(String tableName,Scan scan,HBaseExecutors.ScanForEachExecutor executor){
+        logger.info("scanForEach running");
         scan(tableName,scan,scanner->{
             while(true){
                 Result next = scanner.next();
                 if(next==null){
+                    logger.info("foreach break");
                     break;
                 }
                 executor.doEach(next);
