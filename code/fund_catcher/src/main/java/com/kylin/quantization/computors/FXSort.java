@@ -77,7 +77,7 @@ public class FXSort extends BaseSparkMain{
         JavaPairRDD<String, BigDecimal> netvalRdd = filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                hBaseDao.putData("testtable","161604"+new Random().nextInt(1000),"baseinfo","abc","val:netvalRdd"+new Random().nextInt(1000));
+                hBaseDao.putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:netvalRdd"+new Random().nextInt(1000));
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
                 List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
                 String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
