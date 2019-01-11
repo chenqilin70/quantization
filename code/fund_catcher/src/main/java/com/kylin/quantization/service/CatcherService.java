@@ -163,7 +163,7 @@ public class CatcherService {
         });*/
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
-        String code = "161604";
+        String code = "001236";
         Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
         Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
         FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
