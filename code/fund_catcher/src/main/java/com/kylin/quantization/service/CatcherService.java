@@ -35,6 +35,8 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -174,12 +176,11 @@ public class CatcherService {
                    break;
                }
                String ljjz = ResultUtil.strVal(next, "baseinfo", "LJJZ");
-              try{
-                  new BigDecimal(ljjz);
-              }catch (Exception e){
-                  logger.info("BigDecimal 报错："+e.getMessage()+",ljjz:"+ljjz+",row:"+Bytes.toString(next.getRow()));
-
-              }
+               Pattern pattern=Pattern.compile("\\d+\\.\\d+");
+               Matcher matcher=pattern.matcher(ljjz);
+               if(StringUtils.isNotBlank(ljjz) && !matcher.matches() ){
+                   logger.info("不是数字也不是空："+ljjz);
+               }
            }
            return null;
        });

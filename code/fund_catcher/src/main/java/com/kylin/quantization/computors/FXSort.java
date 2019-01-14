@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 获取fund的最新netval日期
@@ -76,7 +78,19 @@ public class FXSort extends BaseSparkMain{
         }).mapToPair(t -> new Tuple2<String, Result>(ResultUtil.strVal(t._2, "baseinfo", "fundcode"), t._2));
 
         JavaPairRDD<ImmutableBytesWritable, Result> netvalRdd = context.newAPIHadoopRDD(getNetValConf(), TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaPairRDD<String, BigDecimal> codeNetvalRdd =  netvalRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
+        JavaPairRDD<String, BigDecimal> codeNetvalRdd =  netvalRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+            @Override
+            public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple2) throws Exception {
+                String ljjz=Bytes.toString(tuple2._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ")));
+                Matcher matcher=null;
+                if(StringUtils.isNotBlank(ljjz)){
+                    Pattern pattern=Pattern.compile("\\d+\\.\\d+");
+                    matcher=pattern.matcher(ljjz);
+                }
+
+                return StringUtils.isNotBlank(ljjz) &&  matcher.matches();
+            }
+        }).mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Tuple2<String, BigDecimal> call(Tuple2<ImmutableBytesWritable, Result> t) throws Exception {
                 String code=RowKeyUtil.getCodeFromRowkey(t._2.getRow());
