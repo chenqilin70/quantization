@@ -6,6 +6,7 @@ import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.dao.impl.HBaseExecutors;
+import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -53,7 +54,7 @@ public class FXSort extends BaseSparkMain{
         Configuration hconf = getFundListConf();
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
 
-        JavaPairRDD<ImmutableBytesWritable, Result> filteredRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
+        JavaPairRDD<String, Result> fundRdd = hbaseRdd.filter(new Function<Tuple2<ImmutableBytesWritable, Result>, Boolean>() {
             @Override
             public Boolean call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 boolean flg = false;
@@ -71,10 +72,13 @@ public class FXSort extends BaseSparkMain{
                 }
                 return flg;
             }
-        });
+        }).mapToPair(t -> new Tuple2<String, Result>(ResultUtil.strVal(t._2, "baseinfo", "fundcode"), t._2));
 
+        JavaPairRDD<ImmutableBytesWritable, Result> netvalRdd = context.newAPIHadoopRDD(getNetValConf(), TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+        JavaPairRDD<String, BigDecimal> codeNetvalRdd =  netvalRdd.mapToPair(t -> new Tuple2<String, BigDecimal>(RowKeyUtil.getCodeFromRowkey(t._2.getRow()), new BigDecimal(Bytes.toString(t._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"))))));
 
-        JavaPairRDD<String, BigDecimal> netvalRdd = filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
+        JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.leftOuterJoin(codeNetvalRdd).mapToPair(t -> new Tuple2<>(t._1, t._2._2.get()));
+        /*JavaPairRDD<String, BigDecimal> netvalRdd = filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
             @Override
             public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
                 SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
@@ -99,17 +103,8 @@ public class FXSort extends BaseSparkMain{
                 });
                 return result;
             }
-        });
+        });*/
 
-
-        List<Tuple2<String, BigDecimal>> collect = netvalRdd.collect();
-        logger.info("size:"+collect.size());
-        collect.forEach(t->{
-            logger.info("_1:"+t._1+",_2:"+t._2);
-        });
-
-
-        /*
         JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));
         JavaPairRDD<String, BigDecimal> avgRdd=sumRdd.leftOuterJoin(countRdd).mapToPair(tuple->new Tuple2<>(tuple._1,tuple._2._1.divide(tuple._2._2.get())));
@@ -119,7 +114,7 @@ public class FXSort extends BaseSparkMain{
         logger.info("collect size:"+collect.size());
         collect.forEach(t->{
             logger.info("code:"+t._1+",fx:"+t._2);
-        });*/
+        });
         logger.info("spark OK!");
         context.stop();
     }
@@ -135,6 +130,22 @@ public class FXSort extends BaseSparkMain{
         Filter filter2 =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fxrq"));
         FilterList filterList=new FilterList(FilterList.Operator.MUST_PASS_ALL,filter1,filter2);
         Scan scan = new Scan().setFilter(filterList);
+        try {
+            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hconf;
+    }
+    private static   Configuration getNetValConf()  {
+        Configuration hconf= HBaseConfiguration.create();
+        //需要读取的hbase表名
+        String tableName = "netval";
+        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
+        Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
+        Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
+        FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
+        Scan scan = new Scan().setFilter(qualifierFilter);
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
         } catch (IOException e) {
