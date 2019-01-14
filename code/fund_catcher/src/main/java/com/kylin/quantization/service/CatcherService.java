@@ -177,7 +177,7 @@ public class CatcherService {
               try{
                   new BigDecimal(ljjz);
               }catch (Exception e){
-                  logger.info("BigDecimal 报错："+e.getMessage()+",ljjz"+ljjz);
+                  logger.info("BigDecimal 报错："+e.getMessage()+",ljjz:"+ljjz+",row:"+Bytes.toString(next.getRow()));
 
               }
            }
