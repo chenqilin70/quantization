@@ -6,6 +6,7 @@ import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.dao.impl.HBaseExecutors;
+import com.kylin.quantization.util.RegexEnum;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -84,7 +85,7 @@ public class FXSort extends BaseSparkMain{
                 String ljjz=Bytes.toString(tuple2._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ")));
                 Matcher matcher=null;
                 if(StringUtils.isNotBlank(ljjz)){
-                    Pattern pattern=Pattern.compile("\\d+\\.\\d+");
+                    Pattern pattern=Pattern.compile(RegexEnum.NET_VAL_REG.val());
                     matcher=pattern.matcher(ljjz);
                 }
 
@@ -95,12 +96,8 @@ public class FXSort extends BaseSparkMain{
             public Tuple2<String, BigDecimal> call(Tuple2<ImmutableBytesWritable, Result> t) throws Exception {
                 String code=RowKeyUtil.getCodeFromRowkey(t._2.getRow());
                 String ljjz=Bytes.toString(t._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ")));
-                BigDecimal netval=null;
-                if(StringUtils.isNotBlank(ljjz)){
-                    netval=new BigDecimal(ljjz);
-                    return new Tuple2<String, BigDecimal>(code,netval);
-                }
-                return null;
+                BigDecimal netval=new BigDecimal(ljjz);
+                return new Tuple2<String, BigDecimal>(code,netval);
             }
         });
 
