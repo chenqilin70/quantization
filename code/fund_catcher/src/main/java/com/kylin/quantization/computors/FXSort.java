@@ -101,9 +101,8 @@ public class FXSort extends BaseSparkMain{
             }
         });
 
-//        JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.join(codeNetvalRdd).mapToPair(t -> new Tuple2<String, BigDecimal>(t._1, t._2._2));
+        JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.join(codeNetvalRdd).mapToPair(t -> new Tuple2<String, BigDecimal>(t._1, t._2._2));
 
-/*
 
         JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));
@@ -112,31 +111,10 @@ public class FXSort extends BaseSparkMain{
                 .mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.subtract(tuple._2._2).pow(2)))
                 .reduceByKey((v1,v2)->v1.add(v2));
         JavaPairRDD<String, BigDecimal> fxRdd = eRdd.leftOuterJoin(countRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.divide(tuple._2._2.orNull())));
-*/
 
 
-
-
-        ;
-//        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
-//        logger.info("codeValRdd collect size:"+collect.size());
-        /*JavaPairRDD<String, BigDecimal> filterRdd = codeNetvalRdd.filter(new Function<Tuple2<String, BigDecimal>, Boolean>() {
-            private long count = 0;
-
-            @Override
-            public Boolean call(Tuple2<String, BigDecimal> v1) throws Exception {
-                if (count < 100) {
-                    count++;
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });*/
-        List<Tuple2<String, Result>> collect = fundRdd.collect();
-
-
-        logger.info(" collect size:"+collect.size());
+        List<Tuple2<String, BigDecimal>> collect = fxRdd.collect();
+        logger.info("collect size:"+collect.size());
         collect.forEach(t->{
             logger.info("code:"+t._1+",fx:"+t._2);
         });
