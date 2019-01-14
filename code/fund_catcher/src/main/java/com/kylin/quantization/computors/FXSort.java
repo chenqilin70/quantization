@@ -118,8 +118,13 @@ public class FXSort extends BaseSparkMain{
         ;
 //        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
 //        logger.info("codeValRdd collect size:"+collect.size());
-        logger.info("fundRdd collect size:"+fundRdd.collect().size());
-        logger.info("codeNetvalRdd collect size:"+codeNetvalRdd.collect().size());
+
+        Long fundRddCount = fundRdd.map(t -> 1l).reduce((i, j) -> i + j);
+        Long codeNetvalCount = codeNetvalRdd.map(t -> 1l).reduce((i, j) -> i + j);
+
+
+        logger.info("fundRdd collect size:"+fundRddCount);
+        logger.info("codeNetvalRdd collect size:"+codeNetvalCount);
         /*collect.forEach(t->{
             logger.info("code:"+t._1+",fx:"+t._2);
         });*/
