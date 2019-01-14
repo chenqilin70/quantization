@@ -120,19 +120,20 @@ public class FXSort extends BaseSparkMain{
         ;
 //        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
 //        logger.info("codeValRdd collect size:"+collect.size());
-        List<String> list=new ArrayList<>();
-        codeNetvalRdd.filter(new Function<Tuple2<String, BigDecimal>, Boolean>() {
+        JavaPairRDD<String, BigDecimal> filterRdd = codeNetvalRdd.filter(new Function<Tuple2<String, BigDecimal>, Boolean>() {
+            private long count = 0;
+
             @Override
             public Boolean call(Tuple2<String, BigDecimal> v1) throws Exception {
-                if(list.size()<100){
-                    list.add("1");
+                if (count < 100) {
+                    count++;
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
         });
-        List<Tuple2<String, BigDecimal>> collect = codeNetvalRdd.collect();
+        List<Tuple2<String, BigDecimal>> collect = filterRdd.collect();
 
 
         logger.info(" collect size:"+collect.size());
