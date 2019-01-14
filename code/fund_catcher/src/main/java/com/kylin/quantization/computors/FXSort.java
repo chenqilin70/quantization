@@ -106,11 +106,12 @@ public class FXSort extends BaseSparkMain{
 
         JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));
-        JavaPairRDD<String, BigDecimal> avgRdd=sumRdd.join(countRdd).mapToPair(tuple->new Tuple2<>(tuple._1,tuple._2._1.divide(tuple._2._2)));
+        JavaPairRDD<String, BigDecimal> avgRdd=sumRdd.join(countRdd).mapToPair(tuple->new Tuple2<>(tuple._1,tuple._2._1.divide(tuple._2._2,4,BigDecimal.ROUND_HALF_UP)));
         JavaPairRDD<String, BigDecimal> eRdd = codeValRdd.join(avgRdd)
                 .mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.subtract(tuple._2._2).pow(2)))
                 .reduceByKey((v1,v2)->v1.add(v2));
-        JavaPairRDD<String, BigDecimal> fxRdd = eRdd.leftOuterJoin(countRdd).mapToPair(tuple -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.divide(tuple._2._2.orNull())));
+        JavaPairRDD<String, BigDecimal> fxRdd = eRdd.leftOuterJoin(countRdd).mapToPair(tuple
+                -> new Tuple2<String, BigDecimal>(tuple._1, tuple._2._1.divide(tuple._2._2.orNull(),4,BigDecimal.ROUND_HALF_UP)));
 
 
         List<Tuple2<String, BigDecimal>> collect = fxRdd.collect();
