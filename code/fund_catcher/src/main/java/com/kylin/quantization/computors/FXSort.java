@@ -36,8 +36,8 @@ import java.util.*;
  * 作者姓名 修改时间    版本号 描述
  */
 public class FXSort extends BaseSparkMain{
-    public static final String START_DATE="2017年01月01日";
-    public static final String END_DATE="2017年12月31日";
+    public static final String START_DATE="2016年01月01日";
+    public static final String END_DATE="2016年12月31日";
     public static final Integer LEAST_YEARS=3;
 
     public static Logger logger = Logger.getLogger(FXSort.class);
