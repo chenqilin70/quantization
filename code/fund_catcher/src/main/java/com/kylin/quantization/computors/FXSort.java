@@ -8,6 +8,7 @@ import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.dao.impl.HBaseExecutors;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -75,35 +76,23 @@ public class FXSort extends BaseSparkMain{
         }).mapToPair(t -> new Tuple2<String, Result>(ResultUtil.strVal(t._2, "baseinfo", "fundcode"), t._2));
 
         JavaPairRDD<ImmutableBytesWritable, Result> netvalRdd = context.newAPIHadoopRDD(getNetValConf(), TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaPairRDD<String, BigDecimal> codeNetvalRdd =  netvalRdd.mapToPair(t -> new Tuple2<String, BigDecimal>(RowKeyUtil.getCodeFromRowkey(t._2.getRow()), new BigDecimal(Bytes.toString(t._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"))))));
+        JavaPairRDD<String, BigDecimal> codeNetvalRdd =  netvalRdd.mapToPair(new PairFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
+            @Override
+            public Tuple2<String, BigDecimal> call(Tuple2<ImmutableBytesWritable, Result> t) throws Exception {
+                String code=RowKeyUtil.getCodeFromRowkey(t._2.getRow());
+                String ljjz=Bytes.toString(t._2.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ")));
+                BigDecimal netval=null;
+                if(StringUtils.isNotBlank(ljjz)){
+                    netval=new BigDecimal(ljjz);
+                }
+
+                new Tuple2<String, BigDecimal>(code,netval );
+                return null;
+            }
+        });
 
         JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.leftOuterJoin(codeNetvalRdd).mapToPair(t -> new Tuple2<>(t._1, t._2._2.get()));
-        /*JavaPairRDD<String, BigDecimal> netvalRdd = filteredRdd.flatMapToPair(new PairFlatMapFunction<Tuple2<ImmutableBytesWritable, Result>, String, BigDecimal>() {
-            @Override
-            public Iterable<Tuple2<String, BigDecimal>> call(Tuple2<ImmutableBytesWritable, Result> tuple) throws Exception {
-                SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-                List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
-                String code = RowKeyUtil.getCodeFromRowkey(tuple._2.getRow());
-                Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
-                Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-                FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
-                Scan scan = new Scan().setFilter(qualifierFilter)
-                        .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
-                        .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
 
-                hBaseDao.scanForEach("netval", scan, r -> {
-
-                    byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
-                    if (value != null && value.length != 0) {
-                        Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
-                        hBaseDao.putData("testtable","161604"+new Random().nextInt(1000),"f1","abc","val:add"+new Random().nextInt(1000));
-                        result.add(t);
-
-                    }
-                });
-                return result;
-            }
-        });*/
 
         JavaPairRDD<String, BigDecimal> sumRdd = codeValRdd.reduceByKey((v1, v2) -> v1.add(v2));
         JavaPairRDD<String, BigDecimal> countRdd=codeValRdd.mapToPair(t->new Tuple2<>(t._1,new BigDecimal("1"))).reduceByKey((i,j)->i.add(j));

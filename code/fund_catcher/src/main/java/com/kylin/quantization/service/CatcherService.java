@@ -161,28 +161,29 @@ public class CatcherService {
             String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
             logger.info(ResultUtil.row(result)+"=="+fsrq+"==>"+ljjz);
         });*/
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        List<Tuple2<String, BigDecimal>> result = new LinkedList<>();
-        String code = "001236";
+       Scan scan=new Scan();
         Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
         Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
         FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
-        Scan scan = new Scan().setFilter(qualifierFilter)
-                .setStartRow(RowKeyUtil.getNetValRowKeyArray(code, "1970-01-01"))
-                .setStopRow(RowKeyUtil.getNetValRowKeyArray(code, sf.format(new Date())));
+        scan.setFilter(qualifierFilter);
+       hBaseDao.table("netval",table->{
+           ResultScanner scanner = table.getScanner(scan);
+           while(true){
+               Result next = scanner.next();
+               if(next==null){
+                   break;
+               }
+               String ljjz = ResultUtil.strVal(next, "baseinfo", "LJJZ");
+              try{
+                  new BigDecimal(ljjz);
+              }catch (Exception e){
+                  logger.info("BigDecimal 报错："+e.getMessage()+",ljjz"+ljjz);
 
-        hBaseDao.scanForEach("netval", scan, r -> {
+              }
+           }
+           return null;
+       });
 
-            byte[] value = r.getValue(Bytes.toBytes("baseinfo"), Bytes.toBytes("LJJZ"));
-            if (value != null && value.length != 0) {
-                Tuple2<String, BigDecimal> t = new Tuple2<>(code, new BigDecimal(Bytes.toString(value)));
-                result.add(t);
-
-            }
-        });
-
-
-        logger.info("============================="+result.size());
 
         return null;
     }
