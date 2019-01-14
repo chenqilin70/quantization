@@ -84,9 +84,8 @@ public class FXSort extends BaseSparkMain{
                 BigDecimal netval=null;
                 if(StringUtils.isNotBlank(ljjz)){
                     netval=new BigDecimal(ljjz);
+                    return new Tuple2<String, BigDecimal>(code,netval);
                 }
-
-                new Tuple2<String, BigDecimal>(code,netval );
                 return null;
             }
         });
