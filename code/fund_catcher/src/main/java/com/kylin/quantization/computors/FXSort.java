@@ -115,9 +115,11 @@ public class FXSort extends BaseSparkMain{
         */
 
 
-
+        ;
         List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
-        logger.info("collect size:"+collect.size());
+        logger.info("codeValRdd collect size:"+collect.size());
+        logger.info("fundRdd collect size:"+fundRdd.collect().size());
+        logger.info("codeNetvalRdd collect size:"+codeNetvalRdd.collect().size());
         collect.forEach(t->{
             logger.info("code:"+t._1+",fx:"+t._2);
         });
