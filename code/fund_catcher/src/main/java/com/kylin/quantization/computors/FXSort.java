@@ -101,7 +101,7 @@ public class FXSort extends BaseSparkMain{
             }
         });
 
-        JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.join(codeNetvalRdd).mapToPair(t -> new Tuple2<String, BigDecimal>(t._1, t._2._2));
+//        JavaPairRDD<String, BigDecimal> codeValRdd = fundRdd.join(codeNetvalRdd).mapToPair(t -> new Tuple2<String, BigDecimal>(t._1, t._2._2));
 
 /*
 
@@ -120,14 +120,25 @@ public class FXSort extends BaseSparkMain{
         ;
 //        List<Tuple2<String, BigDecimal>> collect = codeValRdd.collect();
 //        logger.info("codeValRdd collect size:"+collect.size());
+        List<String> list=new ArrayList<>();
+        codeNetvalRdd.filter(new Function<Tuple2<String, BigDecimal>, Boolean>() {
+            @Override
+            public Boolean call(Tuple2<String, BigDecimal> v1) throws Exception {
+                if(list.size()<100){
+                    list.add("1");
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
+        List<Tuple2<String, BigDecimal>> collect = codeNetvalRdd.collect();
 
-        Long count = codeValRdd.map(t -> 1l).reduce((i, j) -> i + j);
 
-
-        logger.info("codeValRdd collect size:"+count);
-        /*collect.forEach(t->{
+        logger.info(" collect size:"+collect.size());
+        collect.forEach(t->{
             logger.info("code:"+t._1+",fx:"+t._2);
-        });*/
+        });
         logger.info("spark OK!");
         context.stop();
     }
