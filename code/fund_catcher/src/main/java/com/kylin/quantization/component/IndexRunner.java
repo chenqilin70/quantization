@@ -35,7 +35,6 @@ public class IndexRunner  extends CatcherRunner {
                 @Override
                 public Object call() throws Exception {
                     service.getIndexVal(i);
-//                    System.out.println(i);
                     return null;
                 }
             });
@@ -50,6 +49,7 @@ public class IndexRunner  extends CatcherRunner {
                 e.printStackTrace();
             }
         });
+        service.flushAndCompact("index");
         pool.shutdown();
 
     }
