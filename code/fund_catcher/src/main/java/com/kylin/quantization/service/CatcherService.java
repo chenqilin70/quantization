@@ -237,7 +237,7 @@ public class CatcherService {
             for(int j=0;j<columns.size();j++){
                 String qualifier = columns.getString(j);
                 String val = item.getString(j);
-                putList.add(PutUtil.getPut(rowKey,"baseinfo",qualifier,val));
+                putList.add(PutUtil.getPut(rowKey,"baseinfo",qualifier,val==null?"":val));
             }
             logger.info("index 入库中，rowkey："+rowKey);
             boolean isPut = hBaseDao.putData(tableName, putList);
