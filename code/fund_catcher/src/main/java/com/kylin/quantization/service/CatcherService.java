@@ -213,4 +213,23 @@ public class CatcherService {
             return null;
         });
     }
+
+    /**
+     * symbol:SH000001
+     * begin:1547529120479
+     * period:day
+     * type:before
+     * count:-142
+     * indicator:kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy
+     * @param indexCode
+     */
+    public void getIndexVal(String indexCode) {
+        String json = HttpUtil.doGet(conf.get("index_val"), ssMapUtil.create(
+                "symbol", indexCode, "begin", "1547529120479", "period", "day", "type", "before", "count", "-142", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy"));
+        JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
+        JSONArray columns = dataJson.getJSONArray("column");
+        JSONArray items = dataJson.getJSONArray("item");
+        columns.forEach(c->{System.out.print(c+",class:"+c.getClass());});
+
+    }
 }

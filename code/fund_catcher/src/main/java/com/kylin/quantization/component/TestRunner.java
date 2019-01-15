@@ -31,7 +31,7 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        service.test();
+//        service.test();
         /*List<Map<String,String>> fundList=service.getFundList();
         for(Map<String,String> m:fundList){
             String fundcode=m.get("fundcode");
