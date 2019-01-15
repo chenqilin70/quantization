@@ -152,8 +152,22 @@ public class CatcherService {
 
 
     public Object test(){
-        String date = getNewestDate("SH000001");
-        logger.info(date);
+        Scan scan=new Scan();
+        hBaseDao.table("fund",table->{
+            ResultScanner scanner = table.getScanner(scan);
+            while(true){
+                Result next = scanner.next();
+                if(next==null){
+                    break;
+                }
+                logger.info("delete one data");
+                table.delete(new Delete(next.getRow()).addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("zxrq")));
+            }
+            scanner.close();
+            return null;
+        });
+        flushAndCompact("fund");
+
         return null;
     }
 

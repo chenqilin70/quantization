@@ -3,6 +3,7 @@ package com.kylin.quantization;
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.util.HttpUtil;
 import com.kylin.quantization.util.MapUtil;
+import com.kylin.quantization.util.RowKeyUtil;
 import com.kylin.quantization.util.StringReplaceUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -20,6 +21,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * ClassName: TestCenter
@@ -35,7 +38,9 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-        System.out.println(new BigDecimal("3").pow(2));
+        String code="000001_20040212";
+        code=code.substring(0,code.indexOf("_"));
+        System.out.println(RowKeyUtil.getBaseInfoRowKey("000457"));
         /*System.out.println(Integer.MAX_VALUE);
         String url="http://api.fund.eastmoney.com/f10/lsjz?callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex=1&pageSize=10000000&startDate=&endDate=&_="+new Date().getTime();
         String netValStr = HttpUtil.doGetWithHead(StringReplaceUtil.replace(url,ssMapUtil.create("fundcode","161604")), null,"head/netval_head.properties");

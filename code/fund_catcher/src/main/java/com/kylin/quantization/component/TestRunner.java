@@ -31,12 +31,7 @@ public class TestRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        logger.info("================"+service.getZxrq("161604"));;
-        /*List<Map<String,String>> fundList=service.getFundList();
-        for(Map<String,String> m:fundList){
-            String fundcode=m.get("fundcode");
-            logger.info("=========="+service.getZxrq(fundcode));
-        }*/
+        service.test();
 
     }
 
