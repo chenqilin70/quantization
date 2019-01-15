@@ -128,52 +128,30 @@ public class CatcherService {
     }
 
     public String getZxrq(String fundcode) {
-        return hBaseDao.table("fund",table->{
-            String result="";
-            Get get = new Get(Bytes.toBytes(RowKeyUtil.getBaseInfoRowKey(fundcode)));
-            get= get.addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("zxrq"));
-            Result r = table.get(get);
-            Cell[] cells = r.rawCells();
-            if(cells!=null && cells.length!=0){
-                result = CellTools.val(cells[0]);
+
+
+        Date tomorrow=getTomorrow();
+        SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+        Scan scan= new Scan()
+                    .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01")))
+                    .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow))))
+                    .setReversed(true);
+        String result=hBaseDao.scan("netval",scan,scanner -> {
+            Result next = scanner.next();
+            String date="";
+            if(next!=null){
+                String row=Bytes.toString(next.getRow());
+                date=RowKeyUtil.getDateFormNetvalRowKey(row);
             }
-            return result;
+            return date;
         });
+        return result;
     }
 
 
     public Object test(){
-        /*Scan scan=new Scan()
-                .setStartRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-01"))
-                .setStopRow(RowKeyUtil.getNetValRowKeyArray("161604","2018-12-28"));
-        hBaseDao.scanForEach("netval",scan,result -> {
-            String fsrq = ResultUtil.strVal(result, "baseinfo", "FSRQ");
-            String ljjz = ResultUtil.strVal(result, "baseinfo", "LJJZ");
-            logger.info(ResultUtil.row(result)+"=="+fsrq+"==>"+ljjz);
-        });*/
-       Scan scan=new Scan();
-        Filter filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("LJJZ"));
-        Filter filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("FSRQ"));
-        FilterList qualifierFilter = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3);
-        scan.setFilter(qualifierFilter);
-       hBaseDao.table("netval",table->{
-           ResultScanner scanner = table.getScanner(scan);
-           while(true){
-               Result next = scanner.next();
-               if(next==null){
-                   break;
-               }
-               String ljjz = ResultUtil.strVal(next, "baseinfo", "LJJZ");
-               Pattern pattern=Pattern.compile("\\d+\\.\\d+");
-               Matcher matcher=pattern.matcher(ljjz);
-               if(StringUtils.isNotBlank(ljjz) && !matcher.matches() ){
-                   logger.info("不是数字也不是空："+ljjz);
-               }
-           }
-           return null;
-       });
-
-
+        String date = getNewestDate("SH000001");
+        logger.info(date);
         return null;
     }
 
@@ -222,8 +200,8 @@ public class CatcherService {
             }
         }
         String json = HttpUtil.doGetWithHead(conf.get("index_val"), ssMapUtil.create(
-                "symbol", indexCode, "begin", "1547529120479", "period", "day", "type", "before", "count"
-                , "-100000", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
+                "symbol", indexCode, "begin", getNewestDate(indexCode), "period", "day", "type", "before", "count"
+                , Integer.MAX_VALUE+"", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
         ,"head/index_val_head.properties");
         JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
         JSONArray columns = dataJson.getJSONArray("column");
@@ -246,5 +224,49 @@ public class CatcherService {
             }
         }
         logger.info("getIndexVal  end");
+    }
+
+    /**
+     * 根据给定的index，找到其最新netval的日期的后一天
+     * @param index
+     * @return
+     */
+    public String getNewestDate(String index) {
+        String newestDate= "19491001";
+
+        Date tomorrow=getTomorrow();
+        SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
+        Scan scan= null;
+        try {
+            scan = new Scan()
+                    .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(index,tomorrow.getTime()+"")))
+                    .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(index,sf.parse(newestDate).getTime()+"")))
+                    .setReversed(true);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        String result=hBaseDao.scan("index",scan,scanner -> {
+            Result next = scanner.next();
+            String date="";
+            if(next!=null){
+                String row=Bytes.toString(next.getRow());
+                date=row.substring(row.indexOf("_")+1);
+                Calendar calendar=Calendar.getInstance();
+                calendar.set(Calendar.YEAR,Integer.parseInt(date.substring(0,4)));
+                calendar.set(Calendar.MONTH,Integer.parseInt(date.substring(4,6))-1);
+                calendar.set(Calendar.DATE,Integer.parseInt(date.substring(6)));
+                calendar.add(Calendar.DATE,1);
+                date=sf.format(calendar.getTime());
+            }
+
+            return date;
+        });
+        return StringUtils.isBlank(result)?newestDate:result;
+    }
+    public static Date getTomorrow(){
+        Calendar c=Calendar.getInstance();
+        c.add(Calendar.DATE,1);
+        Date tomorrow=c.getTime();
+        return tomorrow;
     }
 }

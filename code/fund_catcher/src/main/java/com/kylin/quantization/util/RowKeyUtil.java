@@ -3,6 +3,7 @@ package com.kylin.quantization.util;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -46,7 +47,20 @@ public class RowKeyUtil {
     public static String getIndexRowkey(String code,String date){
         SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
         Date d=new Date(Long.parseLong(date));
-        return code+"_"+sf.format(d);
+        String result=code+"_"+sf.format(d);
+        return result;
+
+    }
+
+    public static String getDateFormNetvalRowKey(String row) {
+        SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
+        SimpleDateFormat sf2=new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            return sf2.format(  sf.parse(  row.substring(row.indexOf("_")+1)  )  );
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return "";
+        }
 
     }
 }
