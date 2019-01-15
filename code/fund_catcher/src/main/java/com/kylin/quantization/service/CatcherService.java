@@ -140,8 +140,11 @@ public class CatcherService {
             Result next = scanner.next();
             String date="";
             if(next!=null){
+
                 String row=Bytes.toString(next.getRow());
+                logger.info("========-row:"+row);
                 date=RowKeyUtil.getDateFormNetvalRowKey(row);
+                logger.info("========-date:"+date);
             }
             return date;
         });
