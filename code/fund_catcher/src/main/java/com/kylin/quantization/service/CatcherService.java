@@ -206,7 +206,7 @@ public class CatcherService {
      * @param indexCode
      */
     public void getIndexVal(String indexCode) {
-        logger.info("getIndexVal  start");
+        logger.info("getIndexVal  start,indexCode:"+indexCode);
         String tableName="index";
         boolean exist = hBaseDao.existTable(tableName);
         if(!exist){
@@ -222,7 +222,6 @@ public class CatcherService {
         JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
         JSONArray columns = dataJson.getJSONArray("column");
         JSONArray items = dataJson.getJSONArray("item");
-        columns.forEach(c->{System.out.println(c);});
         for(int i=0;i<items.size();i++){
             JSONArray item = items.getJSONArray(i);
             LinkedList<Put> putList=new LinkedList<>();
@@ -239,7 +238,7 @@ public class CatcherService {
                 logger.error("index 数据插入失败，已忽略，rowkey:"+rowKey);
             }
         }
-        logger.info("getIndexVal  end");
+        logger.info("getIndexVal  end ,indexCode:"+indexCode);
     }
 
     /**
