@@ -132,12 +132,13 @@ public class CatcherService {
 
         Date tomorrow=getTomorrow();
         SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
-        logger.info("===========start:"+RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01"));
-        logger.info("===========end  :"+RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow)));
+        logger.info("===========stop:"+RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01"));
+        logger.info("===========start  :"+RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow)));
         Scan scan= new Scan()
                     .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01")))
                     .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow))))
-                    .setReversed(true);
+                    .setReversed(true)
+                    .setFilter(new PageFilter(1));
         String result=hBaseDao.scan("netval",scan,scanner -> {
             Result next = scanner.next();
             String date="";
