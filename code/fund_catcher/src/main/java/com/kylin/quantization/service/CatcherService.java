@@ -135,8 +135,8 @@ public class CatcherService {
         logger.info("===========start:"+RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01"));
         logger.info("===========end  :"+RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow)));
         Scan scan= new Scan()
-                    .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01")))
-                    .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow))))
+                    .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01")))
+                    .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow))))
                     .setReversed(true);
         String result=hBaseDao.scan("netval",scan,scanner -> {
             Result next = scanner.next();
