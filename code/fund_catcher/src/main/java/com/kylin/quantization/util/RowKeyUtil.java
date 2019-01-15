@@ -3,6 +3,9 @@ package com.kylin.quantization.util;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * ClassName: RowKeyUtil
  * Description:
@@ -39,5 +42,11 @@ public class RowKeyUtil {
         String code=Bytes.toString(bytes);
         code=code.substring(0,code.indexOf("_"));
         return code;
+    }
+    public static String getIndexRowkey(String code,String date){
+        SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
+        Date d=new Date(Long.parseLong(date));
+        return code+"_"+sf.format(d);
+
     }
 }

@@ -3,16 +3,10 @@ package com.kylin.quantization.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.amazonaws.services.dynamodbv2.xspec.S;
-import com.kylin.quantization.component.CatcherRunner;
-import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.*;
-import com.sun.scenario.effect.impl.sw.java.JSWBlend_SRC_OUTPeer;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.hbase.Cell;
-import org.apache.hadoop.hbase.CellUtil;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
@@ -20,18 +14,12 @@ import org.apache.hadoop.hbase.util.Bytes;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import scala.Tuple2;
 
-import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -224,12 +212,39 @@ public class CatcherService {
      * @param indexCode
      */
     public void getIndexVal(String indexCode) {
-        String json = HttpUtil.doGet(conf.get("index_val"), ssMapUtil.create(
-                "symbol", indexCode, "begin", "1547529120479", "period", "day", "type", "before", "count", "-142", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy"));
+        logger.info("getIndexVal  start");
+        String tableName="index";
+        boolean exist = hBaseDao.existTable(tableName);
+        if(!exist){
+            boolean create = hBaseDao.createTable(tableName, "baseinfo");
+            if(!create){
+                throw new RuntimeException("hbase创建表index失败！");
+            }
+        }
+        String json = HttpUtil.doGetWithHead(conf.get("index_val"), ssMapUtil.create(
+                "symbol", indexCode, "begin", "1547529120479", "period", "day", "type", "before", "count"
+                , "-100000", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
+        ,"head/index_val_head.properties");
         JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
         JSONArray columns = dataJson.getJSONArray("column");
         JSONArray items = dataJson.getJSONArray("item");
-        columns.forEach(c->{System.out.print(c+",class:"+c.getClass());});
+        columns.forEach(c->{System.out.println(c);});
+        for(int i=0;i<items.size();i++){
+            JSONArray item = items.getJSONArray(i);
+            LinkedList<Put> putList=new LinkedList<>();
+            String rowKey=RowKeyUtil.getIndexRowkey(indexCode,item.getString(0));
 
+            for(int j=0;j<columns.size();j++){
+                String qualifier = columns.getString(j);
+                String val = item.getString(j);
+                putList.add(PutUtil.getPut(rowKey,"baseinfo",qualifier,val));
+            }
+            logger.info("index 入库中，rowkey："+rowKey);
+            boolean isPut = hBaseDao.putData(tableName, putList);
+            if(!isPut){
+                logger.error("index 数据插入失败，已忽略，rowkey:"+rowKey);
+            }
+        }
+        logger.info("getIndexVal  end");
     }
 }

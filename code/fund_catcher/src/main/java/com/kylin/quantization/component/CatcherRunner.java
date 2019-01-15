@@ -31,7 +31,7 @@ public abstract  class CatcherRunner  implements ApplicationRunner {
     public void run(ApplicationArguments args) throws Exception {
         String[] sourceArgs = args.getSourceArgs();
         if(sourceArgs==null || sourceArgs.length==0){
-            logger.error(getTask()+"启动未传入参数");
+            logger.warn(getTask()+"启动未传入参数");
         }else if(getTask().equals(sourceArgs[0])){
             doTask();
         }
