@@ -132,6 +132,8 @@ public class CatcherService {
 
         Date tomorrow=getTomorrow();
         SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd");
+        logger.info("===========start:"+RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01"));
+        logger.info("===========end  :"+RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow)));
         Scan scan= new Scan()
                     .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,"1949-10-01")))
                     .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey(fundcode,sf.format(tomorrow))))
