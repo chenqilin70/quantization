@@ -153,20 +153,13 @@ public class CatcherService {
 
     public Object test(){
         Scan scan=new Scan();
-        hBaseDao.table("fund",table->{
-            ResultScanner scanner = table.getScanner(scan);
-            while(true){
-                Result next = scanner.next();
-                if(next==null){
-                    break;
-                }
-                logger.info("delete one data");
-                table.delete(new Delete(next.getRow()).addColumn(Bytes.toBytes("baseinfo"),Bytes.toBytes("zxrq")));
-            }
-            scanner.close();
-            return null;
+        scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016","19491001")));
+        scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016","20190116")));
+        String family="baseinfo";
+        logger.info("====================================================");
+        hBaseDao.scanForEach("index",scan,r->{
+            logger.info(ResultUtil.row(r)+":"+ResultUtil.strVal(r,family,"close"));
         });
-        flushAndCompact("fund");
 
         return null;
     }
