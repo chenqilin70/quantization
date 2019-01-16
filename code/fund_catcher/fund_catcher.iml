@@ -158,7 +158,6 @@
     <orderEntry type="library" name="Maven: org.json4s:json4s-ast_2.10:3.2.10" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scalap:2.10.0" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-compiler:2.10.0" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-reflect:2.10.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.mesos:mesos:shaded-protobuf:0.21.1" level="project" />
     <orderEntry type="library" name="Maven: com.clearspring.analytics:stream:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-core:3.2.6" level="project" />
@@ -178,6 +177,17 @@
     <orderEntry type="library" name="Maven: net.sf.py4j:py4j:0.9" level="project" />
     <orderEntry type="library" name="Maven: com.intel.chimera:chimera:0.9.2" level="project" />
     <orderEntry type="library" name="Maven: org.spark-project.spark:unused:1.0.0" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-sql_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-catalyst_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-reflect:2.10.5" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.janino:janino:3.0.11" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.janino:commons-compiler:3.0.11" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-column:1.5.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-common:1.5.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-encoding:1.5.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-hadoop:1.5.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-format:2.1.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.twitter:parquet-jackson:1.5.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.29.Final" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hbase:hbase-mapreduce:2.1.0-cdh6.1.0" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hbase.thirdparty:hbase-shaded-miscellaneous:2.1.0" level="project" />

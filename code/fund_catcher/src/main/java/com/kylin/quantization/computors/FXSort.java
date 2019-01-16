@@ -51,6 +51,7 @@ public class FXSort extends BaseSparkMain{
         JavaSparkContext context = new JavaSparkContext(sparkConf());
         Configuration hconf = getFundListConf();
 
+
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = context.newAPIHadoopRDD(hconf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         //获取fund列表
         JavaPairRDD<String, Result> fundRdd = hbaseRdd.filter(new FxFunctions.FundFilterFunction())

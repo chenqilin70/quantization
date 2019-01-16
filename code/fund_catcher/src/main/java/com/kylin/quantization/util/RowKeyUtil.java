@@ -63,4 +63,8 @@ public class RowKeyUtil {
         }
 
     }
+
+    public static String getCodeFromIndexRowKey(String row) {
+        return row.substring(0,row.indexOf("_"));
+    }
 }

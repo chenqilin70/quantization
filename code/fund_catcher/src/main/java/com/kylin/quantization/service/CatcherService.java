@@ -161,13 +161,11 @@ public class CatcherService {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         String family="baseinfo";
         logger.info("====================================================");
         hBaseDao.scanForEach("index",scan,r->{
             logger.info(ResultUtil.row(r)+":"+ResultUtil.strVal(r,family,"close"));
         });
-
         return null;
     }
 
