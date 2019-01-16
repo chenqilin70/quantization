@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
@@ -153,8 +154,14 @@ public class CatcherService {
 
     public Object test(){
         Scan scan=new Scan();
-        scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016","19491001")));
-        scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016","20190116")));
+        SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
+        try {
+            scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016",""+sf.parse("19491001").getTime())));
+            scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016",""+sf.parse("20190116").getTime())));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         String family="baseinfo";
         logger.info("====================================================");
         hBaseDao.scanForEach("index",scan,r->{
