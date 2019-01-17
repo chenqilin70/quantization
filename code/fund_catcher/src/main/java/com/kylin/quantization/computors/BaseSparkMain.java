@@ -26,6 +26,7 @@ import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -71,22 +72,44 @@ public abstract class BaseSparkMain {
             for (Field f : fields) {
                 String fieldName = f.getName();
                 String setMethodName="";
-                String setMethodParam="";
+                Object setMethodParam="";
+                Class paramClass=null;
                 if ("rowkey".equals(fieldName)) {
                     setMethodName="setRowkey";
                     setMethodParam=rowkey;
+                    paramClass=String.class;
                 }else{
                     setMethodName="set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-                    setMethodParam=ResultUtil.strVal(result, "baseinfo", fieldName);
+                    paramClass=f.getType();
+                    setMethodParam=transTypeFromString(ResultUtil.strVal(result, "baseinfo", fieldName),paramClass);
+
                 }
-                Method setMethod = clazz.getMethod(setMethodName, String.class);
+                Method setMethod = clazz.getMethod(setMethodName, paramClass);
                 setMethod.invoke(model, setMethodParam);
             }
             return (T)model;
         });
         DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, clazz);
+
         return dataFrame;
     }
+
+    private static Object transTypeFromString(String info,Class clazz) {
+        Object obj=null;
+        if(BigDecimal.class==clazz){
+            obj=new BigDecimal(info);
+        }else if(Integer.class==clazz){
+            obj=Integer.parseInt(info);
+        }else if(Double.class==clazz){
+            obj=Double.parseDouble(info);
+        }else if(Float.class==clazz){
+            obj=Float.parseFloat(info);
+        }else{
+            obj=info;
+        }
+        return obj;
+    }
+
     public static <T>  DataFrame getHbaseDataFrame(String tableName,JavaSparkContext sparkContext, SQLContext sqlContext){
         return getHbaseDataFrame(tableName,getHbaseConf(tableName),sparkContext,sqlContext);
     }
