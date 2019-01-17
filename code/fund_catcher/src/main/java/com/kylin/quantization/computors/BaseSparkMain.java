@@ -5,6 +5,7 @@ import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.util.LoggerBuilder;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -96,17 +97,20 @@ public abstract class BaseSparkMain {
 
     private static Object transTypeFromString(String info,Class clazz) {
         Object obj=null;
-        if(BigDecimal.class==clazz){
-            obj=new BigDecimal(info);
-        }else if(Integer.class==clazz){
-            obj=Integer.parseInt(info);
-        }else if(Double.class==clazz){
-            obj=Double.parseDouble(info);
-        }else if(Float.class==clazz){
-            obj=Float.parseFloat(info);
-        }else{
-            obj=info;
+        if(StringUtils.isNotBlank(info)){
+            if(BigDecimal.class==clazz){
+                obj=new BigDecimal(info);
+            }else if(Integer.class==clazz){
+                obj=Integer.parseInt(info);
+            }else if(Double.class==clazz){
+                obj=Double.parseDouble(info);
+            }else if(Float.class==clazz){
+                obj=Float.parseFloat(info);
+            }else{
+                obj=info;
+            }
         }
+
         return obj;
     }
 
