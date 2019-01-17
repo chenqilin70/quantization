@@ -109,6 +109,8 @@ public abstract class BaseSparkMain {
             }else{
                 obj=info;
             }
+        }else{
+            logger.warn("transTypeFromString `s param is invalid:"+info);
         }
 
         return obj;
