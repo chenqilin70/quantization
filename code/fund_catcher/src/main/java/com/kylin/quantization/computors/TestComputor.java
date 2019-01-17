@@ -41,8 +41,9 @@ public class TestComputor  extends BaseSparkMain{
 
     public static void main(String[] args) {
         String[] jars = System.getProperty("java.class.path").split(";");
+        logger.info("============================");
         for(String jar:jars){
-            System.out.println(jar);
+            logger.info(jar);
         }
 
 
