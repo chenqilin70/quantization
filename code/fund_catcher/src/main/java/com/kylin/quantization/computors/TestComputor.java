@@ -65,10 +65,11 @@ public class TestComputor  extends BaseSparkMain{
         //需要读取的hbase表名
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
+        Filter macdFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("macd"));
         Scan scan = new Scan()
                 .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190101")))
                 .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190116")))
-                .setFilter(closeFilter);
+                .setFilter(new FilterList(closeFilter,macdFilter));
 
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));

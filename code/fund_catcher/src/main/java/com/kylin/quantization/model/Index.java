@@ -43,15 +43,6 @@ public class Index {
     private String cci		 ;
     private String open		 ;
     private String kdjj              ;
-    private String test;
-
-    public String getTest() {
-        return test;
-    }
-
-    public void setTest(String test) {
-        this.test = test;
-    }
 
     public Index() {
         System.out.println("index is contracting");
