@@ -1,7 +1,6 @@
 package com.kylin.quantization.computors;
 
 import com.kylin.quantization.config.CatcherConfig;
-import com.kylin.quantization.model.BaseModel;
 import com.kylin.quantization.util.ResultUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -56,21 +55,26 @@ public abstract class BaseSparkMain {
 
 
     public static <T> DataFrame getHbaseDataFrame(String tableName, Configuration hbaseConf, JavaSparkContext sparkContext, SQLContext sqlContext){
-        final Class<? extends BaseModel> clazz=getModelByTableName(tableName);
+        final Class<T> clazz=getModelByTableName(tableName);
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         JavaRDD<T> indexRdd = hbaseRdd.map(t -> {
             Result result = t._2;
             String rowkey = ResultUtil.row(result);
             Field[] fields = clazz.getDeclaredFields();
-            BaseModel model = clazz.newInstance();
+            T model = clazz.newInstance();
             for (Field f : fields) {
                 String fieldName = f.getName();
+                String setMethodName="";
+                String setMethodParam="";
                 if ("rowkey".equals(fieldName)) {
-                    model.setRowkey(rowkey);
-                    continue;
+                    setMethodName="setRowkey";
+                    setMethodParam=rowkey;
+                }else{
+                    setMethodName="set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+                    setMethodParam=ResultUtil.strVal(result, "baseinfo", fieldName);
                 }
-                Method setMethod = clazz.getMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), String.class);
-                setMethod.invoke(model, ResultUtil.strVal(result, "baseinfo", fieldName));
+                Method setMethod = clazz.getMethod(setMethodName, String.class);
+                setMethod.invoke(model, setMethodParam);
             }
             return (T)model;
         });
@@ -91,10 +95,10 @@ public abstract class BaseSparkMain {
     public static void registerHbaseTable(String tableName,DataFrame hbaseDataFrame ){
         hbaseDataFrame.registerTempTable(tableName);
     }
-    private static Class<? extends BaseModel> getModelByTableName(String tableName){
-        Class<? extends BaseModel> temp=null;
+    private static Class getModelByTableName(String tableName){
+        Class temp=null;
         try {
-            temp= (Class<? extends BaseModel>) Class.forName("com.kylin.quantization.model."+tableName.substring(0,1).toUpperCase()+tableName.substring(1));
+            temp= Class.forName("com.kylin.quantization.model."+tableName.substring(0,1).toUpperCase()+tableName.substring(1));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }

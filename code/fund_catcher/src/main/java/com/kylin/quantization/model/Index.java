@@ -9,8 +9,8 @@ package com.kylin.quantization.model;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class Index extends BaseModel{
-
+public class Index {
+    private String rowkey;
     private String ma10              ;
     private String ma30		 ;
     private String dea		 ;
@@ -48,7 +48,13 @@ public class Index extends BaseModel{
         System.out.println("index is contracting");
     }
 
+    public String getRowkey() {
+        return rowkey;
+    }
 
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
+    }
 
     public String getMa10() {
         return ma10;

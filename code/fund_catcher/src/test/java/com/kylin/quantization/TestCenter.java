@@ -1,28 +1,10 @@
 package com.kylin.quantization;
 
-import com.alibaba.fastjson.JSON;
-import com.kylin.quantization.util.HttpUtil;
-import com.kylin.quantization.util.MapUtil;
-import com.kylin.quantization.util.RowKeyUtil;
-import com.kylin.quantization.util.StringReplaceUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.hbase.HBaseConfiguration;
-import org.apache.hadoop.hbase.TableName;
-import org.apache.hadoop.hbase.client.Admin;
-import org.apache.hadoop.hbase.client.Connection;
-import org.apache.hadoop.hbase.client.ConnectionFactory;
-import org.apache.hadoop.hbase.client.HBaseAdmin;
-import org.apache.hadoop.hbase.util.Bytes;
+import com.kylin.quantization.model.Index;
+import com.kylin.quantization.util.*;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.lang.reflect.Field;
 
 /**
  * ClassName: TestCenter
@@ -38,6 +20,10 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-        SonClass.run();
+        Field[] fields = Index.class.getDeclaredFields();
+        for (Field f : fields) {
+            String fieldName = f.getName();
+            System.out.println(fieldName);
+        }
     }
 }
