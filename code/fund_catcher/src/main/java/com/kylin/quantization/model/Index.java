@@ -1,5 +1,6 @@
 package com.kylin.quantization.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
@@ -11,7 +12,7 @@ import java.math.BigDecimal;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class Index {
+public class Index implements Serializable{
     private String rowkey;
     private BigDecimal ma10              ;
     private BigDecimal ma30		 ;
@@ -21,8 +22,8 @@ public class Index {
     private BigDecimal bias2		 ;
     private BigDecimal bias3		 ;
     private BigDecimal bias1		 ;
-    private Double close		 ;
-    private Double macd		 ;
+    private BigDecimal close		 ;
+    private BigDecimal macd		 ;
     private BigDecimal timestamp	 ;
     private BigDecimal wr10		 ;
     private BigDecimal kdjd		 ;
@@ -118,19 +119,19 @@ public class Index {
         this.bias1 = bias1;
     }
 
-    public Double getClose() {
+    public BigDecimal getClose() {
         return close;
     }
 
-    public void setClose(Double close) {
+    public void setClose(BigDecimal close) {
         this.close = close;
     }
 
-    public Double getMacd() {
+    public BigDecimal getMacd() {
         return macd;
     }
 
-    public void setMacd(Double macd) {
+    public void setMacd(BigDecimal macd) {
         this.macd = macd;
     }
 
