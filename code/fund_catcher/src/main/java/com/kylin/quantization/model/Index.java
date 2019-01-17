@@ -44,6 +44,10 @@ public class Index {
     private String open		 ;
     private String kdjj              ;
 
+    public Index() {
+        System.out.println("index is contracting");
+    }
+
     public String getRowkey() {
         return rowkey;
     }

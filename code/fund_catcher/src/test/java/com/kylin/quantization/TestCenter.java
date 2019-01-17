@@ -38,14 +38,6 @@ public class TestCenter {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     @Test
     public void test(){
-        String code="000001_20040212";
-        code=code.substring(0,code.indexOf("_"));
-        System.out.println(RowKeyUtil.getBaseInfoRowKey("000457"));
-        /*System.out.println(Integer.MAX_VALUE);
-        String url="http://api.fund.eastmoney.com/f10/lsjz?callback=jQuery18305825951889735677_1545638648117&fundCode={fundcode}&pageIndex=1&pageSize=10000000&startDate=&endDate=&_="+new Date().getTime();
-        String netValStr = HttpUtil.doGetWithHead(StringReplaceUtil.replace(url,ssMapUtil.create("fundcode","161604")), null,"head/netval_head.properties");
-        netValStr=netValStr.substring(netValStr.indexOf("(")+1,netValStr.lastIndexOf(")"));
-        System.out.println(JSON.parseObject(netValStr).getJSONObject("Data").getJSONArray("LSJZList").size());*/
-
+        SonClass.run();
     }
 }
