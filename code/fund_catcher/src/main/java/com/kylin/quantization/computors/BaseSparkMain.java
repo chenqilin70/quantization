@@ -2,6 +2,7 @@ package com.kylin.quantization.computors;
 
 import com.kylin.quantization.component.TestRunner;
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.util.LoggerBuilder;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
@@ -29,6 +30,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * ClassName: BaseSparkMain
@@ -66,6 +68,8 @@ public abstract class BaseSparkMain {
         final Class<T> clazz=getModelByTableName(tableName);
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         JavaRDD<T> indexRdd = hbaseRdd.map(t -> {
+            HBaseDaoImpl hBaseDao=new HBaseDaoImpl();
+            hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
             Result result = t._2;
             String rowkey = ResultUtil.row(result);
             Field[] fields = clazz.getDeclaredFields();
@@ -83,6 +87,8 @@ public abstract class BaseSparkMain {
                     setMethodName="set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                     paramClass=f.getType();
                     setMethodParam=transTypeFromString(ResultUtil.strVal(result, "baseinfo", fieldName),paramClass);
+                    hBaseDao.putData("testtable","getHbaseDataFrameLog"+new Random(1000).nextInt()
+                            ,"baseinfo","log",setMethodName);
 
                 }
                 Method setMethod = clazz.getMethod(setMethodName, paramClass);
@@ -90,6 +96,7 @@ public abstract class BaseSparkMain {
             }
             return (T)model;
         });
+        logger.info("collect size is :"+indexRdd.collect().size()+",tableName:"+tableName);
         DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, clazz);
 
         return dataFrame;
@@ -137,6 +144,7 @@ public abstract class BaseSparkMain {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        logger.info("getModelByTableName:"+temp.toString());
         return temp;
     }
 
