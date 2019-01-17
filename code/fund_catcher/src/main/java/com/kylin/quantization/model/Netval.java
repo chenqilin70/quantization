@@ -12,6 +12,7 @@ import java.io.Serializable;
  * 作者姓名 修改时间    版本号 描述
  */
 public class Netval  implements Serializable {
+    private String rowkey;
     private String tgfl	;//托管费率
     private String zgrgfl	;//最高认购费率
     private String bbms	;//保本模式
@@ -35,6 +36,14 @@ public class Netval  implements Serializable {
     private String jjdm	;//基金代码
     private String clrqgm	;//成立日期/规模
     private String jjjlr	;//基金经理人
+
+    public String getRowkey() {
+        return rowkey;
+    }
+
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
+    }
 
     public String getTgfl() {
         return tgfl;

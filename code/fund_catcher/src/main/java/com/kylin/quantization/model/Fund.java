@@ -12,6 +12,7 @@ import java.math.BigDecimal;
  * 作者姓名 修改时间    版本号 描述
  */
 public class Fund {
+    private String rowkey;
     private BigDecimal DWJZ         ;
     private BigDecimal LJJZ	      ;
     private String FHSP	      ;
@@ -25,6 +26,14 @@ public class Fund {
     private String SHZT	      ;
     private String SGZT	      ;
     private String JZZZL	      ;
+
+    public String getRowkey() {
+        return rowkey;
+    }
+
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
+    }
 
     public BigDecimal getDWJZ() {
         return DWJZ;
