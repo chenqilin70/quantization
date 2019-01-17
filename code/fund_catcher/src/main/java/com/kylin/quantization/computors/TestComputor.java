@@ -64,9 +64,11 @@ public class TestComputor  extends BaseSparkMain{
         Configuration hconf= HBaseConfiguration.create();
         //需要读取的hbase表名
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
+        Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
         Scan scan = new Scan()
                 .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190101")))
-                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190116")));
+                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190116")))
+                .setFilter(closeFilter);
 
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
