@@ -21,10 +21,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
 
 import com.alibaba.fastjson.JSON;
+import org.xml.sax.Attributes;
 
 public class SqlConfigUtil {
 	private static final String SQL_BASE_PATH = "";
@@ -67,10 +69,11 @@ public class SqlConfigUtil {
 	/**
 	 * 获取所有带有某种key-value值的id
 	 */
-	public static List<String> getRuleByKV(String key, String value) {
-		List<DefaultElement> list = bizDoc.selectNodes("/sqls/*");
+	/*public static List<String> getRuleByKV(String key, String value) {
+		List<Node> list = bizDoc.selectNodes("/sqls*//*");
 		List<String> ids = new ArrayList<>();
-		for (DefaultElement d : list) {
+		for (Node d : list) {
+			d.get
 			Attribute attr = d.attribute(key);
 			if (attr != null) {
 				String val = attr.getStringValue();
@@ -84,6 +87,6 @@ public class SqlConfigUtil {
 			}
 		}
 		return ids;
-	}
+	}*/
 	
 }
