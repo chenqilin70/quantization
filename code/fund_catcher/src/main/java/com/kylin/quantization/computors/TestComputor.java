@@ -36,10 +36,26 @@ import java.util.List;
  * 作者姓名 修改时间    版本号 描述
  */
 public class TestComputor  extends BaseSparkMain{
+    public static JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
+    private static SQLContext sqlContext=null;
+
+    public static SQLContext getSqlContext() {
+        if(sqlContext==null){
+            sqlContext=new SQLContext(sparkContext);
+        }
+        return sqlContext;
+    }
+
     public static void main(String[] args) {
         String tableName="index";
-        JavaSparkContext sparkContext = new JavaSparkContext(sparkConf());
-        SQLContext sqlContext=new SQLContext(sparkContext);
+        DataFrame dataFrame = getHbaseDataFrame(tableName);
+        dataFrame.show();
+        dataFrame.registerTempTable("index");
+        getSqlContext().sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' ").show();
+
+
+    }
+    public static <T> DataFrame  getHbaseDataFrame(String tableName){
         Configuration hbaseConf = getHbaseConf(tableName);
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         JavaRDD<Index> indexRdd = hbaseRdd.map(t -> {
@@ -58,12 +74,8 @@ public class TestComputor  extends BaseSparkMain{
             }
             return index;
         });
-        DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, Index.class);
-        dataFrame.show();
-        dataFrame.registerTempTable("index");
-        sqlContext.sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' ").show();
-
-
+        DataFrame dataFrame = getSqlContext().createDataFrame(indexRdd, Index.class);
+        return dataFrame;
     }
 
 
