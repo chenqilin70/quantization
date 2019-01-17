@@ -43,7 +43,7 @@ public class TestComputor  extends BaseSparkMain{
         JavaRDD<Index> indexRdd = hbaseRdd.map(t -> {
             Result result = t._2;
             String code = RowKeyUtil.getCodeFromIndexRowKey(ResultUtil.row(result));
-            Field[] fields = Index.class.getFields();
+            Field[] fields = Index.class.getDeclaredFields();
             Index index = new Index();
             for (Field f : fields) {
                 String fieldName = f.getName();
