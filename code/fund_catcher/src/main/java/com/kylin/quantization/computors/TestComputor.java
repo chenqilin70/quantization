@@ -70,7 +70,7 @@ public class TestComputor  extends BaseSparkMain{
         Scan scan = new Scan()
                 .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190101")))
                 .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190116")))
-                .setFilter(new FilterList(closeFilter,macdFilter));
+                .setFilter(new FilterList(FilterList.Operator.MUST_PASS_ONE,closeFilter,macdFilter));
 
         try {
             hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
