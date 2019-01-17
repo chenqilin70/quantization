@@ -42,10 +42,9 @@ public class TestComputor  extends BaseSparkMain{
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);;
         String tableName="index";
-        DataFrame dataFrame = getHbaseDataFrame(tableName,sparkContext,sqlContext);
-        dataFrame.show();
-        dataFrame.registerTempTable("index");
-        sqlContext.sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' ").show();
+        registerHbaseTable(tableName,sparkContext,sqlContext);
+        sqlContext.sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' limit 5").show();
+        sparkContext.stop();
 
 
     }
