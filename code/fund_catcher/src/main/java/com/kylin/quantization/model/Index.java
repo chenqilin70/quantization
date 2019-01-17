@@ -21,8 +21,8 @@ public class Index {
     private BigDecimal bias2		 ;
     private BigDecimal bias3		 ;
     private BigDecimal bias1		 ;
-    private BigDecimal close		 ;
-    private BigDecimal macd		 ;
+    private Double close		 ;
+    private Double macd		 ;
     private BigDecimal timestamp	 ;
     private BigDecimal wr10		 ;
     private BigDecimal kdjd		 ;
@@ -118,19 +118,19 @@ public class Index {
         this.bias1 = bias1;
     }
 
-    public BigDecimal getClose() {
+    public Double getClose() {
         return close;
     }
 
-    public void setClose(BigDecimal close) {
+    public void setClose(Double close) {
         this.close = close;
     }
 
-    public BigDecimal getMacd() {
+    public Double getMacd() {
         return macd;
     }
 
-    public void setMacd(BigDecimal macd) {
+    public void setMacd(Double macd) {
         this.macd = macd;
     }
 
