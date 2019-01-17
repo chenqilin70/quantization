@@ -38,7 +38,6 @@ import java.util.List;
 public class TestComputor  extends BaseSparkMain{
 
 
-
     public static void main(String[] args) {
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);;
@@ -50,42 +49,9 @@ public class TestComputor  extends BaseSparkMain{
 
 
     }
-    public static <T> DataFrame  getHbaseDataFrame(String tableName,JavaSparkContext sparkContext,SQLContext sqlContext){
-        Configuration hbaseConf = getHbaseConf(tableName);
-        JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
-        JavaRDD<Index> indexRdd = hbaseRdd.map(t -> {
-            Result result = t._2;
-            String rowkey = ResultUtil.row(result);
-            Field[] fields = Index.class.getDeclaredFields();
-            Index index = new Index();
-            for (Field f : fields) {
-                String fieldName = f.getName();
-                if ("rowkey".equals(fieldName)) {
-                    index.setRowkey(rowkey);
-                    continue;
-                }
-                Method setMethod = Index.class.getMethod("set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1), String.class);
-                setMethod.invoke(index, ResultUtil.strVal(result, "baseinfo", fieldName));
-            }
-            return index;
-        });
-        DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, Index.class);
-        return dataFrame;
-    }
 
 
 
-    private static Configuration getHbaseConf(String tableName)  {
-        Configuration hconf= HBaseConfiguration.create();
-        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Scan scan = new Scan();
-        try {
-            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return hconf;
-    }
 
 
 }
