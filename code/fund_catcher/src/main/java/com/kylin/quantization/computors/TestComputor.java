@@ -54,7 +54,8 @@ public class TestComputor  extends BaseSparkMain{
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
         registerHbaseTable("index",getIndexConf("index"),sparkContext,sqlContext);
-        sql("test",sqlContext).show();    ;
+        sql("test",sqlContext).show();
+        sql("test2",sqlContext).show();
     }
 
 

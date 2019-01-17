@@ -2,8 +2,13 @@
 <sqls>
     <test>
         <![CDATA[
-            select corr(macd,close) from index
+            select corr(macd,close),rowkey from index group by rowkey
         ]]>
     </test>
+    <test2>
+        <![CDATA[
+            select macd,close,rowkey from index
+        ]]>
+    </test2>
 
 </sqls>
