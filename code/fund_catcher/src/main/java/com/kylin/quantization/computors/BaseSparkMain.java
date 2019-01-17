@@ -67,9 +67,10 @@ public abstract class BaseSparkMain {
     public static <T> DataFrame getHbaseDataFrame(String tableName, Configuration hbaseConf, JavaSparkContext sparkContext, SQLContext sqlContext){
         final Class<T> clazz=getModelByTableName(tableName);
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
+        HBaseDaoImpl hBaseDao=new HBaseDaoImpl();
+        hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
         JavaRDD<T> indexRdd = hbaseRdd.map(t -> {
-            HBaseDaoImpl hBaseDao=new HBaseDaoImpl();
-            hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
+
             Result result = t._2;
             String rowkey = ResultUtil.row(result);
             Field[] fields = clazz.getDeclaredFields();
