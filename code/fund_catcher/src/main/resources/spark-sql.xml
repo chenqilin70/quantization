@@ -2,7 +2,7 @@
 <sqls>
     <test>
         <![CDATA[
-            select corr(macd,close),rowkey from index group by rowkey
+            select corr(macd,close),rowkey from index
         ]]>
     </test>
     <test2>
