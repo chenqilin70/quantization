@@ -1,5 +1,7 @@
 package com.kylin.quantization.model;
 
+import java.math.BigDecimal;
+
 /**
  * ClassName: Index
  * Description:
@@ -11,42 +13,38 @@ package com.kylin.quantization.model;
  */
 public class Index {
     private String rowkey;
-    private String ma10              ;
-    private String ma30		 ;
-    private String dea		 ;
-    private String psy		 ;
-    private String ma5		 ;
-    private String bias2		 ;
-    private String bias3		 ;
-    private String bias1		 ;
-    private String close		 ;
-    private String macd		 ;
-    private String timestamp	 ;
-    private String wr10		 ;
-    private String kdjd		 ;
-    private String volume		 ;
-    private String dif		 ;
-    private String kdjk		 ;
-    private String low		 ;
-    private String percent		 ;
-    private String wr6		 ;
-    private String turnoverrate	 ;
-    private String rsi1		 ;
-    private String rsi2		 ;
-    private String rsi3		 ;
-    private String psyma		 ;
-    private String high		 ;
-    private String ub		 ;
-    private String lb		 ;
-    private String chg		 ;
-    private String ma20		 ;
-    private String cci		 ;
-    private String open		 ;
-    private String kdjj              ;
-
-    public Index() {
-        System.out.println("index is contracting");
-    }
+    private BigDecimal ma10              ;
+    private BigDecimal ma30		 ;
+    private BigDecimal dea		 ;
+    private BigDecimal psy		 ;
+    private BigDecimal ma5		 ;
+    private BigDecimal bias2		 ;
+    private BigDecimal bias3		 ;
+    private BigDecimal bias1		 ;
+    private BigDecimal close		 ;
+    private BigDecimal macd		 ;
+    private BigDecimal timestamp	 ;
+    private BigDecimal wr10		 ;
+    private BigDecimal kdjd		 ;
+    private BigDecimal volume		 ;
+    private BigDecimal dif		 ;
+    private BigDecimal kdjk		 ;
+    private BigDecimal low		 ;
+    private BigDecimal percent		 ;
+    private BigDecimal wr6		 ;
+    private BigDecimal turnoverrate	 ;
+    private BigDecimal rsi1		 ;
+    private BigDecimal rsi2		 ;
+    private BigDecimal rsi3		 ;
+    private BigDecimal psyma		 ;
+    private BigDecimal high		 ;
+    private BigDecimal ub		 ;
+    private BigDecimal lb		 ;
+    private BigDecimal chg		 ;
+    private BigDecimal ma20		 ;
+    private BigDecimal cci		 ;
+    private BigDecimal open		 ;
+    private BigDecimal kdjj              ;
 
     public String getRowkey() {
         return rowkey;
@@ -56,259 +54,259 @@ public class Index {
         this.rowkey = rowkey;
     }
 
-    public String getMa10() {
+    public BigDecimal getMa10() {
         return ma10;
     }
 
-    public void setMa10(String ma10) {
+    public void setMa10(BigDecimal ma10) {
         this.ma10 = ma10;
     }
 
-    public String getMa30() {
+    public BigDecimal getMa30() {
         return ma30;
     }
 
-    public void setMa30(String ma30) {
+    public void setMa30(BigDecimal ma30) {
         this.ma30 = ma30;
     }
 
-    public String getDea() {
+    public BigDecimal getDea() {
         return dea;
     }
 
-    public void setDea(String dea) {
+    public void setDea(BigDecimal dea) {
         this.dea = dea;
     }
 
-    public String getPsy() {
+    public BigDecimal getPsy() {
         return psy;
     }
 
-    public void setPsy(String psy) {
+    public void setPsy(BigDecimal psy) {
         this.psy = psy;
     }
 
-    public String getMa5() {
+    public BigDecimal getMa5() {
         return ma5;
     }
 
-    public void setMa5(String ma5) {
+    public void setMa5(BigDecimal ma5) {
         this.ma5 = ma5;
     }
 
-    public String getBias2() {
+    public BigDecimal getBias2() {
         return bias2;
     }
 
-    public void setBias2(String bias2) {
+    public void setBias2(BigDecimal bias2) {
         this.bias2 = bias2;
     }
 
-    public String getBias3() {
+    public BigDecimal getBias3() {
         return bias3;
     }
 
-    public void setBias3(String bias3) {
+    public void setBias3(BigDecimal bias3) {
         this.bias3 = bias3;
     }
 
-    public String getBias1() {
+    public BigDecimal getBias1() {
         return bias1;
     }
 
-    public void setBias1(String bias1) {
+    public void setBias1(BigDecimal bias1) {
         this.bias1 = bias1;
     }
 
-    public String getClose() {
+    public BigDecimal getClose() {
         return close;
     }
 
-    public void setClose(String close) {
+    public void setClose(BigDecimal close) {
         this.close = close;
     }
 
-    public String getMacd() {
+    public BigDecimal getMacd() {
         return macd;
     }
 
-    public void setMacd(String macd) {
+    public void setMacd(BigDecimal macd) {
         this.macd = macd;
     }
 
-    public String getTimestamp() {
+    public BigDecimal getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(BigDecimal timestamp) {
         this.timestamp = timestamp;
     }
 
-    public String getWr10() {
+    public BigDecimal getWr10() {
         return wr10;
     }
 
-    public void setWr10(String wr10) {
+    public void setWr10(BigDecimal wr10) {
         this.wr10 = wr10;
     }
 
-    public String getKdjd() {
+    public BigDecimal getKdjd() {
         return kdjd;
     }
 
-    public void setKdjd(String kdjd) {
+    public void setKdjd(BigDecimal kdjd) {
         this.kdjd = kdjd;
     }
 
-    public String getVolume() {
+    public BigDecimal getVolume() {
         return volume;
     }
 
-    public void setVolume(String volume) {
+    public void setVolume(BigDecimal volume) {
         this.volume = volume;
     }
 
-    public String getDif() {
+    public BigDecimal getDif() {
         return dif;
     }
 
-    public void setDif(String dif) {
+    public void setDif(BigDecimal dif) {
         this.dif = dif;
     }
 
-    public String getKdjk() {
+    public BigDecimal getKdjk() {
         return kdjk;
     }
 
-    public void setKdjk(String kdjk) {
+    public void setKdjk(BigDecimal kdjk) {
         this.kdjk = kdjk;
     }
 
-    public String getLow() {
+    public BigDecimal getLow() {
         return low;
     }
 
-    public void setLow(String low) {
+    public void setLow(BigDecimal low) {
         this.low = low;
     }
 
-    public String getPercent() {
+    public BigDecimal getPercent() {
         return percent;
     }
 
-    public void setPercent(String percent) {
+    public void setPercent(BigDecimal percent) {
         this.percent = percent;
     }
 
-    public String getWr6() {
+    public BigDecimal getWr6() {
         return wr6;
     }
 
-    public void setWr6(String wr6) {
+    public void setWr6(BigDecimal wr6) {
         this.wr6 = wr6;
     }
 
-    public String getTurnoverrate() {
+    public BigDecimal getTurnoverrate() {
         return turnoverrate;
     }
 
-    public void setTurnoverrate(String turnoverrate) {
+    public void setTurnoverrate(BigDecimal turnoverrate) {
         this.turnoverrate = turnoverrate;
     }
 
-    public String getRsi1() {
+    public BigDecimal getRsi1() {
         return rsi1;
     }
 
-    public void setRsi1(String rsi1) {
+    public void setRsi1(BigDecimal rsi1) {
         this.rsi1 = rsi1;
     }
 
-    public String getRsi2() {
+    public BigDecimal getRsi2() {
         return rsi2;
     }
 
-    public void setRsi2(String rsi2) {
+    public void setRsi2(BigDecimal rsi2) {
         this.rsi2 = rsi2;
     }
 
-    public String getRsi3() {
+    public BigDecimal getRsi3() {
         return rsi3;
     }
 
-    public void setRsi3(String rsi3) {
+    public void setRsi3(BigDecimal rsi3) {
         this.rsi3 = rsi3;
     }
 
-    public String getPsyma() {
+    public BigDecimal getPsyma() {
         return psyma;
     }
 
-    public void setPsyma(String psyma) {
+    public void setPsyma(BigDecimal psyma) {
         this.psyma = psyma;
     }
 
-    public String getHigh() {
+    public BigDecimal getHigh() {
         return high;
     }
 
-    public void setHigh(String high) {
+    public void setHigh(BigDecimal high) {
         this.high = high;
     }
 
-    public String getUb() {
+    public BigDecimal getUb() {
         return ub;
     }
 
-    public void setUb(String ub) {
+    public void setUb(BigDecimal ub) {
         this.ub = ub;
     }
 
-    public String getLb() {
+    public BigDecimal getLb() {
         return lb;
     }
 
-    public void setLb(String lb) {
+    public void setLb(BigDecimal lb) {
         this.lb = lb;
     }
 
-    public String getChg() {
+    public BigDecimal getChg() {
         return chg;
     }
 
-    public void setChg(String chg) {
+    public void setChg(BigDecimal chg) {
         this.chg = chg;
     }
 
-    public String getMa20() {
+    public BigDecimal getMa20() {
         return ma20;
     }
 
-    public void setMa20(String ma20) {
+    public void setMa20(BigDecimal ma20) {
         this.ma20 = ma20;
     }
 
-    public String getCci() {
+    public BigDecimal getCci() {
         return cci;
     }
 
-    public void setCci(String cci) {
+    public void setCci(BigDecimal cci) {
         this.cci = cci;
     }
 
-    public String getOpen() {
+    public BigDecimal getOpen() {
         return open;
     }
 
-    public void setOpen(String open) {
+    public void setOpen(BigDecimal open) {
         this.open = open;
     }
 
-    public String getKdjj() {
+    public BigDecimal getKdjj() {
         return kdjj;
     }
 
-    public void setKdjj(String kdjj) {
+    public void setKdjj(BigDecimal kdjj) {
         this.kdjj = kdjj;
     }
 }
