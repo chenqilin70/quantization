@@ -37,9 +37,10 @@ import java.util.List;
  */
 public class TestComputor  extends BaseSparkMain{
     public static void main(String[] args) {
+        String tableName="index";
         JavaSparkContext sparkContext = new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
-        Configuration hbaseConf = getIndexConf();
+        Configuration hbaseConf = getHbaseConf(tableName);
         JavaPairRDD<ImmutableBytesWritable, Result> hbaseRdd = sparkContext.newAPIHadoopRDD(hbaseConf, TableInputFormat.class, ImmutableBytesWritable.class, Result.class);
         JavaRDD<Index> indexRdd = hbaseRdd.map(t -> {
             Result result = t._2;
@@ -60,17 +61,15 @@ public class TestComputor  extends BaseSparkMain{
         DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, Index.class);
         dataFrame.show();
         dataFrame.registerTempTable("index");
-        sqlContext.sql("select code,close,timestamp from index where code = 'SZ399006' ").show();
+        sqlContext.sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' ").show();
 
 
     }
 
 
 
-    private static Configuration getIndexConf()  {
+    private static Configuration getHbaseConf(String tableName)  {
         Configuration hconf= HBaseConfiguration.create();
-        //需要读取的hbase表名
-        String tableName = "index";
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Scan scan = new Scan();
         try {
