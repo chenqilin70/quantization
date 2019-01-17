@@ -3,6 +3,7 @@ package com.kylin.quantization.computors;
 import com.kylin.quantization.model.Index;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
+import com.kylin.quantization.util.SqlConfigUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -43,7 +44,7 @@ public class TestComputor  extends BaseSparkMain{
         SQLContext sqlContext=new SQLContext(sparkContext);;
         String tableName="index";
         registerHbaseTable(tableName,sparkContext,sqlContext);
-        sqlContext.sql("select rowkey,close,timestamp from index where rowkey like 'SZ399006%' limit 5").show();
+        sql(SqlConfigUtil.getBizSql("test"),sqlContext).show();
         sparkContext.stop();
 
 

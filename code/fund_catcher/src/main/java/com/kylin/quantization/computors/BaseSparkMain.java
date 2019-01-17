@@ -1,6 +1,8 @@
 package com.kylin.quantization.computors;
 
+import com.kylin.quantization.component.TestRunner;
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.util.LoggerBuilder;
 import com.kylin.quantization.util.ResultUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -11,6 +13,7 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.hadoop.hbase.protobuf.ProtobufUtil;
 import org.apache.hadoop.hbase.protobuf.generated.ClientProtos;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -18,6 +21,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.SQLContext;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,6 +37,7 @@ import java.util.Map;
  * 作者姓名 修改时间    版本号 描述
  */
 public abstract class BaseSparkMain {
+    public static Logger logger = LoggerBuilder.build(BaseSparkMain.class);
     public static SparkConf sparkConf(){
         Map<String, String> sparkMap = CatcherConfig.proToMap("spark.properties");
         SparkConf conf = new SparkConf().setAppName(sparkMap.get("spark.appName"));
@@ -105,7 +110,12 @@ public abstract class BaseSparkMain {
         return temp;
     }
 
+    public static DataFrame sql(String sql,SQLContext sqlContext){
+        logger.info("spark is exec sql :"+sql);
+        DataFrame data = sqlContext.sql(sql);
+        return data;
 
+    }
 
 
     private static Configuration getHbaseConf(String tableName)  {

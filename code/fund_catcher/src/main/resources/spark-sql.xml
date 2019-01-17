@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <sqls>
+    <test>
+        <![CDATA[
+            select
+                rowkey,close,timestamp
+            from
+                index
+            where
+                rowkey like 'SZ399006%'
+            limit 5
+        ]]>
+    </test>
 
 </sqls>

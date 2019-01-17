@@ -3,6 +3,7 @@ package com.kylin.quantization.computors;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
+import com.kylin.quantization.util.LoggerBuilder;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -38,7 +39,7 @@ import java.util.List;
  * 作者姓名 修改时间    版本号 描述
  */
 public class PrintNewestNetValDate extends BaseSparkMain{
-    public static Logger logger = Logger.getLogger(PrintNewestNetValDate.class);
+    public static Logger logger = LoggerBuilder.build(PrintNewestNetValDate.class);
     private static HBaseDao hBaseDao=new HBaseDaoImpl();
     static {
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());

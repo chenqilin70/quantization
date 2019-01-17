@@ -6,6 +6,7 @@ import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.functions.FxFunctions;
+import com.kylin.quantization.util.LoggerBuilder;
 import com.kylin.quantization.util.ResultUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -40,7 +41,7 @@ public class FXSort extends BaseSparkMain{
     public static final String END_DATE="2014年12月31日";
     public static final Integer LEAST_YEARS=5;
 
-    public static Logger logger = Logger.getLogger(FXSort.class);
+    public static Logger logger = LoggerBuilder.build(FXSort.class);
     public static HBaseDao hBaseDao=new HBaseDaoImpl();
     static {
         hBaseDao.setHconfiguration(new CatcherConfig().hconfiguration());
