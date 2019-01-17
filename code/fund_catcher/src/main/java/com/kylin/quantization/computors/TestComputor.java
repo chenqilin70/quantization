@@ -40,6 +40,14 @@ public class TestComputor  extends BaseSparkMain{
 
 
     public static void main(String[] args) {
+        String[] jars = System.getProperty("java.class.path").split(";");
+        for(String jar:jars){
+            System.out.println(jar);
+        }
+
+
+
+
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);;
         String tableName="index";
