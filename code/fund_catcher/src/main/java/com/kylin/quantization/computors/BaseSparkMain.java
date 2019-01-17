@@ -4,6 +4,7 @@ import com.kylin.quantization.component.TestRunner;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.util.LoggerBuilder;
 import com.kylin.quantization.util.ResultUtil;
+import com.kylin.quantization.util.SqlConfigUtil;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -112,7 +113,7 @@ public abstract class BaseSparkMain {
 
     public static DataFrame sql(String sql,SQLContext sqlContext){
         logger.info("spark is exec sql :"+sql);
-        DataFrame data = sqlContext.sql(sql);
+        DataFrame data = sqlContext.sql(SqlConfigUtil.getBizSql(sql));
         return data;
 
     }
@@ -130,5 +131,6 @@ public abstract class BaseSparkMain {
         }
         return hconf;
     }
+
 
 }

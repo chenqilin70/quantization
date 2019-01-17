@@ -46,8 +46,14 @@ public class RowKeyUtil {
     }
     public static String getIndexRowkey(String code,String date){
         SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
-        Date d=new Date(Long.parseLong(date));
-        String result=code+"_"+sf.format(d);
+        String result="";
+        if(date.length()==8){
+            result=code+"_"+date;
+        }else{
+            Date d=new Date(Long.parseLong(date));
+            result=code+"_"+sf.format(d);
+        }
+
         return result;
 
     }

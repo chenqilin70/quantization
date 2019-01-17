@@ -1,5 +1,6 @@
 package com.kylin.quantization.computors;
 
+import com.google.common.collect.Lists;
 import com.kylin.quantization.model.Index;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
@@ -17,12 +18,15 @@ import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.DataFrame;
+import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 import scala.Tuple2;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,24 +44,38 @@ public class TestComputor  extends BaseSparkMain{
 
 
     public static void main(String[] args) {
-        String[] jars = System.getProperty("java.class.path").split(";");
-        logger.info("============================");
-        for(String jar:jars){
-            logger.info(jar);
-        }
 
-
-
-
-        JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
+        /*JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);;
         String tableName="index";
         registerHbaseTable(tableName,sparkContext,sqlContext);
         sql(SqlConfigUtil.getBizSql("test"),sqlContext).show();
-        sparkContext.stop();
-
-
+        sparkContext.stop();*/
+        JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
+        SQLContext sqlContext=new SQLContext(sparkContext);
+        registerHbaseTable("index",getIndexConf("index"),sparkContext,sqlContext);
+        sql("test",sqlContext).show();    ;
     }
+
+
+
+
+    private static Configuration getIndexConf(String tableName)  {
+        Configuration hconf= HBaseConfiguration.create();
+        //需要读取的hbase表名
+        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
+        Scan scan = new Scan()
+                .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190101")))
+                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190116")));
+
+        try {
+            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hconf;
+    }
+
 
 
 

@@ -2,13 +2,7 @@
 <sqls>
     <test>
         <![CDATA[
-            select
-                rowkey,close,timestamp
-            from
-                index
-            where
-                rowkey like 'SZ399006%'
-            limit 5
+            select * from index
         ]]>
     </test>
 
