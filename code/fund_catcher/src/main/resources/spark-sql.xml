@@ -10,7 +10,7 @@
             group by
                 substring_index(n.rowkey,"_",1)
             order by
-                crr(i.close,n.LJJZ) desc
+                correlationindex desc
 
 
         ]]>
