@@ -3,10 +3,14 @@
     <test>
         <![CDATA[
             select
-                i.close+1,n.LJJZ+1,i.rowkey,n.rowkey
+                crr(i.close,n.LJJZ) correlation_index,substring_index(n.rowkey,"_",1)
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
+            group by
+                substring_index(n.rowkey,"_",1)
+            order by
+                crr(i.close,n.LJJZ) desc
 
         ]]>
     </test>
