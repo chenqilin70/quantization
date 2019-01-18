@@ -86,7 +86,7 @@ public abstract class BaseSparkMain {
                     setMethodName="set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
                     paramClass=f.getType();
                     setMethodParam=transTypeFromString(ResultUtil.strVal(result, "baseinfo", fieldName),paramClass);
-                    System.out.println("setMethodName:"+setMethodName);
+//                    System.out.println("setMethodName:"+setMethodName);
 
                 }
                 Method setMethod = clazz.getMethod(setMethodName, paramClass);
@@ -114,9 +114,9 @@ public abstract class BaseSparkMain {
             }else{
                 obj=info;
             }
-        }else{
+        }/*else{
             logger.warn("transTypeFromString `s param is invalid:"+info);
-        }
+        }*/
 
         return obj;
     }
