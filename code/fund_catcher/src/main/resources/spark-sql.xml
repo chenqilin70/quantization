@@ -2,12 +2,18 @@
 <sqls>
     <test>
         <![CDATA[
-            select * from fund
+            select
+                substr(i.rowkey,instr(i.rowkey)+1)
+            from
+                index i
         ]]>
     </test>
     <test2>
         <![CDATA[
-            select * from netval
+            select
+                substr(n.rowkey,instr(n.rowkey)+1)
+            from
+                netval n
         ]]>
     </test2>
     <index>

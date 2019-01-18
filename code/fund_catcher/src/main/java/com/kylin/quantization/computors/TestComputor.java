@@ -45,17 +45,11 @@ public class TestComputor  extends BaseSparkMain{
 
     public static void main(String[] args) {
 
-        /*JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
-        SQLContext sqlContext=new SQLContext(sparkContext);;
-        String tableName="index";
-        registerHbaseTable(tableName,sparkContext,sqlContext);
-        sql(SqlConfigUtil.getBizSql("test"),sqlContext).show();
-        sparkContext.stop();*/
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
 
 
-        registerHbaseTable("fund",sparkContext,sqlContext);
+        registerHbaseTable("index",sparkContext,sqlContext);
         registerHbaseTable("netval",sparkContext,sqlContext);
         sql("test",sqlContext).show();
         sql("test2",sqlContext).show();
