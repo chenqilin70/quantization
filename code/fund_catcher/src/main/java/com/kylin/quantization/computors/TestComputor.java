@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,10 +49,12 @@ public class TestComputor  extends BaseSparkMain{
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
 
-
+        Date start=new Date();
         registerHbaseTable("index",sparkContext,sqlContext);
         registerHbaseTable("netval",sparkContext,sqlContext);
         sql("test",sqlContext).show();
+        Date end=new Date();
+        logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
         /*registerHbaseTable("index",sparkContext,sqlContext);
         sql("index",sqlContext).show();*/
 
