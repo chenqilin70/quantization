@@ -3,7 +3,7 @@
     <test>
         <![CDATA[
             select
-                crr(i.close,n.LJJZ) correlation_index,substring_index(n.rowkey,"_",1)
+                corr(i.close,n.LJJZ) correlation_index,substring_index(n.rowkey,"_",1)
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
