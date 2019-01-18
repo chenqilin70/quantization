@@ -91,8 +91,8 @@ public class TestComputor  extends BaseSparkMain{
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("LJJZ"));
         Scan scan = new Scan()
-                /*.setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604","1949-10-01")))
-                .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604", "2019-01-18")))*/
+                .setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604","1949-10-01")))
+                .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604", "2019-01-18")))
                 .setFilter(closeFilter);
 
         try {
