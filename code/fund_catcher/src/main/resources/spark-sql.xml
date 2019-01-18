@@ -3,13 +3,10 @@
     <test>
         <![CDATA[
             select
-
+                i.close,n.LJJZ,substring_index(i.rowkey,"_",1),substring_index(n.rowkey,"_",1)
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
-            where
-                substring_index(i.rowkey,"_",1)='SH000300'
-                and substring_index(n.rowkey,"_",1)='161604'
         ]]>
     </test>
     <test2>
@@ -18,6 +15,12 @@
                 substr(n.rowkey,instr(n.rowkey,"_")+1)
             from
                 netval n
+
+
+
+            where
+                substring_index(i.rowkey,"_",1)='SH000300'
+                and substring_index(n.rowkey,"_",1)='161604'
         ]]>
     </test2>
     <index>
