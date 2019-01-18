@@ -94,7 +94,7 @@ public abstract class BaseSparkMain {
             }
             return (T)model;
         });
-        logger.info("collect size is :"+indexRdd.collect().size()+",tableName:"+tableName);
+//        logger.info("collect size is :"+indexRdd.collect().size()+",tableName:"+tableName);
         DataFrame dataFrame = sqlContext.createDataFrame(indexRdd, clazz);
 
         return dataFrame;
