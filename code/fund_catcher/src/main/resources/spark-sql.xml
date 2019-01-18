@@ -3,7 +3,7 @@
     <test>
         <![CDATA[
             select
-                substr(i.rowkey,instr(i.rowkey)+1)
+                substr(i.rowkey,instr(i.rowkey,"_")+1)
             from
                 index i
         ]]>
@@ -11,7 +11,7 @@
     <test2>
         <![CDATA[
             select
-                substr(n.rowkey,instr(n.rowkey)+1)
+                substr(n.rowkey,instr(n.rowkey,"_")+1)
             from
                 netval n
         ]]>
