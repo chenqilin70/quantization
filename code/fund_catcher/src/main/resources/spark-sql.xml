@@ -10,5 +10,10 @@
             select * from netval
         ]]>
     </test2>
+    <index>
+        <![CDATA[
+            select * from index
+        ]]>
+    </index>
 
 </sqls>
