@@ -3,7 +3,7 @@
     <test>
         <![CDATA[
             select
-                i.close,n.LJJZ,substring_index(i.rowkey,"_",1),substring_index(n.rowkey,"_",1)
+                i.close+1,n.LJJZ+1,i.rowkey,n.rowkey
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
