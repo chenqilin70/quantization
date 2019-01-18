@@ -10,9 +10,7 @@
             group by
                 substring_index(n.rowkey,"_",1)
             order by
-                correlationindex desc
-
-
+                correlationindex
         ]]>
     </test>
     <test2>
