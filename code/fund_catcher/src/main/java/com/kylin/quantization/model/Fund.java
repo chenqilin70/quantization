@@ -1,31 +1,41 @@
 package com.kylin.quantization.model;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 
 /**
  * ClassName: Fund
  * Description:
  * Author: aierxuan
- * Date: 2019-01-17 17:59
+ * Date: 2019-01-17 17:45
  * History:
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
-public class Fund {
+public class Fund implements Serializable {
     private String rowkey;
-    private BigDecimal DWJZ         ;
-    private BigDecimal LJJZ	      ;
-    private String FHSP	      ;
-    private String FHFCZ	      ;
-    private String FHFCBZ	      ;
-    private String FSRQ	      ;
-    private String NAVTYPE      ;
-    private String SDATE	      ;
-    private String DTYPE	      ;
-    private String ACTUALSYI    ;
-    private String SHZT	      ;
-    private String SGZT	      ;
-    private String JZZZL	      ;
+    private String tgfl	;//托管费率
+    private String zgrgfl	;//最高认购费率
+    private String bbms	;//保本模式
+    private String glfl	;//管理费率
+    private String clylfh	;//成立来分红
+    private String yjbjjz	;//业绩比较基准
+    private String fhgm	;//份额规模
+    private String gzbd	;//跟踪标的
+    private String zcgm	;//资产规模
+    private String zjbbq	;//最近保本期
+    private String fxrq	;//发行日期
+    private String jjtgr	;//基金托管人
+    private String jjqc	;//基金全称
+    private String zgshfl	;//最高赎回费率
+    private String jjjc	;//基金简称
+    private String jjlx	;//基金类型
+    private String jjglr	;//基金管理人
+    private String zgsgfl	;//最高申购费率
+    private String xsfwfl	;//销售服务费率
+    private String dbjg	;//担保机构
+    private String jjdm	;//基金代码
+    private String clrqgm	;//成立日期/规模
+    private String jjjlr	;//基金经理人
 
     public String getRowkey() {
         return rowkey;
@@ -35,107 +45,187 @@ public class Fund {
         this.rowkey = rowkey;
     }
 
-    public BigDecimal getDWJZ() {
-        return DWJZ;
+    public String getTgfl() {
+        return tgfl;
     }
 
-    public void setDWJZ(BigDecimal DWJZ) {
-        this.DWJZ = DWJZ;
+    public void setTgfl(String tgfl) {
+        this.tgfl = tgfl;
     }
 
-    public BigDecimal getLJJZ() {
-        return LJJZ;
+    public String getZgrgfl() {
+        return zgrgfl;
     }
 
-    public void setLJJZ(BigDecimal LJJZ) {
-        this.LJJZ = LJJZ;
+    public void setZgrgfl(String zgrgfl) {
+        this.zgrgfl = zgrgfl;
     }
 
-    public String getFHSP() {
-        return FHSP;
+    public String getBbms() {
+        return bbms;
     }
 
-    public void setFHSP(String FHSP) {
-        this.FHSP = FHSP;
+    public void setBbms(String bbms) {
+        this.bbms = bbms;
     }
 
-    public String getFHFCZ() {
-        return FHFCZ;
+    public String getGlfl() {
+        return glfl;
     }
 
-    public void setFHFCZ(String FHFCZ) {
-        this.FHFCZ = FHFCZ;
+    public void setGlfl(String glfl) {
+        this.glfl = glfl;
     }
 
-    public String getFHFCBZ() {
-        return FHFCBZ;
+    public String getClylfh() {
+        return clylfh;
     }
 
-    public void setFHFCBZ(String FHFCBZ) {
-        this.FHFCBZ = FHFCBZ;
+    public void setClylfh(String clylfh) {
+        this.clylfh = clylfh;
     }
 
-    public String getFSRQ() {
-        return FSRQ;
+    public String getYjbjjz() {
+        return yjbjjz;
     }
 
-    public void setFSRQ(String FSRQ) {
-        this.FSRQ = FSRQ;
+    public void setYjbjjz(String yjbjjz) {
+        this.yjbjjz = yjbjjz;
     }
 
-    public String getNAVTYPE() {
-        return NAVTYPE;
+    public String getFhgm() {
+        return fhgm;
     }
 
-    public void setNAVTYPE(String NAVTYPE) {
-        this.NAVTYPE = NAVTYPE;
+    public void setFhgm(String fhgm) {
+        this.fhgm = fhgm;
     }
 
-    public String getSDATE() {
-        return SDATE;
+    public String getGzbd() {
+        return gzbd;
     }
 
-    public void setSDATE(String SDATE) {
-        this.SDATE = SDATE;
+    public void setGzbd(String gzbd) {
+        this.gzbd = gzbd;
     }
 
-    public String getDTYPE() {
-        return DTYPE;
+    public String getZcgm() {
+        return zcgm;
     }
 
-    public void setDTYPE(String DTYPE) {
-        this.DTYPE = DTYPE;
+    public void setZcgm(String zcgm) {
+        this.zcgm = zcgm;
     }
 
-    public String getACTUALSYI() {
-        return ACTUALSYI;
+    public String getZjbbq() {
+        return zjbbq;
     }
 
-    public void setACTUALSYI(String ACTUALSYI) {
-        this.ACTUALSYI = ACTUALSYI;
+    public void setZjbbq(String zjbbq) {
+        this.zjbbq = zjbbq;
     }
 
-    public String getSHZT() {
-        return SHZT;
+    public String getFxrq() {
+        return fxrq;
     }
 
-    public void setSHZT(String SHZT) {
-        this.SHZT = SHZT;
+    public void setFxrq(String fxrq) {
+        this.fxrq = fxrq;
     }
 
-    public String getSGZT() {
-        return SGZT;
+    public String getJjtgr() {
+        return jjtgr;
     }
 
-    public void setSGZT(String SGZT) {
-        this.SGZT = SGZT;
+    public void setJjtgr(String jjtgr) {
+        this.jjtgr = jjtgr;
     }
 
-    public String getJZZZL() {
-        return JZZZL;
+    public String getJjqc() {
+        return jjqc;
     }
 
-    public void setJZZZL(String JZZZL) {
-        this.JZZZL = JZZZL;
+    public void setJjqc(String jjqc) {
+        this.jjqc = jjqc;
+    }
+
+    public String getZgshfl() {
+        return zgshfl;
+    }
+
+    public void setZgshfl(String zgshfl) {
+        this.zgshfl = zgshfl;
+    }
+
+    public String getJjjc() {
+        return jjjc;
+    }
+
+    public void setJjjc(String jjjc) {
+        this.jjjc = jjjc;
+    }
+
+    public String getJjlx() {
+        return jjlx;
+    }
+
+    public void setJjlx(String jjlx) {
+        this.jjlx = jjlx;
+    }
+
+    public String getJjglr() {
+        return jjglr;
+    }
+
+    public void setJjglr(String jjglr) {
+        this.jjglr = jjglr;
+    }
+
+    public String getZgsgfl() {
+        return zgsgfl;
+    }
+
+    public void setZgsgfl(String zgsgfl) {
+        this.zgsgfl = zgsgfl;
+    }
+
+    public String getXsfwfl() {
+        return xsfwfl;
+    }
+
+    public void setXsfwfl(String xsfwfl) {
+        this.xsfwfl = xsfwfl;
+    }
+
+    public String getDbjg() {
+        return dbjg;
+    }
+
+    public void setDbjg(String dbjg) {
+        this.dbjg = dbjg;
+    }
+
+    public String getJjdm() {
+        return jjdm;
+    }
+
+    public void setJjdm(String jjdm) {
+        this.jjdm = jjdm;
+    }
+
+    public String getClrqgm() {
+        return clrqgm;
+    }
+
+    public void setClrqgm(String clrqgm) {
+        this.clrqgm = clrqgm;
+    }
+
+    public String getJjjlr() {
+        return jjjlr;
+    }
+
+    public void setJjjlr(String jjjlr) {
+        this.jjjlr = jjjlr;
     }
 }
