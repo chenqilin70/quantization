@@ -7,7 +7,7 @@
             from
                 index i
                 inner join (
-                    select rowkey,LJJZ from netval where substring_index(n.rowkey,"_",1)='161604'
+                    select rowkey,LJJZ from netval where substring_index(rowkey,"_",1)='161604'
                 ) n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
             where
                 substring_index(i.rowkey,"_",1)='SH000300'
