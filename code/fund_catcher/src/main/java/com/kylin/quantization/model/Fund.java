@@ -13,6 +13,8 @@ import java.io.Serializable;
  */
 public class Fund implements Serializable {
     private String rowkey;
+    private String fundcode;
+    private String fundtype;
     private String tgfl	;//托管费率
     private String zgrgfl	;//最高认购费率
     private String bbms	;//保本模式
@@ -36,6 +38,22 @@ public class Fund implements Serializable {
     private String jjdm	;//基金代码
     private String clrqgm	;//成立日期/规模
     private String jjjlr	;//基金经理人
+
+    public String getFundcode() {
+        return fundcode;
+    }
+
+    public void setFundcode(String fundcode) {
+        this.fundcode = fundcode;
+    }
+
+    public String getFundtype() {
+        return fundtype;
+    }
+
+    public void setFundtype(String fundtype) {
+        this.fundtype = fundtype;
+    }
 
     public String getRowkey() {
         return rowkey;
