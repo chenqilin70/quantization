@@ -55,7 +55,7 @@ public class TestComputor  extends BaseSparkMain{
         registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("test", sqlContext);
         Row[] collect = resultDF.collect();
-        for(int k=0;k<300;k++){
+        for(int k=0;k<collect.length;k++){
             Row row=collect[k];
             for(int i=0;i<row.size();i++){
                 System.out.print(row.get(i)+"\t");
