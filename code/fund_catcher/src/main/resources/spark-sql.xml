@@ -7,6 +7,8 @@
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
+            where
+                correlationindex is not null
             group by
                 substring_index(n.rowkey,"_",1)
             order by
