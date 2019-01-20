@@ -7,6 +7,7 @@
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
+                inner join fund f on f.jjlx='股票型'
             where
                 i.close is not null
                 and n.LJJZ is not null
