@@ -17,11 +17,6 @@
         <![CDATA[
 
 
-
-
-
-
-
             select
                 substr(n.rowkey,instr(n.rowkey,"_")+1)
             from
