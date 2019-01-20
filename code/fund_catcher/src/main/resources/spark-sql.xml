@@ -7,7 +7,7 @@
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
-                inner join fund f on f.fundcode=substr(n.rowkey,instr(n.rowkey,"_")+1)
+                inner join fund f on f.fundcode=substr(n.rowkey,1,instr(n.rowkey,"_"))
             where
                 i.close is not null
                 and n.LJJZ is not null
