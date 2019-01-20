@@ -23,7 +23,7 @@
 
 
             select
-                substr('abcd',1,instr('abcd',"c"))
+                substr('000001_20011218',1,instr('000001_20011218',"_"))
 
             from
                 netval n
