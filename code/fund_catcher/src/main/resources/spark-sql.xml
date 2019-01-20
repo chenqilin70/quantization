@@ -7,11 +7,11 @@
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
-
+            where
+                i.close is not null
+                and n.LJJZ is not null
             group by
                 substring_index(n.rowkey,"_",1)
-            having
-                correlationindex is not null
             order by
                 correlationindex
         ]]>

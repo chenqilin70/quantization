@@ -52,7 +52,14 @@ public class TestComputor  extends BaseSparkMain{
         Date start=new Date();
         registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
         registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
-        sql("test",sqlContext).show();
+        DataFrame resultDF = sql("test", sqlContext);
+        Row[] collect = resultDF.collect();
+        for(Row row:collect){
+            for(int i=0;i<row.size();i++){
+                System.out.print(row.get(i)+"\t");
+            }
+            System.out.println("");
+        }
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
         /*registerHbaseTable("index",sparkContext,sqlContext);
