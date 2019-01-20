@@ -23,14 +23,10 @@
 
 
             select
-                substr(n.rowkey,instr(n.rowkey,"_")+1)
+                substr('abcd',1,instr('abcd',"c"))
+
             from
                 netval n
-
-
-                where
-                substring_index(i.rowkey,"_",1)='SH000300'
-                and substring_index(n.rowkey,"_",1)='161604'
 
 
 

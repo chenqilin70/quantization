@@ -53,7 +53,7 @@ public class TestComputor  extends BaseSparkMain{
         registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
         registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
         registerHbaseTable("fund",sparkContext,sqlContext);
-        DataFrame resultDF = sql("test", sqlContext);
+        DataFrame resultDF = sql("test2", sqlContext);
         Row[] collect = resultDF.collect();
         for(Row row:collect){
             for(int i=0;i<row.size();i++){
