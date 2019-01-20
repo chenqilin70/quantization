@@ -10,7 +10,7 @@
 
             group by
                 substring_index(n.rowkey,"_",1)
-                having
+            having
                 correlationindex is not null
             order by
                 correlationindex
