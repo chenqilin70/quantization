@@ -3,7 +3,8 @@
     <test>
         <![CDATA[
             select
-                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,regexp_replace(f.fxrq,'年|月','-')
+                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,regexp_replace(regexp_replace(f.fxrq,'年|月','-'),'日','')
+                ,to_date(regexp_replace(regexp_replace(f.fxrq,'年|月','-'),'日',''))
                 ,to_unix_timestamp(regexp_replace(f.fxrq,'年|月','-'),'yyyy-MM-dd')
             from
                 index i
