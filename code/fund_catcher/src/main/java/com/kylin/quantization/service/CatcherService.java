@@ -284,6 +284,7 @@ public class CatcherService {
     }
 
     public void getReport() {
+        logger.info("getReport start");
         /*Scan scan=new Scan().setFilter(new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fundcode")));
         hBaseDao.scan("fund",scan,scanner -> {
 
@@ -298,6 +299,7 @@ public class CatcherService {
                 "limit",""+Integer.MAX_VALUE,
                 "start","0"
         ));
+        logger.info(reportListStr);
         Document reportListDoc = Jsoup.parse(reportListStr);
         Elements dds = reportListDoc.getElementsByClass("dd");
         Elements ccs= reportListDoc.getElementsByClass("cc");
