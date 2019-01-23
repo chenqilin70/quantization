@@ -3,7 +3,7 @@
     <test>
         <![CDATA[
             select
-                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,to_date(regexp_replace(f.fxrq,'年|月','-')),add_months(now(),-12)
+                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,to_date(concat(regexp_replace(f.fxrq,'年|月','-'),' 00:00:00'))
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
@@ -12,6 +12,8 @@
                 i.close is not null
                 and n.LJJZ is not null
                 and f.jjlx='股票型'
+                and f.fxrq is not null
+
 
             group by
                 substring_index(n.rowkey,"_",1),f.fxrq
@@ -21,7 +23,7 @@
     </test>
     <test2>
         <![CDATA[
-
+and add_months(now(),0-(1*12))>=to_date(regexp_replace(f.fxrq,'年|月','-'))
 
             select
                 substr('000001_20011218',1,instr('000001_20011218',"_"))
