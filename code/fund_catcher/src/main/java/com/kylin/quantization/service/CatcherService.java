@@ -294,7 +294,7 @@ public class CatcherService {
         //?1=1&fundCode=161604&reportTypeCode=FB030&limit=20&start=20
         String reportListStr = HttpUtil.doGet(reportListUrl, ssMapUtil.create(
                 "1", "1",
-                "fundCode", "161604",
+                "fundCode", "000001",
                 "reportTypeCode", "FB030"
         ));
         logger.info(reportListStr);

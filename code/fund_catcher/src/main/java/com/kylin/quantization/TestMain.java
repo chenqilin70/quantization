@@ -14,6 +14,6 @@ import java.util.Date;
 public class TestMain {
     public static void main(String[] args) throws ParseException {
 
-        System.out.println(RowKeyUtil.getBaseInfoRowKey("161604"));
+        System.out.println(RowKeyUtil.getBaseInfoRowKey("000457"));
     }
 }
