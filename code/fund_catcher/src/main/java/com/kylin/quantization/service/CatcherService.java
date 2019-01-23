@@ -302,10 +302,10 @@ public class CatcherService {
         Elements dds = reportListDoc.getElementsByClass("dd");
         Elements ccs= reportListDoc.getElementsByClass("cc");
         dds.forEach(i->{
-            System.out.println(i.text());
+            System.out.println("=="+i.text());
         });
         ccs.forEach(i->{
-            System.out.println(i.text());
+            System.out.println("=="+i.text());
         });
     }
 }
