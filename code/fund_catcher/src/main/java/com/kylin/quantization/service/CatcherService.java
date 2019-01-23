@@ -282,4 +282,30 @@ public class CatcherService {
         Date tomorrow=c.getTime();
         return tomorrow;
     }
+
+    public void getReport() {
+        /*Scan scan=new Scan().setFilter(new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("fundcode")));
+        hBaseDao.scan("fund",scan,scanner -> {
+
+            return null;
+        });*/
+        String reportListUrl = conf.get("report_list");
+        //?1=1&fundCode=161604&reportTypeCode=FB030&limit=20&start=20
+        String reportListStr = HttpUtil.doGet(reportListUrl, ssMapUtil.create(
+                "1", "1",
+                "fundCode", "161604",
+                "reportTypeCode", "FB030",
+                "limit",""+Integer.MAX_VALUE,
+                "start","0"
+        ));
+        Document reportListDoc = Jsoup.parse(reportListStr);
+        Elements dds = reportListDoc.getElementsByClass("dd");
+        Elements ccs= reportListDoc.getElementsByClass("cc");
+        dds.forEach(i->{
+            System.out.println(i.text());
+        });
+        ccs.forEach(i->{
+            System.out.println(i.text());
+        });
+    }
 }
