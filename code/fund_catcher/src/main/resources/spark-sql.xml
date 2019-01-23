@@ -3,7 +3,8 @@
     <test>
         <![CDATA[
             select
-                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,to_date(concat(regexp_replace(f.fxrq,'年|月','-'),' 00:00:00'))
+                corr(i.close,n.LJJZ) as correlationindex,substring_index(n.rowkey,"_",1) as fundcode,concat(regexp_replace(f.fxrq,'年|月','-')
+                ,to_unix_timestamp(concat(regexp_replace(f.fxrq,'年|月','-'), 'yyyy-MM-dd')
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
