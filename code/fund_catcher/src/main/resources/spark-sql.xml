@@ -13,7 +13,7 @@
                 and n.LJJZ is not null
                 and f.jjlx='股票型'
             group by
-                substring_index(n.rowkey,"_",1)
+                substring_index(n.rowkey,"_",1),f.fxrq
             order by
                 correlationindex
         ]]>
