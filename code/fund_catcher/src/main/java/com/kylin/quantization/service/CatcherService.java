@@ -295,9 +295,7 @@ public class CatcherService {
         String reportListStr = HttpUtil.doGet(reportListUrl, ssMapUtil.create(
                 "1", "1",
                 "fundCode", "161604",
-                "reportTypeCode", "FB030",
-                "limit",""+Integer.MAX_VALUE,
-                "start","0"
+                "reportTypeCode", "FB030"
         ));
         logger.info(reportListStr);
         Document reportListDoc = Jsoup.parse(reportListStr);
