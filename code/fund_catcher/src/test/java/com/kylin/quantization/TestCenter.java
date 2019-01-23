@@ -7,6 +7,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.junit.Test;
+import org.seimicrawler.xpath.JXDocument;
 
 import java.lang.reflect.Field;
 
@@ -22,7 +23,7 @@ import java.lang.reflect.Field;
 public class TestCenter {
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
-    @Test
+//    @Test
     public void test(){
         int pageSize=20;
         int index=0;
@@ -32,7 +33,7 @@ public class TestCenter {
 
             String reportListStr = HttpUtil.doGet(reportListUrl, ssMapUtil.create(
                     "1", "1",
-                    "fundCode", "161604",
+//                    "fundCode", "000457",
                     "reportTypeCode", "FB030",
                     "limit","20",
                     "start",index+""
@@ -48,6 +49,7 @@ public class TestCenter {
             }
             reports.forEach(i->{
                 dealDetail(i);
+//                System.out.println(i.text());
             });
             index+=20;
         }
@@ -55,9 +57,14 @@ public class TestCenter {
     }
 
     private void dealDetail(Element i) {
+
+
         Elements a = i.getElementsByTag("a");
         String detailUrl="http://fund.csrc.gov.cn/"+a.get(1).attr("href");
-        String detailHttp = HttpUtil.doGet(detailUrl, null);
-        System.out.println(detailHttp);
+        String detailHtml = HttpUtil.doGet(detailUrl, null);
+        Document detailDoc = Jsoup.parse(detailHtml);
+        Elements targetEs = detailDoc.select("#con_one_1");
+        System.out.println(targetEs.get(10).text());
+        System.out.println("=========================");
     }
 }
