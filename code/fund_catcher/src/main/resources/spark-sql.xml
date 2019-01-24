@@ -9,7 +9,6 @@
                 substring_index(n.rowkey,"_",1) as fundcode,
                 substr(i.rowkey,1,instr(i.rowkey,"_")-1) index,
                 corr(i.close,n.LJJZ) as correlationindex
-
             from
                 index i
                 inner join netval n on substr(i.rowkey,instr(i.rowkey,"_")+1)=substr(n.rowkey,instr(n.rowkey,"_")+1)
@@ -27,7 +26,7 @@
                 fundcode,correlationindex
         ]]>
     </corr>
-    <test>
+    <gzbd>
         <![CDATA[
             select
                 split(f.yjbjjz,'[+]')
@@ -36,11 +35,11 @@
             where
                 f.jjlx='债券型'
         ]]>
-    </test>
-    <index>
+    </gzbd>
+    <test>
         <![CDATA[
-            select * from index
+            select count(*) from fund  f where f.jjlx='股票型'
         ]]>
-    </index>
+    </test>
 
 </sqls>

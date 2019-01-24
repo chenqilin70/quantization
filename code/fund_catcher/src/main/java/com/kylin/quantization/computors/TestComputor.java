@@ -49,6 +49,10 @@ public class TestComputor  extends BaseSparkMain{
 
 
     public static void main(String[] args) {
+        commonDeal();
+
+    }
+    public static void gzbd(){
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
         registerHbaseTable("fund",sparkContext,sqlContext);
@@ -108,7 +112,6 @@ public class TestComputor  extends BaseSparkMain{
 
 
         sparkContext.stop();
-
     }
 
     public static void commonDeal(){
@@ -116,9 +119,9 @@ public class TestComputor  extends BaseSparkMain{
         SQLContext sqlContext=new SQLContext(sparkContext);
 
         Date start=new Date();
-//        registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
-//        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
-//        registerHbaseTable("fund",sparkContext,sqlContext);
+        registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
+        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
+        registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("test", sqlContext);
         Row[] collect = resultDF.collect();
         for(int k=0;k<collect.length;k++){
