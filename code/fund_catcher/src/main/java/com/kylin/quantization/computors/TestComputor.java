@@ -68,10 +68,22 @@ public class TestComputor  extends BaseSparkMain{
                         String gzjz = ObjectUtils.toString(next);
                         String origin=gzjz;
                         if (gzjz.contains("×")) {
-                            gzjz = gzjz.substring(0, gzjz.indexOf("×"));
+                            String[] split = gzjz.split("×");
+                            if(split[0].contains("%")){
+                                gzjz = split[1];
+                            }else{
+                                gzjz = split[0];
+                            }
+
+
                         }
                         if (gzjz.contains("*")) {
-                            gzjz = gzjz.substring(0, gzjz.indexOf("*"));
+                            String[] split = gzjz.split("\\*");
+                            if(split[0].contains("%")){
+                                gzjz = split[1];
+                            }else {
+                                gzjz = split[0];
+                            }
                         }
                         result.add(new Tuple2<String, String>(gzjz.trim(), origin));
                     }
