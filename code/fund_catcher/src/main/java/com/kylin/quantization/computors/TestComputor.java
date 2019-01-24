@@ -50,9 +50,9 @@ public class TestComputor  extends BaseSparkMain{
         SQLContext sqlContext=new SQLContext(sparkContext);
 
         Date start=new Date();
-        registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
-        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
-        registerHbaseTable("fund",sparkContext,sqlContext);
+//        registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
+//        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
+//        registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("test", sqlContext);
         Row[] collect = resultDF.collect();
         for(int k=0;k<collect.length;k++){
