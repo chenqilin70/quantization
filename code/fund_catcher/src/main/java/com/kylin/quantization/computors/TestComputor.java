@@ -20,7 +20,10 @@ import org.apache.spark.api.java.function.Function;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
+import scala.Function1;
 import scala.Tuple2;
+import scala.collection.Iterator;
+import scala.collection.mutable.WrappedArray;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -45,7 +48,39 @@ public class TestComputor  extends BaseSparkMain{
 
 
     public static void main(String[] args) {
+        JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
+        SQLContext sqlContext=new SQLContext(sparkContext);
 
+        Date start=new Date();
+        DataFrame resultDF = sql("test", sqlContext);
+        Row[] collect = resultDF.collect();
+        for(int k=0;k<collect.length;k++){
+            Row row=collect[k];
+            for(int i=0;i<row.size();i++){
+                WrappedArray arry= (WrappedArray) row.get(i);
+                Iterator iterator = arry.iterator();
+                while(true){
+                    Object next = iterator.next();
+                    if(next==null){
+                        break;
+                    }else{
+                        System.out.print(next+"\t");
+                    }
+                }
+            }
+            System.out.println("");
+        }
+        Date end=new Date();
+        logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
+        /*registerHbaseTable("index",sparkContext,sqlContext);
+        sql("index",sqlContext).show();*/
+
+
+        sparkContext.stop();
+
+    }
+
+    public static void commonDeal(){
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
 
