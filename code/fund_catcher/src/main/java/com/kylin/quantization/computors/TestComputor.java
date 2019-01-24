@@ -5,6 +5,7 @@ import com.kylin.quantization.model.Index;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Result;
@@ -53,22 +54,32 @@ public class TestComputor  extends BaseSparkMain{
 
         Date start=new Date();
         DataFrame resultDF = sql("test", sqlContext);
-        Row[] collect = resultDF.collect();
-        for(int k=0;k<collect.length;k++){
-            Row row=collect[k];
-            for(int i=0;i<row.size();i++){
-                WrappedArray arry= (WrappedArray) row.get(i);
+
+        List<Tuple2<String, Integer>> collect = resultDF.toJavaRDD().flatMapToPair(row -> {
+            List<Tuple2<String, Integer>> result = new ArrayList<>();
+            for (int i = 0; i < row.size(); i++) {
+                WrappedArray arry = (WrappedArray) row.get(i);
                 Iterator iterator = arry.iterator();
-                while(!iterator.isEmpty()){
+                while (!iterator.isEmpty()) {
                     Object next = iterator.next();
-                    if(next==null){
+                    if (next == null) {
                         break;
-                    }else{
-                        System.out.print(next+"\t");
+                    } else {
+                        String gzjz = ObjectUtils.toString(next);
+                        if (gzjz.contains("×")) {
+                            gzjz = gzjz.substring(0, gzjz.indexOf("×"));
+                        }
+                        result.add(new Tuple2<String, Integer>(gzjz.trim(), 1));
                     }
                 }
             }
-            System.out.println("");
+            return result;
+        }).reduceByKey((i, j) -> i + j).collect();
+
+
+        for(int k=0;k<collect.size();k++){
+            Tuple2<String, Integer> jz = collect.get(k);
+            logger.info(jz._1+"==>"+jz._2);
         }
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
