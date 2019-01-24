@@ -55,8 +55,8 @@ public class TestComputor  extends BaseSparkMain{
         Date start=new Date();
         DataFrame resultDF = sql("test", sqlContext);
 
-        List<Tuple2<String, Integer>> collect = resultDF.toJavaRDD().flatMapToPair(row -> {
-            List<Tuple2<String, Integer>> result = new ArrayList<>();
+        List<Tuple2<String, String>> collect = resultDF.toJavaRDD().flatMapToPair(row -> {
+            List<Tuple2<String, String>> result = new ArrayList<>();
             for (int i = 0; i < row.size(); i++) {
                 WrappedArray arry = (WrappedArray) row.get(i);
                 Iterator iterator = arry.iterator();
@@ -66,22 +66,23 @@ public class TestComputor  extends BaseSparkMain{
                         break;
                     } else {
                         String gzjz = ObjectUtils.toString(next);
+                        String origin=gzjz;
                         if (gzjz.contains("×")) {
                             gzjz = gzjz.substring(0, gzjz.indexOf("×"));
                         }
                         if (gzjz.contains("*")) {
                             gzjz = gzjz.substring(0, gzjz.indexOf("*"));
                         }
-                        result.add(new Tuple2<String, Integer>(gzjz.trim(), 1));
+                        result.add(new Tuple2<String, String>(gzjz.trim(), origin));
                     }
                 }
             }
             return result;
-        }).reduceByKey((i, j) -> i + j).collect();
+        }).distinct().collect();
 
 
         for(int k=0;k<collect.size();k++){
-            Tuple2<String, Integer> jz = collect.get(k);
+            Tuple2<String, String> jz = collect.get(k);
             logger.info(jz._1+"==>"+jz._2);
         }
         Date end=new Date();
