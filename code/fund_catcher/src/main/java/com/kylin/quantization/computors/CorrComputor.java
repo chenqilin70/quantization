@@ -1,5 +1,6 @@
 package com.kylin.quantization.computors;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.model.IndexFundCorr;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -15,6 +16,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -42,10 +44,8 @@ public class CorrComputor  extends BaseSparkMain{
         Row[] collect = resultDF.collect();
         for(int k=0;k<collect.length;k++){
             Row row=collect[k];
-            for(int i=0;i<row.size();i++){
-                System.out.print(row.get(i)+"\t");
-            }
-            System.out.println("");
+            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getString(2)));
+            System.out.println(JSON.toJSONString(indexFundCorr));
         }
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
