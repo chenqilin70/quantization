@@ -30,7 +30,9 @@
     <test>
         <![CDATA[
             select
-                 split('中信标普可转债指数收益率×70%+中证综合债券指数收益率×20%+上证红利指数×10%','[+]')
+                 split(f.yjbjjz,'[+]')
+            from
+                fund f
         ]]>
     </test>
     <index>

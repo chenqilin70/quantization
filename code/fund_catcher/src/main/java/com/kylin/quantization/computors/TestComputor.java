@@ -51,7 +51,7 @@ public class TestComputor  extends BaseSparkMain{
     public static void main(String[] args) {
         JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
         SQLContext sqlContext=new SQLContext(sparkContext);
-
+        registerHbaseTable("fund",sparkContext,sqlContext);
         Date start=new Date();
         DataFrame resultDF = sql("test", sqlContext);
 
