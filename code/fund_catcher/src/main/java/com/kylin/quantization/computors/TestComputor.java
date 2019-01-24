@@ -55,7 +55,7 @@ public class TestComputor  extends BaseSparkMain{
         Date start=new Date();
         DataFrame resultDF = sql("test", sqlContext);
 
-        List<Tuple2<String, Integer>> collect = resultDF.toJavaRDD().flatMapToPair(row -> {
+        List<Tuple2<Integer, Tuple2<String, Integer>>> collect = resultDF.toJavaRDD().flatMapToPair(row -> {
             List<Tuple2<String, Integer>> result = new ArrayList<>();
             for (int i = 0; i < row.size(); i++) {
                 WrappedArray arry = (WrappedArray) row.get(i);
@@ -66,12 +66,12 @@ public class TestComputor  extends BaseSparkMain{
                         break;
                     } else {
                         String gzjz = ObjectUtils.toString(next);
-                        String origin=gzjz;
+                        String origin = gzjz;
                         if (gzjz.contains("×")) {
                             String[] split = gzjz.split("×");
-                            if(split[0].contains("%")){
+                            if (split[0].contains("%")) {
                                 gzjz = split[1];
-                            }else{
+                            } else {
                                 gzjz = split[0];
                             }
 
@@ -79,25 +79,27 @@ public class TestComputor  extends BaseSparkMain{
                         }
                         if (gzjz.contains("*")) {
                             String[] split = gzjz.split("\\*");
-                            if(split[0].contains("%")){
+                            if (split[0].contains("%")) {
                                 gzjz = split[1];
-                            }else {
+                            } else {
                                 gzjz = split[0];
                             }
                         }
                         result.add(new Tuple2<String, Integer>(
-                                gzjz.replaceAll("收益率","").replaceAll("\\d+%","").trim()
+                                gzjz.replaceAll("收益率", "").replaceAll("\\d+%", "").trim()
                                 , 1));
                     }
                 }
             }
             return result;
-        }).reduceByKey((i,j)->i+j).sortByKey().collect();
+        }).reduceByKey((i, j) -> i + j).mapToPair(t -> {
+            return new Tuple2<Integer, Tuple2<String, Integer>>(t._2, t);
+        }).sortByKey().collect();
 
 
         for(int k=0;k<collect.size();k++){
-            Tuple2<String, Integer> jz = collect.get(k);
-            logger.info(jz._1+"==>"+jz._2);
+            Tuple2<Integer, Tuple2<String, Integer>> jz = collect.get(k);
+            logger.info(jz._2._1+"==>"+jz._2._2);
         }
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");

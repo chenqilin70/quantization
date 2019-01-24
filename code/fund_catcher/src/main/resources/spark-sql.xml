@@ -33,6 +33,8 @@
                 split(f.yjbjjz,'[+]')
             from
                 fund f
+            where
+                f.jjlx='股票型'
         ]]>
     </test>
     <index>
