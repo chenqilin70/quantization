@@ -59,7 +59,7 @@ public class TestComputor  extends BaseSparkMain{
             for(int i=0;i<row.size();i++){
                 WrappedArray arry= (WrappedArray) row.get(i);
                 Iterator iterator = arry.iterator();
-                while(true){
+                while(!iterator.isEmpty()){
                     Object next = iterator.next();
                     if(next==null){
                         break;
