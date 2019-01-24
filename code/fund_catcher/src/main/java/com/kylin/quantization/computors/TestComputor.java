@@ -126,24 +126,7 @@ public class TestComputor  extends BaseSparkMain{
 
 
 
-    private static Configuration getNetValConf()  {
-        String tableName="netval";
-        Configuration hconf= HBaseConfiguration.create();
-        //需要读取的hbase表名
-        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("LJJZ"));
-        Scan scan = new Scan()
-                /*.setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604","1949-10-01")))
-                .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604", "2019-01-18")))*/
-                .setFilter(closeFilter);
 
-        try {
-            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return hconf;
-    }
 
 
 
