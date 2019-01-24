@@ -25,7 +25,7 @@
         <![CDATA[
 
 
-            select rowkey from index where rowkey like 'SH000300%' order by rowkey
+            select rowkey from netval where rowkey like '161604%'
 
 
 
