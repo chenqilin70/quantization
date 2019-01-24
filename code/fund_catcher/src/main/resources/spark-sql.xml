@@ -25,11 +25,7 @@
         <![CDATA[
 
 
-            select
-                substr('000001_20011218',1,instr('000001_20011218',"_"))
-
-            from
-                fund
+            select rowkey from index where rowkey like 'SH000300%' order by rowkey
 
 
 

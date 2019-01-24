@@ -51,9 +51,9 @@ public class TestComputor  extends BaseSparkMain{
 
         Date start=new Date();
         registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
-        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
-        registerHbaseTable("fund",sparkContext,sqlContext);
-        DataFrame resultDF = sql("test", sqlContext);
+        /*registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
+        registerHbaseTable("fund",sparkContext,sqlContext);*/
+        DataFrame resultDF = sql("test2", sqlContext);
         Row[] collect = resultDF.collect();
         for(int k=0;k<collect.length;k++){
             Row row=collect[k];
@@ -82,7 +82,7 @@ public class TestComputor  extends BaseSparkMain{
         Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
         Scan scan = new Scan()
                 .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "19491001")))
-                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190118")))
+                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190125")))
                 .setFilter(closeFilter);
 
         try {
