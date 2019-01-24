@@ -30,7 +30,7 @@
     <test>
         <![CDATA[
             select
-                 split(f.yjbjjz,'[+]')
+                split(f.yjbjjz,'[+]')
             from
                 fund f
         ]]>
