@@ -70,7 +70,7 @@ public class TestComputor  extends BaseSparkMain{
                             gzjz = gzjz.substring(0, gzjz.indexOf("×"));
                         }
                         if (gzjz.contains("*")) {
-                            gzjz = gzjz.substring(0, gzjz.indexOf("×"));
+                            gzjz = gzjz.substring(0, gzjz.indexOf("*"));
                         }
                         result.add(new Tuple2<String, Integer>(gzjz.trim(), 1));
                     }
