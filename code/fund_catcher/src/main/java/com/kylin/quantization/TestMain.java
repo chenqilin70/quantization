@@ -14,6 +14,6 @@ import java.util.Date;
 public class TestMain {
     public static void main(String[] args) throws ParseException {
 
-        System.out.println(RowKeyUtil.getBaseInfoRowKey("000457"));
+//        System.out.println("20%士大夫但是".replaceAll(,""));
     }
 }

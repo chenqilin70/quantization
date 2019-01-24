@@ -85,7 +85,9 @@ public class TestComputor  extends BaseSparkMain{
                                 gzjz = split[0];
                             }
                         }
-                        result.add(new Tuple2<String, Integer>(gzjz.replaceAll("收益率","").trim(), 1));
+                        result.add(new Tuple2<String, Integer>(
+                                gzjz.replaceAll("收益率","").replaceAll("\\d+%","").trim()
+                                , 1));
                     }
                 }
             }
