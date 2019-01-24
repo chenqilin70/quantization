@@ -25,7 +25,7 @@
         <![CDATA[
 
 
-            select substring_index('SH000300_20190102',0,instr('SH000300_20190102',"_"))
+            select substring_index('SH000300_20190102',1,instr('SH000300_20190102',"_"))
 
 
 
