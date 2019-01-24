@@ -43,10 +43,18 @@ public class CorrComputor  extends BaseSparkMain{
         registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("corr", sqlContext);
         Row[] collect = resultDF.collect();
+        Connection conn=getConn();
         for(int k=0;k<collect.length;k++){
             Row row=collect[k];
-            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getString(2)));
+            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getDouble(2)));
             System.out.println(JSON.toJSONString(indexFundCorr));
+            insert(indexFundCorr,conn);
+
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
@@ -74,8 +82,7 @@ public class CorrComputor  extends BaseSparkMain{
         return conn;
     }
 
-    private static int insert(IndexFundCorr corr) {
-        Connection conn = getConn();
+    private static int insert(IndexFundCorr corr,Connection conn) {
         int i = 0;
         String sql = "insert into INDEX_FUND_CORR  values(?,?,?)";
         PreparedStatement pstmt;
