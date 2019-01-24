@@ -1,6 +1,8 @@
 package com.kylin.quantization;
 
+import com.kylin.quantization.computors.TestComputor;
 import com.kylin.quantization.model.Index;
+import com.kylin.quantization.model.IndexFundCorr;
 import com.kylin.quantization.util.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -10,6 +12,10 @@ import org.junit.Test;
 import org.seimicrawler.xpath.JXDocument;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 /**
  * ClassName: TestCenter
@@ -23,48 +29,8 @@ import java.lang.reflect.Field;
 public class TestCenter {
     private static final String ZKconnect="192.168.109.205:2181,192.168.109.204:2181,192.168.109.203:2181";
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
-//    @Test
-    public void test(){
-        int pageSize=20;
-        int index=0;
-        while(true){
-            String reportListUrl = "http://fund.csrc.gov.cn/web/list_page.upload_info_console";
-            //?1=1&fundCode=161604&reportTypeCode=FB030&limit=20&start=20
-
-            String reportListStr = HttpUtil.doGet(reportListUrl, ssMapUtil.create(
-                    "1", "1",
-//                    "fundCode", "000457",
-                    "reportTypeCode", "FB030",
-                    "limit","20",
-                    "start",index+""
-
-            ));
-            Document reportListDoc = Jsoup.parse(reportListStr);
-            Elements reports = reportListDoc.getElementsByClass("dd");
-            Elements treports= reportListDoc.getElementsByClass("aa");
-            reports.addAll(treports);
-            if(reports==null || reports.size()==0){
-                System.out.println("reports `s size is 0,break!");
-                break;
-            }
-            reports.forEach(i->{
-                dealDetail(i);
-//                System.out.println(i.text());
-            });
-            index+=20;
-        }
-
-    }
-
-    private void dealDetail(Element i) {
 
 
-        Elements a = i.getElementsByTag("a");
-        String detailUrl="http://fund.csrc.gov.cn/"+a.get(1).attr("href");
-        String detailHtml = HttpUtil.doGet(detailUrl, null);
-        Document detailDoc = Jsoup.parse(detailHtml);
-        Elements targetEs = detailDoc.select("#con_one_1");
-        System.out.println(targetEs.get(10).text());
-        System.out.println("=========================");
-    }
+
+
 }

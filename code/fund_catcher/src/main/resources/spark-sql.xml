@@ -7,7 +7,7 @@
         <![CDATA[
             select
                 substring_index(n.rowkey,"_",1) as fundcode,
-                substr(i.rowkey,1,instr(i.rowkey,"_")-1) index,
+                substr(i.rowkey,1,instr(i.rowkey,"_")-1) indexcode,
                 corr(i.close,n.LJJZ) as correlationindex
             from
                 index i

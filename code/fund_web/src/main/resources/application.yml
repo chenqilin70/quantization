@@ -16,9 +16,9 @@ spring:
   profiles: dev
 
   datasource:
-    url: jdbc:mysql://localhost:3306/test
-    username: root
-    password: root
-    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://node2:3306/fund_web
+    username: kylin
+    password: 111111
+    driver-class-name: com.mysql.cj.jdbc.Driver
     # 使用druid数据源
     type: com.alibaba.druid.pool.DruidDataSource

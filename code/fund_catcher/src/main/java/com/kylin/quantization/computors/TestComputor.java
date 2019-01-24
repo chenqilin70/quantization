@@ -2,6 +2,7 @@ package com.kylin.quantization.computors;
 
 import com.google.common.collect.Lists;
 import com.kylin.quantization.model.Index;
+import com.kylin.quantization.model.IndexFundCorr;
 import com.kylin.quantization.util.ResultUtil;
 import com.kylin.quantization.util.RowKeyUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
@@ -30,6 +31,10 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,7 +54,7 @@ public class TestComputor  extends BaseSparkMain{
 
 
     public static void main(String[] args) {
-        commonDeal();
+//        commonDeal();
 
     }
     public static void gzbd(){
@@ -114,53 +119,12 @@ public class TestComputor  extends BaseSparkMain{
         sparkContext.stop();
     }
 
-    public static void commonDeal(){
-        JavaSparkContext sparkContext=new JavaSparkContext(sparkConf());
-        SQLContext sqlContext=new SQLContext(sparkContext);
-
-        Date start=new Date();
-        registerHbaseTable("index",getIndexConf(),sparkContext,sqlContext);
-        registerHbaseTable("netval",getNetValConf(),sparkContext,sqlContext);
-        registerHbaseTable("fund",sparkContext,sqlContext);
-        DataFrame resultDF = sql("test", sqlContext);
-        Row[] collect = resultDF.collect();
-        for(int k=0;k<collect.length;k++){
-            Row row=collect[k];
-            for(int i=0;i<row.size();i++){
-                System.out.print(row.get(i)+"\t");
-            }
-            System.out.println("");
-        }
-        Date end=new Date();
-        logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
-        /*registerHbaseTable("index",sparkContext,sqlContext);
-        sql("index",sqlContext).show();*/
-
-
-        sparkContext.stop();
-    }
 
 
 
 
-    private static Configuration getIndexConf()  {
-        String tableName="index";
-        Configuration hconf= HBaseConfiguration.create();
-        //需要读取的hbase表名
-        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
-        Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
-        Scan scan = new Scan()
-//                .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "19491001")))
-//                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190125")))
-                .setFilter(closeFilter);
 
-        try {
-            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return hconf;
-    }
+
 
     private static Configuration getNetValConf()  {
         String tableName="netval";
@@ -180,6 +144,7 @@ public class TestComputor  extends BaseSparkMain{
         }
         return hconf;
     }
+
 
 
 
