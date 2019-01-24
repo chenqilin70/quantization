@@ -93,7 +93,6 @@ public class CorrComputor  extends BaseSparkMain{
             pstmt.setBigDecimal(3, corr.getCorrelationindex());
             i = pstmt.executeUpdate();
             pstmt.close();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
