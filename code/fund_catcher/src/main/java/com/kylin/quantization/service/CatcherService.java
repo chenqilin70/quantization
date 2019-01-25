@@ -339,6 +339,7 @@ public class CatcherService {
                 String sql="insert into FUND("+fieldSql.substring(0,fieldSql.lastIndexOf(","))+") values("+valuesSql.substring(0,valuesSql.lastIndexOf(","))+")";
                 PreparedStatement pstmt=null;
                 try {
+                    logger.info("执行sql："+sql);
                     pstmt = (PreparedStatement) conn.prepareStatement(sql);
                     pstmt.executeUpdate();
                 } catch (SQLException e) {
