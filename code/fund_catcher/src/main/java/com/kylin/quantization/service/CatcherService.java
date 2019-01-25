@@ -334,7 +334,7 @@ public class CatcherService {
                 StringBuffer valuesSql=new StringBuffer("");
                 fields.forEach(f->{
                     fieldSql.append(f+",");
-                    valuesSql.append(ResultUtil.strVal(result,"baseinfo",f)+",");
+                    valuesSql.append("'"+ResultUtil.strVal(result,"baseinfo",f)+"',");
                 });
                 String sql="insert into FUND("+fieldSql.substring(0,fieldSql.lastIndexOf(","))+") values("+valuesSql.substring(0,valuesSql.lastIndexOf(","))+")";
                 PreparedStatement pstmt=null;
