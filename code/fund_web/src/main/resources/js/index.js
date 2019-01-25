@@ -19,10 +19,30 @@ $(document).ready(function(){
                 }else{
                     $searchMenu.css("display","none");
                 }
+                registItemClick();
 
             }
         })
     });
+    var registItemClick=function(){
+        $(".searchItem").on('mousedown',function(){
+            var $fundcode=$(this).attr("fundcode")
+            var $jjqc=$(this).attr("jjqc")
+            $.ajax({
+                url:$('#contextPath').val()+"/index/corr_radar",
+                async:true,
+                data:{
+                    "fundcode":$fundcode
+                },
+                success:function(result){
+                    // var json=JSON.parse(result)
+                    myChart.setOption(getOption($jjqc,result));
+
+                }
+            })
+
+        })
+    }
     $searchInput.blur(function(){
         $searchMenu.css("display","none");
     })
@@ -32,6 +52,67 @@ $(document).ready(function(){
         }else{
             $searchMenu.css("display","none")
         }
-        console.log($searchMenu.children("li").length)
     })
+
+
+
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('chartDiv'));
+
+
+    var getOption=function(jjqc,value){
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '相关性'
+            },
+            tooltip: {
+                trigger: 'axis'
+            },
+            legend: {
+                x: 'center',
+                data:[jjqc]
+            },
+            radar: [
+                {
+                    indicator: [
+                        {text: '上证指数',  max: 1,min:-1},
+                        {text: '深证成指',  max: 1,min:-1},
+                        {text: '沪深300',  max: 1,min:-1},
+                        {text: '创业板指', max: 1,min:-1},
+                        {text: '中证500', max: 1,min:-1},
+                        {text: '深证100', max: 1,min:-1},
+                        {text: '上证50', max: 1,min:-1},
+
+                    ],
+                    center: ['50%','50%'],
+                    radius: 80
+                }
+            ],
+            series: [
+                {
+                    type: 'radar',
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    itemStyle: {normal: {areaStyle: {type: 'default'}}},
+                    data: [
+                        {
+                            value: value,
+                            name: jjqc
+                        }
+                    ]
+                }
+            ]
+        };
+        return option
+    }
+
+
+    // 使用刚指定的配置项和数据显示图表。
+    // myChart.setOption(getOption('sdafasdf',[0.5,0.8 ,0.6,0.4,0.1,0.2, 0.9]));
+
+
+
+
 });

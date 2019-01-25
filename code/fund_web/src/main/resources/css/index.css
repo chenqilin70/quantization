@@ -35,4 +35,7 @@
 .iconfont{
     cursor:default;
 }
+#chartDiv{
+    height: 300px;
+}
 

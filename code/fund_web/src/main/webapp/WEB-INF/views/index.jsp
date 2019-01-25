@@ -12,8 +12,9 @@
     <link rel="stylesheet"  type="text/css"  href="<%=request.getContextPath()%>/bootstrap/css/bootstrap.css" >
     <link rel="stylesheet"  type="text/css"  href="<%=request.getContextPath()%>/css/index.css" >
     <script src="<%=request.getContextPath()%>/js/jquery-3.3.1.min.js"  type="text/javascript"  ></script>
-    <script src="<%=request.getContextPath()%>/js/index.js"  type="text/javascript"  ></script>
     <script src="<%=request.getContextPath()%>/bootstrap/js/bootstrap.js"  type="text/javascript"  ></script>
+    <script src="<%=request.getContextPath()%>/js/echarts.min.js"  type="text/javascript"  ></script>
+    <script src="<%=request.getContextPath()%>/js/index.js"  type="text/javascript"  ></script>
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <body class="container-fluid">
@@ -27,9 +28,15 @@
                 <%--<span class="input-group-btn">
                     <button class="btn btn-default" id="searchButton" type="button">Go!</button>
                 </span>--%>
-                <ul class="dropdown-menu"  aria-labelledby="dropdownMenu1" id="searchMenu">
+                <ul class="dropdown-menu"  aria-labelledby="dropdownMenu1"  id="searchMenu">
                 </ul>
             </div>
+        </div>
+    </div>
+    <div class="row">
+
+        <div id="chartDiv" class="col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
+
         </div>
     </div>
 </body>

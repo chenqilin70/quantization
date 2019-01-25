@@ -7,10 +7,12 @@ import com.kylin.quantization.util.MapUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +46,12 @@ public class IndexController {
     @RequestMapping("/index")
     public String getUser() {
         return "index";
+    }
+
+    @ResponseBody
+    @RequestMapping("/corr_radar")
+    public BigDecimal[] corrRadar(String fundcode) {
+        return service.fundcode(fundcode);
     }
 
 }
