@@ -1,0 +1,6 @@
+#searchDiv{
+    margin-top: 10%
+}
+#searchInput,#searchButton{
+    height: 40px;
+}

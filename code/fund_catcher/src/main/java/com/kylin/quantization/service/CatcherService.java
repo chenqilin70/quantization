@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.dao.MysqlDao;
+import com.kylin.quantization.model.Fund;
 import com.kylin.quantization.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -21,12 +23,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class CatcherService {
@@ -38,6 +45,8 @@ public class CatcherService {
     private Map<String,String> columnCode;
     @Autowired
     private HBaseDao hBaseDao;
+    @Autowired
+    private MysqlDao mysqlDao;
     public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
 
 
@@ -312,5 +321,36 @@ public class CatcherService {
         ccs.forEach(i->{
             logger.info("=="+i.text());
         });
+    }
+
+    public void fundHbaseToMysql() {
+        hBaseDao.scanForEach("fund",new Scan(),result -> {
+            Method[] declaredMethods = Fund.class.getDeclaredMethods();
+            List<Method> methods=Arrays.asList(declaredMethods);
+            methods = methods.stream().filter(m -> m.getName().startsWith("set")).collect(Collectors.toList());
+            List<String> fields = methods.stream().map(m -> m.getName().replaceAll("set", "").toLowerCase()).collect(Collectors.toList());
+            mysqlDao.conn(conn -> {
+                StringBuffer fieldSql=new StringBuffer("");
+                StringBuffer valuesSql=new StringBuffer("");
+                fields.forEach(f->{
+                    fieldSql.append(f+",");
+                    valuesSql.append(ResultUtil.strVal(result,"baseinfo",f)+",");
+                });
+                String sql="insert into FUND("+fieldSql.substring(0,fieldSql.lastIndexOf(","))+") values("+valuesSql.substring(0,valuesSql.lastIndexOf(","))+")";
+                PreparedStatement pstmt=null;
+                try {
+                    pstmt = (PreparedStatement) conn.prepareStatement(sql);
+                    pstmt.executeUpdate();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }finally {
+                    if(pstmt!=null){
+                        pstmt.close();
+                    }
+                }
+                return null;
+            });
+        });
+
     }
 }

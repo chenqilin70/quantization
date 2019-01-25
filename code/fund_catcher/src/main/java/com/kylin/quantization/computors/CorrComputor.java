@@ -1,6 +1,8 @@
 package com.kylin.quantization.computors;
 
 import com.alibaba.fastjson.JSON;
+import com.kylin.quantization.dao.MysqlDao;
+import com.kylin.quantization.dao.impl.MysqlDaoImpl;
 import com.kylin.quantization.model.IndexFundCorr;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
@@ -43,12 +45,13 @@ public class CorrComputor  extends BaseSparkMain{
         registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("corr", sqlContext);
         Row[] collect = resultDF.collect();
-        Connection conn=getConn();
+        MysqlDao mysqlDao=new MysqlDaoImpl();
+        Connection conn=mysqlDao.getConn();
         for(int k=0;k<collect.length;k++){
             Row row=collect[k];
             IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getDouble(2)));
             System.out.println(JSON.toJSONString(indexFundCorr));
-            insert(indexFundCorr,conn);
+            mysqlDao.insertIndexFundCorr(indexFundCorr,conn);
 
         }
         try {
@@ -65,39 +68,9 @@ public class CorrComputor  extends BaseSparkMain{
         sparkContext.stop();
     }
 
-    public static Connection getConn() {
-        String driver = "com.mysql.jdbc.Driver";
-        String url = "jdbc:mysql://node2:3306/fund_web";
-        String username = "kylin";
-        String password = "111111";
-        Connection conn = null;
-        try {
-            Class.forName(driver); //classLoader,加载对应驱动
-            conn = (Connection) DriverManager.getConnection(url, username, password);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return conn;
-    }
 
-    private static int insert(IndexFundCorr corr,Connection conn) {
-        int i = 0;
-        String sql = "insert into INDEX_FUND_CORR  values(?,?,?)";
-        PreparedStatement pstmt;
-        try {
-            pstmt = (PreparedStatement) conn.prepareStatement(sql);
-            pstmt.setString(1, corr.getFundcode());
-            pstmt.setString(2, corr.getIndexcode());
-            pstmt.setBigDecimal(3, corr.getCorrelationindex());
-            i = pstmt.executeUpdate();
-            pstmt.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return i;
-    }
+
+
 
     private static Configuration getIndexConf()  {
         String tableName="index";

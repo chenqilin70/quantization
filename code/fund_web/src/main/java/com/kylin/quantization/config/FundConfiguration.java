@@ -8,7 +8,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 public class FundConfiguration  extends WebMvcConfigurerAdapter {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/bootstrap/**").addResourceLocations("classpath:/bootstrap/");
+        registry.addResourceHandler("/bootstrap/**","/js/**","/css/**","/img/**")
+                .addResourceLocations("classpath:/bootstrap/","classpath:/js/","classpath:/css/","classpath:/img/");
         super.addResourceHandlers(registry);
     }
 }

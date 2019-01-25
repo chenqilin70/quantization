@@ -10,21 +10,22 @@
 <head>
     <title>Title</title>
     <link rel="stylesheet"  type="text/css"  href="<%=request.getContextPath()%>/bootstrap/css/bootstrap.css" >
-
-    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <link rel="stylesheet"  type="text/css"  href="<%=request.getContextPath()%>/css/index.css" >
+    <script src="<%=request.getContextPath()%>/js/jquery-3.3.1.min.js"  type="text/javascript"  ></script>
+    <script src="<%=request.getContextPath()%>/js/index.js"  type="text/javascript"  ></script>
     <script src="<%=request.getContextPath()%>/bootstrap/js/bootstrap.js"  type="text/javascript"  ></script>
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <body class="container-fluid">
     <div class="row">
-
-        <div class="col-lg-6">
+        <div id="searchDiv" class="col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search for...">
+                <input type="text" class="form-control" id="searchInput" placeholder="Search for...">
                 <span class="input-group-btn">
-            <button class="btn btn-default" type="button">Go!</button>
-          </span>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-    </div><!-- /.row -->
+                    <button class="btn btn-default" id="searchButton" type="button">Go!</button>
+                </span>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
