@@ -1,0 +1,29 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="chaxun" unicode="&#58930;" d="M838.4 115.2l-160 160c32 44.8 51.2 102.4 51.2 166.4 0 153.6-121.6 275.2-275.2 275.2S185.6 588.8 185.6 435.2s121.6-275.2 275.2-275.2c64 0 115.2 19.2 166.4 57.6l160-160L838.4 115.2zM460.8 243.2c-108.8 0-192 89.6-192 192 0 108.8 89.6 192 192 192 108.8 0 192-89.6 192-192C652.8 326.4 569.6 243.2 460.8 243.2z"  horiz-adv-x="1024" />
+
+    
+
+
+  </font>
+</defs></svg>

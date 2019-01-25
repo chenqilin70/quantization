@@ -16,7 +16,7 @@ spring:
   profiles: dev
 
   datasource:
-    url: jdbc:mysql://node2:3306/fund_web
+    url: jdbc:mysql://node2:3306/fund_web?useUnicode=true&characterEncoding=UTF-8
     username: kylin
     password: 111111
     driver-class-name: com.mysql.cj.jdbc.Driver

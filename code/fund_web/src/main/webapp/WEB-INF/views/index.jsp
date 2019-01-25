@@ -17,13 +17,18 @@
     <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
 </head>
 <body class="container-fluid">
+<div id="contextPath"><%=request.getContextPath()%></div>
     <div class="row">
         <div id="searchDiv" class="col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
-            <div class="input-group">
-                <input type="text" class="form-control" id="searchInput" placeholder="Search for...">
-                <span class="input-group-btn">
+            <div class="input-group dropdown">
+                <!--data-toggle="dropdown"-->
+                <span class="input-group-addon iconfont" id="basic-addon3">&#xe632;</span>
+                <input type="text" class="form-control dropdown-toggle"   id="searchInput" placeholder="">
+                <%--<span class="input-group-btn">
                     <button class="btn btn-default" id="searchButton" type="button">Go!</button>
-                </span>
+                </span>--%>
+                <ul class="dropdown-menu"  aria-labelledby="dropdownMenu1" id="searchMenu">
+                </ul>
             </div>
         </div>
     </div>
