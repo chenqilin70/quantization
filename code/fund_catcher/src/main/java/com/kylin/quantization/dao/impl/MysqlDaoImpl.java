@@ -30,7 +30,7 @@ public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
     @Override
     public Connection getConn() {
         String driver = "com.mysql.jdbc.Driver";
-        String url = "jdbc:mysql://node2:3306/fund_web";
+        String url = "jdbc:mysql://node2:3306/fund_web?useUnicode=true&characterEncoding=UTF-8";
         String username = "kylin";
         String password = "111111";
         Connection conn = null;
