@@ -274,7 +274,12 @@ public class CatcherService {
 
             return date;
         });
-        return StringUtils.isBlank(result)?newestDate:result;
+        try {
+            newestDate=sf.parse(  StringUtils.isBlank(result)?newestDate:result  ).getTime()+"";
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return newestDate;
     }
     public static Date getTomorrow(){
         Calendar c=Calendar.getInstance();

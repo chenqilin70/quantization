@@ -9,8 +9,9 @@
 <html>
 <head>
     <title>Title</title>
+
 </head>
 <body>
-<h2>HELLO index.jsp</h2>
+    <h3>Example heading <span class="label label-default">New</span></h3>
 </body>
 </html>
