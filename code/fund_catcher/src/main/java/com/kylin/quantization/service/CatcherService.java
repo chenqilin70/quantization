@@ -330,8 +330,8 @@ public class CatcherService {
             methods = methods.stream().filter(m -> m.getName().startsWith("set")).collect(Collectors.toList());
             List<String> fields = methods.stream().map(m -> m.getName().replaceAll("set", "").toLowerCase()).collect(Collectors.toList());
             mysqlDao.conn(conn -> {
-                StringBuffer fieldSql=new StringBuffer("");
-                StringBuffer valuesSql=new StringBuffer("");
+                StringBuffer fieldSql=new StringBuffer("rowkey,");
+                StringBuffer valuesSql=new StringBuffer(ResultUtil.row(result)+",");
                 fields.forEach(f->{
                     fieldSql.append(f+",");
                     valuesSql.append("'"+ResultUtil.strVal(result,"baseinfo",f)+"',");

@@ -51,7 +51,7 @@ public class IndexController {
     @ResponseBody
     @RequestMapping("/corr_radar")
     public BigDecimal[] corrRadar(String fundcode) {
-        return service.fundcode(fundcode);
+        return service.corrRadar(fundcode);
     }
 
 }

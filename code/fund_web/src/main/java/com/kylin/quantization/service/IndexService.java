@@ -35,21 +35,24 @@ public class IndexService extends BaseService {
         return fundMapper.searchTips(searchWord);
     }
 
-    public BigDecimal[] fundcode(String fundcode) {
+    public BigDecimal[] corrRadar(String fundcode) {
         MapUtil<String,BigDecimal> sbMapUtil=new MapUtil<>();
         IndexFundCorrExample indexFundCorrExample = new IndexFundCorrExample();
         indexFundCorrExample.createCriteria().andFundcodeEqualTo(fundcode);
         List<IndexFundCorr> indexFundCorrs = indexFundCorrMapper.selectByExample(indexFundCorrExample);
-        Map<String, BigDecimal> stringStringMap = indexFundCorrs.stream().map(i -> sbMapUtil.create(i.getIndexcode() + "", i.getCorrelationindex() )).reduce((m1, m2) -> {
-            m1.putAll(m2);
-            return m1;
-        }).get();
-        String indexsStr="SH000001,SZ399001,SH000300,SZ399006,SH000905,SZ399330,SH000016";
-        String[] split = indexsStr.split(",");
         List<BigDecimal> result=new ArrayList<>();
-        for(String s: split){
-            BigDecimal s1 = stringStringMap.get(s);
-            result.add(s1);
+        if(indexFundCorrs!=null && indexFundCorrs.size()!=0){
+            Map<String, BigDecimal> stringStringMap = indexFundCorrs.stream().map(i -> sbMapUtil.create(i.getIndexcode() + "", i.getCorrelationindex() )).reduce((m1, m2) -> {
+                m1.putAll(m2);
+                return m1;
+            }).get();
+            String indexsStr="SH000001,SZ399001,SH000300,SZ399006,SH000905,SZ399330,SH000016";
+            String[] split = indexsStr.split(",");
+
+            for(String s: split){
+                BigDecimal s1 = stringStringMap.get(s);
+                result.add(s1);
+            }
         }
 
         return result.toArray(new BigDecimal[result.size()]);
