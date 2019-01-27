@@ -74,7 +74,7 @@
                 concat(
                     substr(n.rowkey,instr(n.rowkey,"_")+1,4),'-',
                     substr(n.rowkey,instr(n.rowkey,"_")+5,2),'-',
-                    substr(n.rowkey,instr(n.rowkey,"_")+7,2),
+                    substr(n.rowkey,instr(n.rowkey,"_")+7,2)
                 )
              from netval n
         ]]>
