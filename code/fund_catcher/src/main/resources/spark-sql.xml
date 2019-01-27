@@ -71,7 +71,7 @@
     <test>
         <![CDATA[
             select to_date(
-                substr(i.rowkey,instr(i.rowkey,"_")+1),
+                substr(n.rowkey,instr(n.rowkey,"_")+1),
                 'yyyyMMdd'
             ) from netval n
         ]]>
