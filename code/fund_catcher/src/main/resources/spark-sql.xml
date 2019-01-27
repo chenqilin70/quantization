@@ -77,6 +77,7 @@
                     substr(n.rowkey,instr(n.rowkey,"_")+7,2)
                 )
              from netval n
+             limit 100
         ]]>
     </test>
 
