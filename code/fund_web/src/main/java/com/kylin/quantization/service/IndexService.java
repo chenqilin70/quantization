@@ -1,10 +1,7 @@
 package com.kylin.quantization.service;
 
 import com.kylin.quantization.mapper.FundMapper;
-import com.kylin.quantization.mapper.IndexFundCorrMapper;
 import com.kylin.quantization.model.Fund;
-import com.kylin.quantization.model.IndexFundCorr;
-import com.kylin.quantization.model.IndexFundCorrExample;
 import com.kylin.quantization.util.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

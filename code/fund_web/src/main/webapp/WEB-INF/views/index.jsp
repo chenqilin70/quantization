@@ -38,6 +38,9 @@
         <div id="chartDiv" class="col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
 
         </div>
+        <div id="chartNoDataDiv" class="col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
+            暂无数据
+        </div>
     </div>
 </body>
 </html>

@@ -37,8 +37,11 @@ $(document).ready(function(){
                 success:function(result){
                     // var json=JSON.parse(result)
                     if(result==null || result.length==0){
-                        console.log("result is 0")
+                        $("#chartDiv").hide()
+                        $("#chartNoDataDiv").show()
                     }else{
+                        $("#chartDiv").show()
+                        $("#chartNoDataDiv").hide()
                         myChart.setOption(getOption($jjqc,result));
                     }
                 }

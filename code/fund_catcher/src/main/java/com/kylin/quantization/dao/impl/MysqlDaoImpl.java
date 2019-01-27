@@ -3,7 +3,6 @@ package com.kylin.quantization.dao.impl;
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.model.IndexFundCorr;
 import org.springframework.stereotype.Repository;
-import sun.nio.ch.IOUtil;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -68,13 +67,14 @@ public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
 
     public  int insertIndexFundCorr(IndexFundCorr corr, Connection conn) {
         int i = 0;
-        String sql = "insert into INDEX_FUND_CORR  values(?,?,?)";
+        String sql = "insert into INDEX_FUND_CORR  values(?,?,?,?)";
         PreparedStatement pstmt;
         try {
             pstmt = (PreparedStatement) conn.prepareStatement(sql);
             pstmt.setString(1, corr.getFundcode());
             pstmt.setString(2, corr.getIndexcode());
             pstmt.setBigDecimal(3, corr.getCorrelationindex());
+            pstmt.setInt(4, corr.getCorrtype());
             i = pstmt.executeUpdate();
             pstmt.close();
         } catch (SQLException e) {

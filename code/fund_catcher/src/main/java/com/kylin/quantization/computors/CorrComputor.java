@@ -1,9 +1,7 @@
 package com.kylin.quantization.computors;
 
-import com.alibaba.fastjson.JSON;
-import com.kylin.quantization.dao.MysqlDao;
-import com.kylin.quantization.dao.impl.MysqlDaoImpl;
-import com.kylin.quantization.model.IndexFundCorr;
+import com.kylin.quantization.thread.CorrTask;
+import com.kylin.quantization.thread.ForkJoinExecutor;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.HBaseConfiguration;
 import org.apache.hadoop.hbase.client.Scan;
@@ -18,11 +16,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SQLContext;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -45,20 +39,10 @@ public class CorrComputor  extends BaseSparkMain{
         registerHbaseTable("fund",sparkContext,sqlContext);
         DataFrame resultDF = sql("corr", sqlContext);
         Row[] collect = resultDF.collect();
-        MysqlDao mysqlDao=new MysqlDaoImpl();
-        Connection conn=mysqlDao.getConn();
-        for(int k=0;k<collect.length;k++){
-            Row row=collect[k];
-            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getDouble(2)));
-            System.out.println(JSON.toJSONString(indexFundCorr));
-            mysqlDao.insertIndexFundCorr(indexFundCorr,conn);
+        CorrTask corrtask=new CorrTask(Arrays.asList(collect),800);
+        ForkJoinExecutor.exec(corrtask, 20);
 
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
         Date end=new Date();
         logger.info("TestComputor is over ,and time is :"+((end.getTime()-start.getTime())/1000.00)+"s");
         /*registerHbaseTable("index",sparkContext,sqlContext);

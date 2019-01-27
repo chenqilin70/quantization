@@ -38,4 +38,12 @@
 #chartDiv{
     height: 300px;
 }
+#chartNoDataDiv{
+    display: none;
+    text-align: center;
+    font-family: '微软雅黑';
+    font-size: 50px;
+    color: #dadada;
+    margin-top: 80px;
+}
 

@@ -1,20 +1,6 @@
 package com.kylin.quantization;
-import com.kylin.quantization.computors.TestComputor;
-import com.kylin.quantization.model.IndexFundCorr;
-import com.kylin.quantization.util.RowKeyUtil;
-import com.kylin.quantization.util.SqlConfigUtil;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.hadoop.hbase.util.FSHDFSUtils;
-import org.junit.Test;
 
-import  java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
