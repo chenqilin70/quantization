@@ -1,6 +1,14 @@
 package com.kylin.quantization.computors;
 
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.CompareFilter;
+import org.apache.hadoop.hbase.filter.Filter;
+import org.apache.hadoop.hbase.filter.QualifierFilter;
+import org.apache.hadoop.hbase.filter.RegexStringComparator;
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.DataFrame;
 import org.apache.spark.sql.Row;
@@ -9,6 +17,7 @@ import scala.Tuple2;
 import scala.collection.Iterator;
 import scala.collection.mutable.WrappedArray;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -96,9 +105,9 @@ public class TestComputor  extends BaseSparkMain{
         SQLContext sqlContext = new SQLContext(sparkContext);
 
         Date start = new Date();
-        registerHbaseTable("index", sparkContext, sqlContext);
-        registerHbaseTable("netval", sparkContext, sqlContext);
-        registerHbaseTable("fund", sparkContext, sqlContext);
+//        registerHbaseTable("index", sparkContext, sqlContext);
+        registerHbaseTable("netval",getNetValConf(), sparkContext, sqlContext);
+//        registerHbaseTable("fund", sparkContext, sqlContext);
         DataFrame resultDF = sql("test", sqlContext);
         Row[] collect = resultDF.collect();
         for (int k = 0; k < collect.length; k++) {
@@ -114,6 +123,26 @@ public class TestComputor  extends BaseSparkMain{
         sql("index",sqlContext).show();*/
 
 
+    }
+
+
+    private static Configuration getNetValConf()  {
+        String tableName="netval";
+        Configuration hconf= HBaseConfiguration.create();
+        //需要读取的hbase表名
+        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
+        Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("LJJZ"));
+        Scan scan = new Scan()
+                /*.setStartRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604","1949-10-01")))
+                .setStopRow(Bytes.toBytes(RowKeyUtil.getNetValRowKey("161604", "2019-01-18")))*/
+                .setFilter(closeFilter);
+
+        try {
+            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hconf;
     }
 
 }
