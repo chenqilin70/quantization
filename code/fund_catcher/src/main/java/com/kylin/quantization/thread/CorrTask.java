@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.dao.impl.MysqlDaoImpl;
 import com.kylin.quantization.model.IndexFundCorr;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.sql.Row;
 
 import java.math.BigDecimal;
@@ -32,7 +33,13 @@ public class CorrTask  extends BaseRecursiveTask<Row,Object>{
         Connection conn=mysqlDao.getConn();
         for(int k=0;k<perIncrementList.size();k++){
             Row row=perIncrementList.get(k);
-            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), new BigDecimal(row.getDouble(2)),row.getInt(3));
+            String corr="";
+            try {
+                corr=row.getDouble(2)+"";
+            }catch (Exception e){
+                System.out.println("getDouble error,row:"+row+"  ,exception:"+e.getMessage());
+            }
+            IndexFundCorr indexFundCorr = new IndexFundCorr(row.getString(0), row.getString(1), StringUtils.isBlank(corr)?null:new BigDecimal(corr),row.getInt(3));
             System.out.println(JSON.toJSONString(indexFundCorr));
             mysqlDao.insertIndexFundCorr(indexFundCorr,conn);
         }
