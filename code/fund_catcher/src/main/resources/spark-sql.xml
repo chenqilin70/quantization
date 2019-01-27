@@ -27,6 +27,8 @@
                 group by
                     substring_index(n.rowkey,"_",1),
                     substr(i.rowkey,1,instr(i.rowkey,"_")-1)
+                having
+                    correlationindex is not null
                 order by
                     fundcode,correlationindex
             )union all
@@ -66,6 +68,8 @@
                 group by
                     substring_index(n.rowkey,"_",1),
                     substr(i.rowkey,1,instr(i.rowkey,"_")-1)
+                having
+                    correlationindex is not null
                 order by
                     fundcode,correlationindex
             )union all
@@ -105,6 +109,8 @@
                 group by
                     substring_index(n.rowkey,"_",1),
                     substr(i.rowkey,1,instr(i.rowkey,"_")-1)
+                having
+                    correlationindex is not null
                 order by
                     fundcode,correlationindex
             )union all
@@ -144,6 +150,8 @@
                 group by
                     substring_index(n.rowkey,"_",1),
                     substr(i.rowkey,1,instr(i.rowkey,"_")-1)
+                having
+                    correlationindex is not null
                 order by
                     fundcode,correlationindex
             )union all
@@ -183,6 +191,8 @@
                 group by
                     substring_index(n.rowkey,"_",1),
                     substr(i.rowkey,1,instr(i.rowkey,"_")-1)
+                having
+                    correlationindex is not null
                 order by
                     fundcode,correlationindex
             )
