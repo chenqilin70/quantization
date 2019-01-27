@@ -105,9 +105,9 @@ public class TestComputor  extends BaseSparkMain{
         SQLContext sqlContext = new SQLContext(sparkContext);
 
         Date start = new Date();
-//        registerHbaseTable("index", sparkContext, sqlContext);
+        registerHbaseTable("index", getIndexConf(),sparkContext, sqlContext);
         registerHbaseTable("netval",getNetValConf(), sparkContext, sqlContext);
-//        registerHbaseTable("fund", sparkContext, sqlContext);
+        registerHbaseTable("fund", sparkContext, sqlContext);
         DataFrame resultDF = sql("test", sqlContext);
         Row[] collect = resultDF.collect();
         for (int k = 0; k < collect.length; k++) {
@@ -126,6 +126,24 @@ public class TestComputor  extends BaseSparkMain{
     }
 
 
+    private static Configuration getIndexConf()  {
+        String tableName="index";
+        Configuration hconf= HBaseConfiguration.create();
+        //需要读取的hbase表名
+        hconf.set(TableInputFormat.INPUT_TABLE, tableName);
+        Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
+        Scan scan = new Scan()
+//                .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "19491001")))
+//                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190125")))
+                .setFilter(closeFilter);
+
+        try {
+            hconf.set(TableInputFormat.SCAN, convertScanToString(scan));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return hconf;
+    }
     private static Configuration getNetValConf()  {
         String tableName="netval";
         Configuration hconf= HBaseConfiguration.create();
@@ -144,5 +162,6 @@ public class TestComputor  extends BaseSparkMain{
         }
         return hconf;
     }
+
 
 }
