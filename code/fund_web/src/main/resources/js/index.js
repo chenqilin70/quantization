@@ -30,20 +30,49 @@ $(document).ready(function(){
             var $jjqc=$(this).attr("jjqc")
             $.ajax({
                 url:$('#contextPath').val()+"/index/corr_radar",
-                async:true,
+                // async:true,
                 data:{
                     "fundcode":$fundcode
                 },
+                dataType:'json',
+                contentType: "application/json;charset=utf-8",
                 success:function(result){
-                    // var json=JSON.parse(result)
                     if(result==null || result.length==0){
-                        $("#chartDiv").hide()
-                        $("#chartNoDataDiv").show()
+                        $(".chartDiv").hide()
+                        $(".chartNoDataDiv").show()
                     }else{
-                        $("#chartDiv").show()
-                        $("#chartNoDataDiv").hide()
-                        myChart.setOption(getOption($jjqc,result));
+                        $(".chartDiv").show()
+                        $(".chartNoDataDiv").hide()
+                        result=$.parseJSON( result );
+                        var legend=['成立以来相关性','近1个月相关性','近3个月相关性','近6个月相关性','近1年相关性']
+                        var corrdata=[]
+                        corrdata[0]={
+                            value:result['0'],
+                            name:legend[0]
+                        }
+                        corrdata[1]={
+                            value:result['1'],
+                            name:legend[1]
+                        }
+                        corrdata[2]={
+                            value:result['3'],
+                            name:legend[2]
+                        }
+                        corrdata[3]={
+                            value:result['6'],
+                            name:legend[3]
+                        }
+                        corrdata[4]={
+                            value:result['12'],
+                            name:legend[4]
+                        }
+                        myChart.setOption(getOption($jjqc,corrdata,legend));
+
                     }
+                },
+                error:function(e){
+                    console.log('error:'+e)
+                    console.error(e)
                 }
             })
 
@@ -63,21 +92,27 @@ $(document).ready(function(){
 
 
     // 基于准备好的dom，初始化echarts实例
+    /*var chartMap={}
+    var chartDivs =document.getElementsByClassName('chartDiv')
+    for (var i = 0; i < chartDivs.length; i++) {
+        chartMap[$(chartDivs[i]).attr('id')]=echarts.init(chartDivs[i]);
+    }*/
+
     var myChart = echarts.init(document.getElementById('chartDiv'));
 
 
-    var getOption=function(jjqc,value){
+    var getOption=function(jjqc,value,$legend){
         // 指定图表的配置项和数据
         var option = {
             title: {
-                text: '相关性'
+                text: jjqc+'与各指数的相关性'
             },
             tooltip: {
                 trigger: 'axis'
             },
             legend: {
                 x: 'center',
-                data:[jjqc]
+                data:$legend
             },
             radar: [
                 {
@@ -102,12 +137,7 @@ $(document).ready(function(){
                         trigger: 'item'
                     },
                     itemStyle: {normal: {areaStyle: {type: 'default'}}},
-                    data: [
-                        {
-                            value: value,
-                            name: jjqc
-                        }
-                    ]
+                    data: value
                 }
             ]
         };

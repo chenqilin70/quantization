@@ -35,10 +35,10 @@
 .iconfont{
     cursor:default;
 }
-#chartDiv{
+.chartDiv{
     height: 300px;
 }
-#chartNoDataDiv{
+.chartNoDataDiv{
     display: none;
     text-align: center;
     font-family: '微软雅黑';
