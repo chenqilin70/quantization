@@ -6,8 +6,8 @@
             select
                 regexp_replace(a.key,'_.+','') as index1,regexp_replace(b.key,'_.+','') as index2,corr(cast(a.close as decimal(26,8)) , cast(b.close as decimal(26,8)) ) as corrratio
             from
-                index a
-                inner join index b on regexp_replace(a.key,'.+_','')=regexp_replace(b.key,'.+_','')
+                fund_catcher.index a
+                inner join fund_catcher.index b on regexp_replace(a.key,'.+_','')=regexp_replace(b.key,'.+_','')
             where
                 regexp_replace(a.key,'_.+','')>regexp_replace(b.key,'_.+','')
             group by
