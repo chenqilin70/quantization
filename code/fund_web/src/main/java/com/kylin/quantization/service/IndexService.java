@@ -1,19 +1,21 @@
 package com.kylin.quantization.service;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.kylin.quantization.mapper.CorrIndexMapper;
 import com.kylin.quantization.mapper.FundMapper;
 import com.kylin.quantization.mapper.IndexFundCorrMapper;
-import com.kylin.quantization.model.Fund;
-import com.kylin.quantization.model.IndexFundCorr;
-import com.kylin.quantization.model.IndexFundCorrExample;
+import com.kylin.quantization.model.*;
 import com.kylin.quantization.util.MapUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * ClassName: IndexService
@@ -30,6 +32,8 @@ public class IndexService extends BaseService {
     private FundMapper fundMapper;
     @Autowired
     private IndexFundCorrMapper indexFundCorrMapper;
+    @Autowired
+    private CorrIndexMapper corrIndexMapper;
     @Autowired
     private MapUtil<String,String> ssMapUtil;
     public List<Fund> searchTips(String searchWord) {
@@ -73,6 +77,42 @@ public class IndexService extends BaseService {
 
         }
         return result;
+
+    }
+
+    public Map<String,Object> getCorrIndex() {
+        Map<String,Object> result=new HashMap<>();
+        List<CorrIndex> corrIndices = corrIndexMapper.selectByExample(new CorrIndexExample());
+        List<String> collect = corrIndices.stream().flatMap(corrIndex -> Sets.newHashSet(corrIndex.getIndex1(), corrIndex.getIndex2()).stream()).distinct().collect(Collectors.toList());
+        Collections.sort(collect);
+        result.put("index1",collect);
+        result.put("index2",collect);
+        List<List<? extends Number>> data=new ArrayList<>();
+        for(int i1=0;i1<collect.size(); i1++){
+            for(int i2=0;i2<collect.size(); i2++){
+                BigDecimal corr=getCorrBy2Index(collect.get(i1),collect.get(i2),corrIndices);
+                List<? extends Number> numbers = Lists.newArrayList(i1, i2, corr);
+                data.add(numbers);
+            }
+        }
+        result.put("data",data);
+        return result;
+    }
+
+    private BigDecimal getCorrBy2Index(String s, String s1, List<CorrIndex> corrIndices) {
+        BigDecimal result;
+        if(StringUtils.isBlank(s) || StringUtils.isBlank(s1)){
+            result= null;
+        }else{
+            if(s.equals(s1)){
+                result= new BigDecimal("1");
+            }else{
+                List<CorrIndex> collect = corrIndices.stream().filter(c -> (s.equals(c.getIndex1()) && s1.equals(c.getIndex2())) || (s.equals(c.getIndex2()) && s1.equals(c.getIndex1()))).collect(Collectors.toList());
+                result=collect.get(0).getCorrratio();
+            }
+        }
+        return result;
+
 
     }
 }

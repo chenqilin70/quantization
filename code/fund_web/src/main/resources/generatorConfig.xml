@@ -41,6 +41,6 @@
 
         <!--对应数据库表名，多个表，请复制指定 -->
         <!--<table tableName="FUND"></table>-->
-        <table tableName="INDEX_FUND_CORR"></table>
+        <table tableName="CORR_INDEX"></table>
     </context>
 </generatorConfiguration>
