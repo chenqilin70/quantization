@@ -36,7 +36,7 @@ public abstract  class CatcherRunner  implements ApplicationRunner {
             logger.info(getTask()+"传入参数匹配成功："+sourceArgs[0]);
             doTask();
         }else{
-            logger.info(getTask()+"传入参数匹配失败："+sourceArgs[0]);
+            logger.info(getTask()+"传入参数不匹配，已忽略……："+sourceArgs[0]);
         }
 
     }

@@ -68,6 +68,7 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
         bizSql = StringReplaceUtil.replace(bizSql, params);
         try {
             PreparedStatement preparedStatement = conn.prepareStatement(bizSql);
+            logger.info("hive即将执行sql:"+bizSql);
             if(result){
                 ResultSet resultSet = preparedStatement.executeQuery(bizSql);
                 list = convertList(resultSet);
@@ -77,7 +78,7 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
                 list.add(soMapUtil.create("rownum",rows));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error(ExceptionTool.toString(e));
         }
         return list;
     }
