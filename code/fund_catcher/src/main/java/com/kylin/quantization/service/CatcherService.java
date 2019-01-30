@@ -346,4 +346,15 @@ public class CatcherService {
         });
 
     }
+
+    public void corrIndex() {
+        List<Map<String, Object>> corr_index = hiveDao.executeSql("corr_index", true);
+//        mysqlDao.conn(conn -> {
+//
+//            return null;
+//        });
+        System.out.println(JSON.toJSONString(corr_index));
+
+
+    }
 }
