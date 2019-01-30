@@ -352,6 +352,7 @@ public class CatcherService {
         logger.info("corrIndex start");
         List<Map<String, Object>> corr_index = hiveDao.executeSql("corr_index", true);
         mysqlDao.conn(conn -> {
+            mysqlDao.truncateTable("CORR_INDEX",conn);
             corr_index.forEach(row->mysqlDao.insertCorrIndex(row,conn));
             return null;
         });

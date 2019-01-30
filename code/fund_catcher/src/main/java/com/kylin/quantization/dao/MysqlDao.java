@@ -21,4 +21,6 @@ public interface MysqlDao  extends BaseDao{
     int insertIndexFundCorr(IndexFundCorr indexFundCorr, Connection conn);
 
     void insertCorrIndex(Map<String, Object> row, Connection conn);
+
+    void truncateTable(String corr_index, Connection conn);
 }

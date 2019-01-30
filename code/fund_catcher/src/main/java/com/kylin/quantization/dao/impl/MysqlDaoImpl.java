@@ -117,4 +117,23 @@ public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
         }
     }
 
+    @Override
+    public void truncateTable(String table, Connection conn) {
+        PreparedStatement preparedStatement=null;
+        try {
+            preparedStatement = conn.prepareStatement("truncate table " + table);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
