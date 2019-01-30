@@ -67,6 +67,49 @@ WITH SERDEPROPERTIES
 TBLPROPERTIES("hbase.table.name" = "netval");
 
 
+CREATE EXTERNAL TABLE fund_catcher.index(
+  key		string,
+  ma10		string,
+  ma30		string,
+  dea		string,
+  psy		string,
+  ma5		string,
+  bias2		string,
+  bias3		string,
+  bias1		string,
+  close		string,
+  macd		string,
+  timestamp	string,
+  wr10		string,
+  kdjd		string,
+  volume		string,
+  dif		string,
+  kdjk		string,
+  low		string,
+  percent		string,
+  wr6		string,
+  turnoverrate	string,
+  rsi1		string,
+  rsi2		string,
+  rsi3		string,
+  psyma		string,
+  high		string,
+  ub		string,
+  lb		string,
+  chg		string,
+  ma20		string,
+  cci		string,
+  open		string,
+  kdjj		string
+)STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+WITH SERDEPROPERTIES
+(
+	"hbase.columns.mapping" =
+	":key,baseinfo:ma10,baseinfo:ma30,baseinfo:dea,baseinfo:psy,baseinfo:ma5,baseinfo:bias2,baseinfo:bias3,baseinfo:bias1,baseinfo:close,baseinfo:macd,baseinfo:timestamp,baseinfo:wr10,baseinfo:kdjd,baseinfo:volume,baseinfo:dif,baseinfo:kdjk,baseinfo:low,baseinfo:percent,baseinfo:wr6,baseinfo:turnoverrate,baseinfo:rsi1,baseinfo:rsi2,baseinfo:rsi3,baseinfo:psyma,baseinfo:high,baseinfo:ub,baseinfo:lb,baseinfo:chg,baseinfo:ma20,baseinfo:cci,baseinfo:open,baseinfo:kdjj"
+)
+TBLPROPERTIES("hbase.table.name" = "index");
+
+
 
 
 
