@@ -348,13 +348,14 @@ public class CatcherService {
     }
 
     public void corrIndex() {
+        logger.info("corrIndex start");
         List<Map<String, Object>> corr_index = hiveDao.executeSql("corr_index", true);
 //        mysqlDao.conn(conn -> {
 //
 //            return null;
 //        });
-        System.out.println(JSON.toJSONString(corr_index));
+        logger.info(JSON.toJSONString(corr_index));
 
-
+        logger.info("corrIndex end");
     }
 }

@@ -33,7 +33,10 @@ public abstract  class CatcherRunner  implements ApplicationRunner {
         if(sourceArgs==null || sourceArgs.length==0){
             logger.warn(getTask()+"启动未传入参数");
         }else if(getTask().equals(sourceArgs[0])){
+            logger.info(getTask()+"传入参数匹配成功："+sourceArgs[0]);
             doTask();
+        }else{
+            logger.info(getTask()+"传入参数匹配失败："+sourceArgs[0]);
         }
 
     }
