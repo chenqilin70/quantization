@@ -2,12 +2,17 @@ package com.kylin.quantization.dao.impl;
 
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.model.IndexFundCorr;
+import com.kylin.quantization.service.CatcherService;
+import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * ClassName: MysqlDaoImpl
@@ -20,6 +25,7 @@ import java.sql.SQLException;
  */
 @Repository
 public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
+    public static Logger logger= LoggerFactory.getLogger(MysqlDaoImpl.class);
     @Override
     public boolean dropTable(String tableName) {
         //暂未开发
@@ -81,6 +87,42 @@ public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
             e.printStackTrace();
         }
         return i;
+    }
+
+    @Override
+    public void insertCorrIndex(Map<String, Object> row, Connection conn) {
+        String fields = row.keySet().stream().reduce((f1, f2) -> f1 + "," + f2).get();
+        Object values = row.values().stream().reduce((v1, v2) -> {
+            if (v1.getClass() == String.class) {
+                v1 = "'" + v1 + "'";
+            }
+            if (v2.getClass() == String.class) {
+                v2 = "'" + v2 + "'";
+            }
+            return v1 + "," + v2;
+        }).get();
+        String valueStr= ObjectUtils.toString(values);
+        StringBuffer sql=new StringBuffer("insert into CORR_INDEX(");
+        sql.append(fields);
+        sql.append(") values(");
+        sql.append(valueStr);
+        sql.append(")");
+        PreparedStatement preparedStatement=null;
+        try {
+            logger.info("mysql执行sql："+sql);
+            preparedStatement = conn.prepareStatement(sql.toString());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            if(preparedStatement!=null){
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

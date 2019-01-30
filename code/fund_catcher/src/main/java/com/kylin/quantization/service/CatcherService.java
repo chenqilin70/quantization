@@ -8,6 +8,7 @@ import com.kylin.quantization.dao.HiveDao;
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.model.Fund;
 import com.kylin.quantization.util.*;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.hadoop.hbase.Cell;
@@ -350,12 +351,10 @@ public class CatcherService {
     public void corrIndex() {
         logger.info("corrIndex start");
         List<Map<String, Object>> corr_index = hiveDao.executeSql("corr_index", true);
-//        mysqlDao.conn(conn -> {
-//
-//            return null;
-//        });
-        logger.info(JSON.toJSONString(corr_index));
-
+        mysqlDao.conn(conn -> {
+            corr_index.forEach(row->mysqlDao.insertCorrIndex(row,conn));
+            return null;
+        });
         logger.info("corrIndex end");
     }
 }
