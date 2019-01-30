@@ -83,7 +83,7 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
     }
     @Override
     public List<Map<String, Object>> executeSql(String tab,boolean result) {
-        return executeSql(tab,result,null);
+        return executeSql(tab,result,ssMapUtil.create());
     }
 
 
