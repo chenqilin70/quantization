@@ -12,8 +12,6 @@
                 regexp_replace(a.key,'_.+','')>regexp_replace(b.key,'_.+','')
             group by
                 regexp_replace(a.key,'_.+',''),regexp_replace(b.key,'_.+','')
-            order by
-                akey,corrratio
         ]]>
     </corr_index>
 </sqls>
