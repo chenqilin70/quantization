@@ -147,7 +147,7 @@ public abstract class BaseSparkMain {
 
     public static DataFrame sql(String sql,SQLContext sqlContext){
         logger.info("spark is exec sql :"+sql);
-        DataFrame data = sqlContext.sql(SqlConfigUtil.getBizSql(sql));
+        DataFrame data = sqlContext.sql(SqlConfigUtil.getBizSql(sql,SqlConfigUtil.SPARK_DOC));
         return data;
 
     }

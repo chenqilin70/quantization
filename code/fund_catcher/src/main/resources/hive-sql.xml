@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqls>
+    <!--各大index的相关系数排列组合-->
+    <corr_index>
+        <![CDATA[
+            select * from fund_catcher.index limit 10
+        ]]>
+    </corr_index>
+</sqls>

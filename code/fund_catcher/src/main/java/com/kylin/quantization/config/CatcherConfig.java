@@ -70,6 +70,13 @@ public class CatcherConfig  {
     }
 
     @Bean
+    public MapUtil<String,Object> soMapUtil(){
+        return new MapUtil<String,Object>();
+    }
+
+
+
+    @Bean
     public org.apache.hadoop.conf.Configuration hconfiguration(){
         return HBaseConfiguration.create();
     }

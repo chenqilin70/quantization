@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.dao.HiveDao;
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.model.Fund;
 import com.kylin.quantization.util.*;
@@ -47,6 +48,8 @@ public class CatcherService {
     private HBaseDao hBaseDao;
     @Autowired
     private MysqlDao mysqlDao;
+    @Autowired
+    private HiveDao hiveDao;
     public static Logger logger= LoggerFactory.getLogger(CatcherService.class);
 
 
@@ -162,19 +165,8 @@ public class CatcherService {
 
 
     public Object test(){
-        Scan scan=new Scan();
-        SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
-        try {
-            scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016",""+sf.parse("19491001").getTime())));
-            scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000016",""+sf.parse("20190116").getTime())));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        String family="baseinfo";
-        logger.info("====================================================");
-        hBaseDao.scanForEach("index",scan,r->{
-            logger.info(ResultUtil.row(r)+":"+ResultUtil.strVal(r,family,"close"));
-        });
+        List<Map<String, Object>> result = hiveDao.executeSql("corr_index", true);
+        logger.info(JSON.toJSONString(result));
         return null;
     }
 

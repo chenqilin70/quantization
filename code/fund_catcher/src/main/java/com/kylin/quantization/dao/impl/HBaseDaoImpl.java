@@ -113,13 +113,6 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
                 }
             }
         }
-
-
-
-
-
-
-
         return conn;
     }
     public <T> T aggregate(HBaseExecutors.AggregateExecutor<T> executor){
