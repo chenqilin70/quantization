@@ -48,11 +48,17 @@ public class IndexController {
     }
 
     @ResponseBody
-    @RequestMapping("/corr_index")
-    public Map<String, Object> corrIndex() {
+    @RequestMapping("/corr_index_data")
+    public Map<String, Object> corrIndexData() {
         Map<String,Object> result=service.getCorrIndex();
 //        return JSON.toJSONString(result);
         return result;
+    }
+
+
+    @RequestMapping("/corr_index")
+    public String corrIndex() {
+        return "corr_index";
     }
 
     @ResponseBody

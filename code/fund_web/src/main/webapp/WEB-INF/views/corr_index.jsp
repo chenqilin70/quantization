@@ -20,7 +20,7 @@
 
             var getOption=function(index1,index2,data){
                 // 指定图表的配置项和数据
-                app.title = '笛卡尔坐标系上的热力图';
+//                app.title = '笛卡尔坐标系上的热力图';
                 /**
                 var index1 = ['12a', '1a', '2a', '3a', '4a', '5a', '6a',
                     '7a', '8a', '9a','10a','11a',
@@ -49,6 +49,9 @@
                         data: index1,
                         splitArea: {
                             show: true
+                        },
+                        axisLabel:{
+                            rotate:40
                         }
                     },
                     yAxis: {
@@ -59,8 +62,9 @@
                         }
                     },
                     visualMap: {
-                        min: -1,
+                        min: -0.5,
                         max: 1,
+                        precision:2,
                         calculable: true,
                         orient: 'horizontal',
                         left: 'center',
@@ -87,12 +91,12 @@
             }
 
             $.ajax({
-                url:$('#contextPath').val()+"/index/corr_index",
+                url:$('#contextPath').val()+"/index/corr_index_data",
                 async:true,
                 dataType:'json',
                 contentType: "application/json;charset=utf-8",
                 success:function(result){
-                    result=$.parseJSON( result );
+//                    result=$.parseJSON( result );
                     console.log(result)
                     // 使用刚指定的配置项和数据显示图表。
                     myChart.setOption(getOption(result['index1'],result['index2'],result['data']));
@@ -104,10 +108,17 @@
 
         })
     </script>
+    <style>
+        .chartDiv{
+            height: 800px;
+        }
+
+    </style>
 </head>
 <body>
+<div id="contextPath"><%=request.getContextPath()%></div>
     <div class="row">
-        <div id="chartDiv" class="chartDiv col-lg-offset-3 col-lg-6 col-md-offset-2  col-md-8  col-sm-offset-2 col-sm-8 col-xs-offset-1  col-xs-10">
+        <div id="chartDiv" class="chartDiv col-lg-offset-1 col-lg-10 col-md-offset-1  col-md-10  col-sm-offset-1 col-sm-10 col-xs-offset-1  col-xs-10">
 
         </div>
     </div>

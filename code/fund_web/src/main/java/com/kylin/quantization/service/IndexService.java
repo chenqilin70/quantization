@@ -1,6 +1,7 @@
 package com.kylin.quantization.service;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.kylin.quantization.mapper.CorrIndexMapper;
 import com.kylin.quantization.mapper.FundMapper;
@@ -9,6 +10,7 @@ import com.kylin.quantization.model.*;
 import com.kylin.quantization.util.MapUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -36,6 +38,8 @@ public class IndexService extends BaseService {
     private CorrIndexMapper corrIndexMapper;
     @Autowired
     private MapUtil<String,String> ssMapUtil;
+    @Value("${indexs}")
+    private String indexs;
     public List<Fund> searchTips(String searchWord) {
         return fundMapper.searchTips(searchWord);
     }
@@ -81,8 +85,13 @@ public class IndexService extends BaseService {
     }
 
     public Map<String,Object> getCorrIndex() {
+        Map<String,String> indexI18n=getIndexI18n();
         Map<String,Object> result=new HashMap<>();
         List<CorrIndex> corrIndices = corrIndexMapper.selectByExample(new CorrIndexExample());
+        corrIndices.forEach(c->{
+            c.setIndex1(indexI18n.get(c.getIndex1()));
+            c.setIndex2(indexI18n.get(c.getIndex2()));
+        });
         List<String> collect = corrIndices.stream().flatMap(corrIndex -> Sets.newHashSet(corrIndex.getIndex1(), corrIndex.getIndex2()).stream()).distinct().collect(Collectors.toList());
         Collections.sort(collect);
         result.put("index1",collect);
@@ -114,5 +123,15 @@ public class IndexService extends BaseService {
         return result;
 
 
+    }
+
+    public Map<String,String> getIndexI18n() {
+        Map<String,String> result= Maps.newHashMap();
+        String[] split = indexs.split(",");
+        for(String s:split){
+            String[] split1 = s.split("/");
+            result.put(split1[0],split1[1]);
+        }
+        return result;
     }
 }
