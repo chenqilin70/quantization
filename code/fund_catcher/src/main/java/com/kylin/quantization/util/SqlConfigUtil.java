@@ -37,7 +37,7 @@ public class SqlConfigUtil {
 		InputStream sparkin=null;
 		sparkin=SqlConfigUtil.class.getClassLoader().getResourceAsStream(SQL_BASE_PATH + "spark-sql.xml");
 		InputStream hivein=null;
-		hivein=SqlConfigUtil.class.getClassLoader().getResourceAsStream(SQL_BASE_PATH + "hvie-sql.xml");
+		hivein=SqlConfigUtil.class.getClassLoader().getResourceAsStream(SQL_BASE_PATH + "hive-sql.xml");
 		try {
 			SPARK_DOC = reader.read(sparkin);
 			HIVE_DOC = reader.read(hivein);
