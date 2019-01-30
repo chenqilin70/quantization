@@ -92,15 +92,7 @@ public class MysqlDaoImpl extends BaseDaoImpl implements MysqlDao{
     @Override
     public void insertCorrIndex(Map<String, Object> row, Connection conn) {
         String fields = row.keySet().stream().reduce((f1, f2) -> f1 + "," + f2).get();
-        Object values = row.values().stream().reduce((v1, v2) -> {
-            if (v1.getClass() == String.class) {
-                v1 = "'" + v1 + "'";
-            }
-            if (v2.getClass() == String.class) {
-                v2 = "'" + v2 + "'";
-            }
-            return v1 + "," + v2;
-        }).get();
+        Object values = row.values().stream().map(v->v.getClass()==String.class?"'"+v+"'":v).reduce((v1, v2) -> v1 + "," + v2).get();
         String valueStr= ObjectUtils.toString(values);
         StringBuffer sql=new StringBuffer("insert into CORR_INDEX(");
         sql.append(fields);
