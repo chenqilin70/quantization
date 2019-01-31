@@ -48,6 +48,10 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var min=rdd.min();
     var bandWidth=sum/count
     println("bandWidth is "+bandWidth)
+    println("min is "+min)
+    println("max is "+max)
+    println("count is "+sum)
+
     val kd=new KernelDensity()
       .setSample(rdd)
       .setBandwidth(bandWidth)
