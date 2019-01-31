@@ -12,10 +12,12 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/scala" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="scala-sdk-2.10.7" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.6.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.26.cloudera.4" level="project" />
@@ -83,9 +85,6 @@
     <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.1" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-json:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jettison:jettison:1.1" level="project" />
-    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.3-1" level="project" />
-    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.8.3" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.jackson:jackson-xc:1.8.3" level="project" />
     <orderEntry type="library" name="Maven: commons-configuration:commons-configuration:1.6" level="project" />
@@ -126,6 +125,8 @@
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-yarn-api:2.6.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-mapreduce-client-core:2.6.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-yarn-common:2.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.bind:jaxb-api:2.3.1" level="project" />
+    <orderEntry type="library" name="Maven: javax.activation:javax.activation-api:1.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.sun.jersey:jersey-client:1.9" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-mapreduce-client-jobclient:2.6.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-aws:2.6.0-cdh5.13.3" level="project" />
@@ -151,7 +152,6 @@
     <orderEntry type="library" name="Maven: org.spark-project.protobuf:protobuf-java:2.4.1-shaded" level="project" />
     <orderEntry type="library" name="Maven: org.uncommons.maths:uncommons-maths:1.2.2a" level="project" />
     <orderEntry type="library" name="Maven: org.spark-project.akka:akka-slf4j_2.10:2.2.3-shaded-protobuf" level="project" />
-    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.5" level="project" />
     <orderEntry type="library" name="Maven: org.json4s:json4s-jackson_2.10:3.2.10" level="project" />
     <orderEntry type="library" name="Maven: org.json4s:json4s-core_2.10:3.2.10" level="project" />
     <orderEntry type="library" name="Maven: org.json4s:json4s-ast_2.10:3.2.10" level="project" />
@@ -291,5 +291,22 @@
     <orderEntry type="library" scope="RUNTIME" name="Maven: org.mockito:mockito-all:1.9.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.thrift:libthrift:0.9.3" level="project" />
     <orderEntry type="library" name="Maven: org.apache.curator:curator-framework:2.6.0" level="project" />
+    <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.10.7" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-mllib_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-streaming_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.spark:spark-graphx_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" name="Maven: com.github.fommil.netlib:core:1.1.2" level="project" />
+    <orderEntry type="library" name="Maven: net.sourceforge.f2j:arpack_combined_all:0.1" level="project" />
+    <orderEntry type="library" name="Maven: org.scalanlp:breeze_2.10:0.11.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scalanlp:breeze-macros_2.10:0.11.2" level="project" />
+    <orderEntry type="library" name="Maven: org.scalamacros:quasiquotes_2.10:2.0.0-M8" level="project" />
+    <orderEntry type="library" name="Maven: com.github.rwl:jtransforms:2.4.0" level="project" />
+    <orderEntry type="library" name="Maven: org.spire-math:spire_2.10:0.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.spire-math:spire-macros_2.10:0.7.4" level="project" />
+    <orderEntry type="library" name="Maven: org.jpmml:pmml-model:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: org.jpmml:pmml-agent:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: org.jpmml:pmml-schema:1.1.15" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-impl:2.2.7" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-core:2.2.7" level="project" />
   </component>
 </module>

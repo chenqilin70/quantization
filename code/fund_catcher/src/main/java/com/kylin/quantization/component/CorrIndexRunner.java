@@ -25,7 +25,6 @@ public class CorrIndexRunner  extends CatcherRunner {
     @Override
     protected void doTask() {
         service.corrIndex();
-
     }
 }
 
