@@ -24,6 +24,8 @@
     </parent>
 
 
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.hadoop</groupId>
@@ -194,6 +196,7 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/java</sourceDirectory>
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -210,6 +213,9 @@
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
                     <version>3.2.1</version>
+                    <configuration>
+                        <recompileMode>incremental</recompileMode>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>scala-compile-first</id>
@@ -223,7 +229,7 @@
                 </plugin>
 
 
-                <plugin>
+                <!--<plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.5.5</version>
@@ -246,14 +252,26 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
+
+
+                <!--<plugin>
+                    <groupId>org.scala-tools</groupId>
+                    <artifactId>maven-scala-plugin</artifactId>
+                    <version>2.15.2</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>compile</goal>
+                                <goal>testCompile</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>-->
 
 
 
-
-
-
-               <!-- <plugin>
+                <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <executions>
@@ -263,7 +281,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>-->
+                </plugin>
 
 
 

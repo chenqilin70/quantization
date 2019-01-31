@@ -54,7 +54,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
     var list: List[Double] = List()
     for(i<-Range(Math.floor(min).toInt,Math.floor(max).toInt,100000000)){
-      list=list.+:(i)
+      list=list.+:(i.toDouble)
     }
     list=list.reverse
 
