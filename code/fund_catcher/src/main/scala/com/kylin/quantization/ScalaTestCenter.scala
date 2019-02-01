@@ -82,7 +82,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var max=rdd.max();
     var min=rdd.min();
 //    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
-    var bandWidth=10
+    var bandWidth=1
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
@@ -119,7 +119,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
             tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
           }else{
-            println("tuple is null d:"+d+",smax:"+smax.toString()+",max:"+max)
+//            println("tuple is null d:"+d+",smax:"+smax.toString()+",max:"+max)
           }
         }
       }
