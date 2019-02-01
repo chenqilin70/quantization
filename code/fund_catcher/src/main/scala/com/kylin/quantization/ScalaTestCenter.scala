@@ -53,7 +53,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
       var zcgmDecimal=BigDecimal("0")
       try{
-        zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00"))
+        zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll("亿元", "").trim()))
       }catch {
         case ex:Exception =>{
           println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
@@ -78,7 +78,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       .setBandwidth(bandWidth)
 
     var list: List[Double] = List()
-    for(i<-Range(Math.floor(min).toInt,Math.floor(max).toInt,100000000)){
+    for(i<-Range(Math.floor(min).toInt,Math.floor(max).toInt,1)){
       list=list.+:(i.toDouble)
     }
     list=list.reverse
