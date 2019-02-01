@@ -80,7 +80,8 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
     var max=rdd.max();
     var min=rdd.min();
-    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
+//    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
+    var bandWidth=10.0
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
@@ -107,14 +108,14 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     val splitList=splitByMinMax(BigDecimal(min).-(BigDecimal(0.1)).toDouble,BigDecimal(max).+(BigDecimal(0.1)).toDouble)
     print(splitList)
     var rectangleTs= rdd.map(d=>{
-      val tuple:Tuple2[String,Int]=null
+      var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
       loop2.breakable{
         for (s<-splitList){
           val smin=s.get("small").get
           val smax=s.get("big").get
           if(d>=smin && d<smax){
-            tuple==new Tuple2[String,Int](smin+"-"+smax,1)
+            tuple=new Tuple2[String,Int](smin+"-"+smax,1)
             loop2.break()
           }
         }
