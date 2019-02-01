@@ -31,7 +31,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
   def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
   def splitByMinMax(min: BigDecimal,max: BigDecimal): List[Map[String,BigDecimal]] = {
     var  rectangleList: List[Map[String,BigDecimal]] = List()
-    val stepLen=(max.-(min))./(20)
+    val stepLen=(max.-(min))./(80)
     var small=min
     var big=BigDecimal(0.0)
     // 创建 Breaks 对象
