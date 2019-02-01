@@ -49,7 +49,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     rectangleList
   }
 
-  def main1(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
     list=list.+:(12.2)
     list=list.+:(12.3)
