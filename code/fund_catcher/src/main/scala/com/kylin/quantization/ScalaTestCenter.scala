@@ -128,7 +128,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
 
     println("============== rectangle data:")
-    var labelStr=splitList.map(m=>m.get("small").get.setScale(4)+"-"+m.get("big").get.setScale(4))
+    var labelStr=splitList.map(m=>m.get("small").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)+"-"+m.get("big").get.setScale(4,BigDecimal.RoundingMode.HALF_UP))
 
     println(labelStr)
     var rectangleMap=rectangleTs.collectAsMap()
