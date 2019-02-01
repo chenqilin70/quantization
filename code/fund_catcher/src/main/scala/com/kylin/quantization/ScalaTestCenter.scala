@@ -1,6 +1,7 @@
 package com.kylin.quantization
 
 import java.io.IOException
+import java.text.{FieldPosition, NumberFormat, ParsePosition}
 
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.{ExceptionTool, ResultUtil}
@@ -27,12 +28,18 @@ import scala.math
   * 作者姓名 修改时间    版本号 描述
   */
 object ScalaTestCenter extends ScalaBaseSparkMain{
-  def ma1in(args: Array[String]): Unit = {
+  def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
+  def main(args: Array[String]): Unit = {
+    /*println(1.3671E10)
+    var nf=NumberFormat.getInstance()
+    nf.setGroupingUsed(false)
 
-    println("=========="+BigDecimal("4.72亿元（截止至：2018年12月31日）".replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00")))
+    for(i <- Math.floor(0.0).toLong until Math.floor(1.3671E10).toLong if i%100000000==0){ //修改步长
+      println(i)
+    }*/
   }
 
-  def main(args: Array[String]): Unit = {
+  def main1(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
     list=list.+:(12.2)
     list=list.+:(12.3)
