@@ -119,7 +119,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
             tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
           }else{
-            println("tuple is null d:"+d+","+smin.toString()+"-"+smax.toString())
+            println("tuple is null d:"+d+",smax:"+smax.toString()+",max:"+max)
           }
         }
       }
