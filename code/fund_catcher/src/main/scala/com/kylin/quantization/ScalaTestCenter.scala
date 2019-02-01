@@ -53,7 +53,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
       var zcgmDecimal=BigDecimal("0")
       try{
-        zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll("亿元", "").trim()))
+        zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll("亿元", "").trim())
       }catch {
         case ex:Exception =>{
           println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
