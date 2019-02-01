@@ -112,8 +112,8 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var loop2=new Breaks
       loop2.breakable{
         for (s<-splitList){
-          val smin=s.get("small").get
-          val smax=s.get("big").get
+          val smin=s.get("small").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)
+          val smax=s.get("big").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)
           if(d>=smin && d<smax){
             tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
