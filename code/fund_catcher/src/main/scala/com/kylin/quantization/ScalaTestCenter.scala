@@ -133,7 +133,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     println(labelStr)
     var rectangleMap=rectangleTs.collectAsMap()
 
-    var dataStr=splitList.map(m=>rectangleMap.get(m.get("small").get+"-"+m.get("big").get) ).reduce((a,b)=>a.get + "," + b.get)
+    var dataStr=splitList.map(m=>rectangleMap.get(m.get("small").get+"-"+m.get("big").get) ).reduce((a,b)=>a.get.toString + "," + b.get.toString)
     println(dataStr)
 
 
