@@ -39,11 +39,12 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     loop.breakable{
       while (true){
         big=small.+(stepLen)
-        rectangleList=rectangleList.+:(Map("small"->small,"big"->big))
-        small=big
         if(big>max){
           loop.break()
         }
+        rectangleList=rectangleList.+:(Map("small"->small,"big"->big))
+        small=big
+
       }
     }
     rectangleList.reverse
@@ -81,7 +82,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var max=rdd.max();
     var min=rdd.min();
 //    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
-    var bandWidth=2.5
+    var bandWidth=10
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
@@ -105,7 +106,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
 
 
-    val splitList=splitByMinMax(BigDecimal(min).-(BigDecimal(0.1)),BigDecimal(max).+(BigDecimal(0.1)))
+    val splitList=splitByMinMax(BigDecimal(min),BigDecimal(max))
     print(splitList)
     var rectangleTs= rdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
