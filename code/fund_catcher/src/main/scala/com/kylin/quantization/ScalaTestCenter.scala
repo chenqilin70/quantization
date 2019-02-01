@@ -14,6 +14,8 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
 
+import scala.math
+
 
 /**
   * ClassName: ScalaTestCenter
@@ -38,7 +40,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var result=t._2;
       var zcgm=ResultUtil.strVal(result,"baseinfo","zcgm")
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
-      var zcgmDecimal= BigDecimal("3.40亿元（截止至：2018年12月31日）".replaceAll("（.+）", "").replaceAll("亿元", "")).*(BigDecimal("100000000"))
+      var zcgmDecimal= BigDecimal("3.40亿元（截止至：2018年12月31日）".replaceAll("（.+）", "").replaceAll("亿元", "")).*(BigDecimal("100000000.00"))
       Tuple2[String,BigDecimal](jjdm,zcgmDecimal);
     }).reduceByKey((g1,g2)=>g1).map(t=>t._2.toDouble)
 
@@ -46,7 +48,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
     var max=rdd.max();
     var min=rdd.min();
-    var bandWidth=sum/count
+    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
