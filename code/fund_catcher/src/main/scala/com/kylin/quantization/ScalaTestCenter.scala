@@ -27,6 +27,10 @@ import scala.math
   * 作者姓名 修改时间    版本号 描述
   */
 object ScalaTestCenter extends ScalaBaseSparkMain{
+  def ma1in(args: Array[String]): Unit = {
+
+    println("=========="+BigDecimal("4.72亿元（截止至：2018年12月31日）".replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00")))
+  }
 
   def main(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
@@ -42,7 +46,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
       var zcgmDecimal=BigDecimal("0")
       try{
-        zcgmDecimal= BigDecimal("zcgm".replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00"))
+        zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00"))
       }catch {
         case ex:Exception =>{
           println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
@@ -101,6 +105,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
   }
 
+
   private def getFundListConf(): Configuration= {
     val hconf = HBaseConfiguration.create
     //需要读取的hbase表名
@@ -121,6 +126,8 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     }
     hconf
   }
+
+
 
 }
 

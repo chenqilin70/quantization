@@ -1,7 +1,6 @@
 package com.kylin.quantization
 
-import java.util
-import java.util.Map
+
 
 import com.kylin.quantization.config.CatcherConfig
 import org.apache.spark.SparkConf
