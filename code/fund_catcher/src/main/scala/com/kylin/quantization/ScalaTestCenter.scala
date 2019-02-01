@@ -29,16 +29,16 @@ import scala.math
   */
 object ScalaTestCenter extends ScalaBaseSparkMain{
   def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
-  def splitByMinMax(min: Double,max: Double): List[Map[String,Double]] = {
-    var  rectangleList: List[Map[String,Double]] = List()
-    val stepLen=(max-min)/20
+  def splitByMinMax(min: BigDecimal,max: BigDecimal): List[Map[String,BigDecimal]] = {
+    var  rectangleList: List[Map[String,BigDecimal]] = List()
+    val stepLen=(max.-(min))./(20)
     var small=min
-    var big=0.0
+    var big=BigDecimal(0.0)
     // 创建 Breaks 对象
     val loop = new Breaks;
     loop.breakable{
       while (true){
-        big=small+stepLen
+        big=small.+(stepLen)
         rectangleList=rectangleList.+:(Map("small"->small,"big"->big))
         small=big
         if(big>max){
@@ -105,7 +105,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
 
 
-    val splitList=splitByMinMax(BigDecimal(min).-(BigDecimal(0.1)).toDouble,BigDecimal(max).+(BigDecimal(0.1)).toDouble)
+    val splitList=splitByMinMax(BigDecimal(min).-(BigDecimal(0.1)),BigDecimal(max).+(BigDecimal(0.1)))
     print(splitList)
     var rectangleTs= rdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
@@ -115,7 +115,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
           val smin=s.get("small").get
           val smax=s.get("big").get
           if(d>=smin && d<smax){
-            tuple=new Tuple2[String,Int](smin+"-"+smax,1)
+            tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
           }
         }
@@ -128,13 +128,13 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
 
     println("============== rectangle data:")
-    var labelStr=splitList.map(m=>m.get("small").get+"-"+m.get("big").get)
+    var labelStr=splitList.map(m=>m.get("small").get.setScale(4)+"-"+m.get("big").get.setScale(4))
 
     println(labelStr)
     var rectangleMap=rectangleTs.collectAsMap()
 
     var dataStr=splitList.map(m=>{
-      var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
+      var value=rectangleMap.get(m.get("small").get.setScale(4)+"-"+m.get("big").get.setScale(4))
       if(value.isEmpty) "0" else value.get.toString
     } ).reduce((a,b)=>a + "," + b)
     println(dataStr)
