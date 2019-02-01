@@ -44,6 +44,9 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       Tuple2[String,BigDecimal](jjdm,zcgmDecimal);
     }).reduceByKey((g1,g2)=>g1).map(t=>t._2.toDouble)
 
+    rdd.foreach(d=>{
+      println("=============>"+d)
+    })
     var sum=rdd.reduce((d1,d2)=>d1+d2)
     var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
     var max=rdd.max();
