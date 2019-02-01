@@ -46,7 +46,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
         }
       }
     }
-    rectangleList
+    rectangleList.reverse
   }
 
   def main1(args: Array[String]): Unit = {
@@ -133,7 +133,10 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     println(labelStr)
     var rectangleMap=rectangleTs.collectAsMap()
 
-    var dataStr=splitList.map(m=>rectangleMap.get(m.get("small").get+"-"+m.get("big").get).toString ).reduce((a,b)=>a + "," + b)
+    var dataStr=splitList.map(m=>{
+      var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
+      if(value.isEmpty) 0 else value.get
+    } ).reduce((a,b)=>a + "," + b)
     println(dataStr)
 
 
