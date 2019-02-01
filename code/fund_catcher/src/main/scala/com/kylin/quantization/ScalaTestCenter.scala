@@ -14,7 +14,7 @@ import org.apache.hadoop.hbase.mapreduce.TableInputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
-
+import scala.util.control._
 import scala.math
 
 
@@ -29,17 +29,27 @@ import scala.math
   */
 object ScalaTestCenter extends ScalaBaseSparkMain{
   def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
-  def main1(args: Array[String]): Unit = {
-    /*println(1.3671E10)
-    var nf=NumberFormat.getInstance()
-    nf.setGroupingUsed(false)
-
-    for(i <- Math.floor(0.0).toLong until Math.floor(1.3671E10).toLong if i%100000000==0){ //修改步长
-      println(i)
-    }*/
+  def splitByMinMax(min: Double,max: Double): List[Map[String,Double]] = {
+    var  rectangleList: List[Map[String,Double]] = List()
+    val stepLen=(max-min)/10
+    var small=min
+    var big=0.0
+    // 创建 Breaks 对象
+    val loop = new Breaks;
+    loop.breakable{
+      while (true){
+        big=small+stepLen
+        rectangleList=rectangleList.+:(Map("small"->small,"big"->big))
+        small=big
+        if(big>max){
+          loop.break()
+        }
+      }
+    }
+    rectangleList
   }
 
-  def main(args: Array[String]): Unit = {
+  def main1(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
     list=list.+:(12.2)
     list=list.+:(12.3)
@@ -84,9 +94,42 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     list=list.reverse
 
     val densities = kd.estimate(list.toArray)
+    println("=====================核密度估计：bandWidth："+bandWidth)
     println(list)
-    println("====================================================")
+
     println(densities.toList)
+
+
+
+    val splitList=splitByMinMax(min-0.1,max+0.1)
+    var rectangleTs= rdd.map(d=>{
+      val tuple:Tuple2[String,Int]=null
+      var loop2=new Breaks
+      loop2.breakable{
+        for (s<-splitList){
+          val smin=s.get("small").get
+          val smax=s.get("big").get
+          if(d>=smin && d<smax){
+            tuple==new Tuple2[String,Int](smin+"-"+smax,1)
+            loop2.break()
+          }
+        }
+      }
+      tuple
+    }).reduceByKey((d1,d2)=>d1+d2)
+
+    println("============== rectangle data:")
+    var labelStr=rectangleTs.map(t=>t._1).reduce((s1,s2)=>s1+","+s2)
+
+    println(labelStr)
+
+    var dataStr=rectangleTs.map(t=>t._2+"").reduce((s1,s2)=>s1+","+s2)
+    println(dataStr)
+
+
+
+
+
 
 
 
