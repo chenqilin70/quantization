@@ -115,14 +115,13 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
         for (s<-splitList){
           val smin=s.get("small").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)
           val smax=s.get("big").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)
-          if( (d>=smin && d<smax)  || (smax==max && d==smax) ){
+          if( (d>=smin && d<smax)  || (d==max && d==smax) ){
             tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
+          }else{
+            println("tuple is null d:"+d+","+smin.toString()+"-"+smax.toString())
           }
         }
-      }
-      if(tuple==null){
-        println("tuple is null d:"+d)
       }
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
