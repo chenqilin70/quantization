@@ -40,13 +40,9 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var result=t._2;
       var zcgm=ResultUtil.strVal(result,"baseinfo","zcgm")
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
-      var zcgmDecimal= BigDecimal("3.40亿元（截止至：2018年12月31日）".replaceAll("（.+）", "").replaceAll("亿元", "")).*(BigDecimal("100000000.00"))
+      var zcgmDecimal= BigDecimal("zcgm".replaceAll("（.+）", "").replaceAll("亿元", "")).*(BigDecimal("100000000.00"))
       Tuple2[String,BigDecimal](jjdm,zcgmDecimal);
     }).reduceByKey((g1,g2)=>g1).map(t=>t._2.toDouble)
-
-    rdd.foreach(d=>{
-      println("=============>"+d)
-    })
     var sum=rdd.reduce((d1,d2)=>d1+d2)
     var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
     var max=rdd.max();
