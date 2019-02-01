@@ -81,7 +81,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var max=rdd.max();
     var min=rdd.min();
 //    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
-    var bandWidth=10.0
+    var bandWidth=2.5
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
@@ -126,12 +126,14 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
 
+
     println("============== rectangle data:")
-    var labelStr=rectangleTs.map(t=>t._1).reduce((s1,s2)=>s1+","+s2)
+    var labelStr=splitList.map(m=>m.get("small").get+"-"+m.get("big").get)
 
     println(labelStr)
+    var rectangleMap=rectangleTs.collectAsMap()
 
-    var dataStr=rectangleTs.map(t=>t._2+"").reduce((s1,s2)=>s1+","+s2)
+    var dataStr=splitList.map(m=>rectangleMap.get(m.get("small").get+"-"+m.get("big").get) ).reduce((a,b)=>a.get+","+b.get)
     println(dataStr)
 
 
