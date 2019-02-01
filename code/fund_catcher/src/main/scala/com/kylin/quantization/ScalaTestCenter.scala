@@ -49,6 +49,9 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     rectangleList
   }
 
+  def main1(args: Array[String]): Unit = {
+    print(splitByMinMax(-0.1,20.1))
+  }
   def main(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
     list=list.+:(12.2)
@@ -101,7 +104,8 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
 
 
 
-    val splitList=splitByMinMax(min-0.1,max+0.1)
+    val splitList=splitByMinMax(BigDecimal(min).-(BigDecimal(0.1)).toDouble,BigDecimal(max).+(BigDecimal(0.1)).toDouble)
+    print(splitList)
     var rectangleTs= rdd.map(d=>{
       val tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
@@ -114,6 +118,9 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
             loop2.break()
           }
         }
+      }
+      if(tuple==null){
+        println("tuple is null d:"+d)
       }
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
