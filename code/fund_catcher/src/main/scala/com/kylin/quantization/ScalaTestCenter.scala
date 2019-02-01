@@ -82,7 +82,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var max=rdd.max();
     var min=rdd.min();
 //    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
-    var bandWidth=1
+    var bandWidth=2.5
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
@@ -174,12 +174,12 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     //需要读取的hbase表名
     val tableName = "fund"
     hconf.set(TableInputFormat.INPUT_TABLE, tableName)
-    val filter1 = new SingleColumnValueFilter(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjlx"), CompareFilter.CompareOp.EQUAL, new RegexStringComparator("股票型"))
+//    val filter1 = new SingleColumnValueFilter(Bytes.toBytes("baseinfo"), Bytes.toBytes("jjlx"), CompareFilter.CompareOp.EQUAL, new RegexStringComparator("股票型"))
     val filter4 = new SingleColumnValueFilter(Bytes.toBytes("baseinfo"), Bytes.toBytes("zcgm"), CompareFilter.CompareOp.NOT_EQUAL, new RegexStringComparator("---"))
     val filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("zcgm"))
     val filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("jjdm"))
     val qulifierFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3)
-    val filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL, filter1,filter4, qulifierFilterList)
+    val filterList = new FilterList(FilterList.Operator.MUST_PASS_ALL/*, filter1*/,filter4, qulifierFilterList)
     val scan = new Scan().setFilter(filterList)
     try
       hconf.set(TableInputFormat.SCAN, BaseSparkMain.convertScanToString(scan))
