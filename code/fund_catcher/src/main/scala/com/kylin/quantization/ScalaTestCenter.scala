@@ -3,7 +3,7 @@ package com.kylin.quantization
 import java.io.IOException
 
 import com.kylin.quantization.computors.BaseSparkMain
-import com.kylin.quantization.util.ResultUtil
+import com.kylin.quantization.util.{ExceptionTool, ResultUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.{Result, Scan}
@@ -40,7 +40,16 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
       var result=t._2;
       var zcgm=ResultUtil.strVal(result,"baseinfo","zcgm")
       var jjdm=ResultUtil.strVal(result,"baseinfo","jjdm")
-      var zcgmDecimal= BigDecimal("zcgm".replaceAll("（.+）", "").replaceAll("亿元", "")).*(BigDecimal("100000000.00"))
+      var zcgmDecimal=BigDecimal("0")
+      try{
+        zcgmDecimal= BigDecimal("zcgm".replaceAll("（.+）", "").replaceAll("亿元", "").trim()).*(BigDecimal("100000000.00"))
+      }catch {
+        case ex:Exception =>{
+          println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
+          throw new RuntimeException("zcgm :"+zcgm)
+        }
+      }
+
       Tuple2[String,BigDecimal](jjdm,zcgmDecimal);
     }).reduceByKey((g1,g2)=>g1).map(t=>t._2.toDouble)
     var sum=rdd.reduce((d1,d2)=>d1+d2)
