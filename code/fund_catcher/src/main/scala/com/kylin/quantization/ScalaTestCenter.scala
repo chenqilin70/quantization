@@ -29,7 +29,7 @@ import scala.math
   */
 object ScalaTestCenter extends ScalaBaseSparkMain{
   def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
-  def main(args: Array[String]): Unit = {
+  def main1(args: Array[String]): Unit = {
     /*println(1.3671E10)
     var nf=NumberFormat.getInstance()
     nf.setGroupingUsed(false)
@@ -39,7 +39,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     }*/
   }
 
-  def main1(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit = {
     /*var list: List[Double] = List()
     list=list.+:(12.2)
     list=list.+:(12.3)
