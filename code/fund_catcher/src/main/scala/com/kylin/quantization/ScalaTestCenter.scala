@@ -134,7 +134,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     var rectangleMap=rectangleTs.collectAsMap()
 
     var dataStr=splitList.map(m=>{
-      var value=rectangleMap.get(m.get("small").get.setScale(4)+"-"+m.get("big").get.setScale(4))
+      var value=rectangleMap.get(m.get("small").get.setScale(4,BigDecimal.RoundingMode.HALF_UP)+"-"+m.get("big").get.setScale(4,BigDecimal.RoundingMode.HALF_UP))
       if(value.isEmpty) "0" else value.get.toString
     } ).reduce((a,b)=>a + "," + b)
     println(dataStr)
