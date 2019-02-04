@@ -211,8 +211,7 @@
     <kernal regist="fund">
         <![CDATA[
             select
-                f.zcgm
-                ,cast(regexp_replace(f.zcgm,'（.+）|,|亿元','') as decimal(26,8))
+                cast(regexp_replace(f.zcgm,'（.+）|,|亿元','') as decimal(26,8))
             from
                 fund f
             where
