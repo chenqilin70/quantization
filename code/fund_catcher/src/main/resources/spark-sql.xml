@@ -216,6 +216,7 @@
                 fund f
             where
                 f.zcgm is not null
+                and f.zcgm !='---'
         ]]>
     </kernal>
 
