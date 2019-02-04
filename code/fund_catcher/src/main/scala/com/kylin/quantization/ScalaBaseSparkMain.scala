@@ -5,6 +5,7 @@ package com.kylin.quantization
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.config.CatcherConfig
 import com.kylin.quantization.util.SqlConfigUtil
+import org.apache.commons.lang3.StringUtils
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
@@ -37,9 +38,12 @@ class ScalaBaseSparkMain {
   def  sql(sqlTab :String,sparkContext: SparkContext,sqlSparkContext : SQLContext):RDD[BigDecimal]={
     var sql=SqlConfigUtil.getBizSql(sqlTab,SqlConfigUtil.SPARK_DOC);
     var regist=SqlConfigUtil.attr(sqlTab,"regist",SqlConfigUtil.SPARK_DOC);
-    for(r<-regist.split(",")){
-      BaseSparkMain.registerHbaseTable(r,sparkContext,sqlSparkContext)
+    if(StringUtils.isNotBlank(regist)){
+      for(r<-regist.split(",")){
+        BaseSparkMain.registerHbaseTable(r,sparkContext,sqlSparkContext)
+      }
     }
+
     var df=sqlSparkContext.sql(sql)
     df.show()
     return null;

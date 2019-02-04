@@ -210,7 +210,7 @@
     </gzbd>
     <test regist="fund">
         <![CDATA[
-
+            select * from fund limit 100
         ]]>
     </test>
 
