@@ -45,7 +45,7 @@ class ScalaBaseSparkMain {
     }
 
     var df=sqlSparkContext.sql(sql)
-    df.show()
+//    df.show()
     return df;
 
 

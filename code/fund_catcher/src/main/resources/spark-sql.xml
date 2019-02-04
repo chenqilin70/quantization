@@ -212,7 +212,7 @@
         <![CDATA[
             select
                 f.zcgm
-                ,regexp_replace(f.zcgm,'（.+）|,|亿元','')
+                ,cast(regexp_replace(f.zcgm,'（.+）|,|亿元','') as decimal(26,8))
             from
                 fund f
             where
