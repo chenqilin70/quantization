@@ -12,7 +12,7 @@ import org.apache.spark.sql.SQLContext
   * <author> <time> <version>    <desc>
   * 作者姓名 修改时间    版本号 描述
   */
-class KernalForFxrq extends ScalaBaseSparkMain{
+object KernalForFxrq extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
     var sparkContext =new SparkContext(sparkConf())
     var sqlContext=new SQLContext(sparkContext)
