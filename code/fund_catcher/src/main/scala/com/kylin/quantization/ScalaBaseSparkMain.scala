@@ -2,8 +2,12 @@ package com.kylin.quantization
 
 
 
+import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.config.CatcherConfig
-import org.apache.spark.SparkConf
+import com.kylin.quantization.util.SqlConfigUtil
+import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.SQLContext
 
 /**
   * ClassName: ScalaBaseSparkMain
@@ -28,6 +32,19 @@ class ScalaBaseSparkMain {
     conf.set("spark.driver.memory", sparkMap.get("spark.driver.memory"))
     conf.set("spark.driver.maxResultSize", sparkMap.get("spark.driver.maxResultSize"))
     conf
+  }
+
+  def  sql(sqlTab :String,sparkContext: SparkContext,sqlSparkContext : SQLContext):RDD[BigDecimal]={
+    var sql=SqlConfigUtil.getBizSql(sqlTab,SqlConfigUtil.SPARK_DOC);
+    var regist=SqlConfigUtil.attr(sqlTab,"regist",SqlConfigUtil.SPARK_DOC);
+    for(r<-regist.split(",")){
+      BaseSparkMain.registerHbaseTable(r,sparkContext,sqlSparkContext)
+    }
+    var df=sqlSparkContext.sql(sql)
+    df.show()
+    return null;
+
+
   }
 
 

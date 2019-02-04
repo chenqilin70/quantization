@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.tree.DefaultElement;
 
@@ -93,5 +94,50 @@ public class SqlConfigUtil {
 		}
 		return ids;
 	}
+
+	public static String attr(String tab,String attr,Document doc){
+		List<DefaultElement> list = doc.selectNodes("/sqls/" + tab);
+		if(list!=null && list.size()!=0){
+			Attribute attribute = list.get(0).attribute(attr);
+			if(attribute!=null){
+				return attribute.getStringValue();
+			}
+		}
+
+		return null;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(attr("corr","test",SPARK_DOC));;
+	}
 	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

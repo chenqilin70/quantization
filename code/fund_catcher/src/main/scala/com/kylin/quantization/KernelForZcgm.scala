@@ -27,7 +27,7 @@ import scala.math
   * <author> <time> <version>    <desc>
   * 作者姓名 修改时间    版本号 描述
   */
-object ScalaTestCenter extends ScalaBaseSparkMain{
+object KernelForZcgm extends ScalaBaseSparkMain{
   def stream(i: Long = 1): Stream[Long] = i #:: stream(i + 1)
   def splitByMinMax(min: BigDecimal,max: BigDecimal): List[Map[String,BigDecimal]] = {
     var  rectangleList: List[Map[String,BigDecimal]] = List()
@@ -54,10 +54,6 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     print(splitByMinMax(-0.1,20.1))
   }
   def main(args: Array[String]): Unit = {
-    /*var list: List[Double] = List()
-    list=list.+:(12.2)
-    list=list.+:(12.3)
-    println(list)*/
 
     val sparkContext=new SparkContext(sparkConf());
     var tableRdd=sparkContext newAPIHadoopRDD(getFundListConf(), classOf[TableInputFormat], classOf[ImmutableBytesWritable], classOf[Result])
@@ -70,15 +66,15 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
         zcgmDecimal= BigDecimal(zcgm.replaceAll("（.+）", "").replaceAll(",","").replaceAll("亿元", "").trim())
       }catch {
         case ex:Exception =>{
-          println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
+//          println("zcgm :"+zcgm+","+ExceptionTool.toString(ex))
           throw new RuntimeException("zcgm :"+zcgm)
         }
       }
 
       Tuple2[String,BigDecimal](jjdm,zcgmDecimal);
     }).reduceByKey((g1,g2)=>g1).map(t=>t._2.toDouble)
-    var sum=rdd.reduce((d1,d2)=>d1+d2)
-    var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
+//    var sum=rdd.reduce((d1,d2)=>d1+d2)
+//    var count=rdd.map(d=>1).reduce((c1,c2)=>c1+c2);
     var max=rdd.max();
     var min=rdd.min();
 //    var bandWidth=BigDecimal(sum.toDouble)./(BigDecimal(count.toDouble)).toDouble
@@ -86,7 +82,7 @@ object ScalaTestCenter extends ScalaBaseSparkMain{
     println("bandWidth is "+bandWidth)
     println("min is "+min)
     println("max is "+max)
-    println("count is "+sum)
+//    println("count is "+sum)
 
     val kd=new KernelDensity()
       .setSample(rdd)
