@@ -31,7 +31,12 @@ object KernalForFxrq extends ScalaBaseSparkMain{
       df.show()
       return
     }
-    var doubleRdd=df.rdd.map(r=>r.getDouble(0))
+    var doubleRdd=df.rdd.map(r=>{
+      println("r "+r)
+      println("size "+r.size)
+      println("getDouble "+r.getDouble(0))
+      r.getDouble(0)
+    })
     var max=doubleRdd.max();
     var min=doubleRdd.min();
     val kd=new KernelDensity().setSample(doubleRdd.map(i=>i.toDouble)).setBandwidth(BAND_WIDTH)
