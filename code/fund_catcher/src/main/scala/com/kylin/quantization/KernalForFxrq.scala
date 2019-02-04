@@ -43,9 +43,9 @@ object KernalForFxrq extends ScalaBaseSparkMain{
       list=list.+:(i.toDouble)
     }
     list=list.reverse
-    var kernalLebelStr=list.reduce((a1,a2)=>a1+","+a2)
+    var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     val densities = kd.estimate(list.toArray)
-    var densitiesStr=densities.reduce((a1,a2)=>a1+","+a2)
+    var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
 
 
     val splitList=splitByMinMax(BigDecimal(min),BigDecimal(max))
