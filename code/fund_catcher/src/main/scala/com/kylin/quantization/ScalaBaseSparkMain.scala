@@ -8,7 +8,7 @@ import com.kylin.quantization.util.SqlConfigUtil
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{DataFrame, SQLContext}
 
 /**
   * ClassName: ScalaBaseSparkMain
@@ -35,7 +35,7 @@ class ScalaBaseSparkMain {
     conf
   }
 
-  def  sql(sqlTab :String,sparkContext: SparkContext,sqlSparkContext : SQLContext):RDD[BigDecimal]={
+  def  sql(sqlTab :String,sparkContext: SparkContext,sqlSparkContext : SQLContext):DataFrame={
     var sql=SqlConfigUtil.getBizSql(sqlTab,SqlConfigUtil.SPARK_DOC);
     var regist=SqlConfigUtil.attr(sqlTab,"regist",SqlConfigUtil.SPARK_DOC);
     if(StringUtils.isNotBlank(regist)){
@@ -46,7 +46,7 @@ class ScalaBaseSparkMain {
 
     var df=sqlSparkContext.sql(sql)
     df.show()
-    return null;
+    return df;
 
 
   }

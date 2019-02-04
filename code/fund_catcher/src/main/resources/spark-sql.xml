@@ -208,10 +208,16 @@
                 f.jjlx='债券型'
         ]]>
     </gzbd>
-    <test regist="fund">
+    <kernal regist="fund">
         <![CDATA[
-            select * from fund limit 100
+            select
+                f.zcgm
+                ,regexp_replace(f.zcgm,'（.+）|,|亿元','')
+            from
+                fund f
+            where
+                f.zcgm is not null
         ]]>
-    </test>
+    </kernal>
 
 </sqls>

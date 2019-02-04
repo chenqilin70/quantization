@@ -42,7 +42,7 @@ object KernelForZcgm extends ScalaBaseSparkMain{
         if(big>max){
           loop.break()
         }
-        rectangleList=rectangleList.+:(Map("small"->small,"big"->big))
+        rectangleList=rectangleList.+:(Map("small"->small.setScale(4,BigDecimal.RoundingMode.HALF_UP),"big"->big.setScale(4,BigDecimal.RoundingMode.HALF_UP)))
         small=big
 
       }
