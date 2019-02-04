@@ -21,7 +21,7 @@ object KernalForFxrq extends ScalaBaseSparkMain{
   val BAND_WIDTH=2//核密度贷款
   val KERNAL_STEP=1//核密度曲线的步长
   val RECTANGLE_COUNT=500//直方图分组的个数
-  val IS_TEST=true
+  val IS_TEST=false
 
   def main(args: Array[String]): Unit = {
     var sparkContext =new SparkContext(sparkConf())
