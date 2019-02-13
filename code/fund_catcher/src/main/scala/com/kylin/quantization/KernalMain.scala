@@ -16,7 +16,7 @@ import scala.util.control.Breaks
   * <author> <time> <version>    <desc>
   * 作者姓名 修改时间    版本号 描述
   */
-object KernalForFxrq extends ScalaBaseSparkMain{
+object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
   val BAND_WIDTH=2//核密度贷款
   val KERNAL_STEP=1//核密度曲线的步长
