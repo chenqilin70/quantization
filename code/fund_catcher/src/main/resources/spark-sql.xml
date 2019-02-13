@@ -222,19 +222,14 @@
     <movingAverages regist="netval,fund">
         <![CDATA[
             select
-                *
-            from(
-                select
-                    f.fundcode,n.FSRQ,n.LJJZ,
-                    ROW_NUMBER()  OVER   (partition by f.fundcode order by to_date(n.FSRQ) desc)  rank
-                from
-                    fund f
-                    left join netval n on f.fundcode=substr(n.rowkey,1,instr(n.rowkey,"_")-1)
-                where
-                    f.jjlx='混合型'
-                ) a
-            where
-                a.rank<10
+                        f.fundcode,n.FSRQ,n.LJJZ,
+                        ROW_NUMBER()  OVER (partition by f.fundcode order by to_date(n.FSRQ) desc)  rank
+                    from
+                        fund f
+                        left join netval n on f.fundcode=substr(n.rowkey,1,instr(n.rowkey,"_")-1)
+                    where
+                        f.jjlx='混合型'
+                     limit 10
 
 
         ]]>
