@@ -223,7 +223,7 @@
         <![CDATA[
             select
                 f.fundcode,n.FSRQ,n.LJJZ,
-                row_number()  over (partition  by f.fundcode order by n.FSRQ desc)  rank
+                row_number() over(partition by f.fundcode order by n.FSRQ desc)  rank
             from
                 fund f
                 left join netval n on f.fundcode=substr(n.rowkey,1,instr(n.rowkey,"_")-1)
