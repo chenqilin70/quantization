@@ -235,8 +235,7 @@
                 ) a
             where
                 a.rank<10
-            group by
-                f.fundcode,n.FSRQ
+
 
         ]]>
     </movingAverages>
