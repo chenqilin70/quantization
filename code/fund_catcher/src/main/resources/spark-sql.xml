@@ -225,7 +225,7 @@
                 *
             from(
                 select
-                    f.fundcode,n.FSRQ,n.LJJZ
+                    f.fundcode,n.FSRQ,n.LJJZ,
                     Row_Number() OVER   (partition by f.fundcode order by to_date(n.FSRQ) desc) as rank
                 from
                     fund f
