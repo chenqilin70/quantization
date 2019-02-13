@@ -237,6 +237,7 @@
                 row_number() over(partition by jjlx order by fundcode DESC)  rank
             from
                 fund
+            limit 10
 
 
         ]]>
