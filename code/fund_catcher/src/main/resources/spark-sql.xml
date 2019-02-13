@@ -220,7 +220,7 @@
         ]]>
     </kernal>
     <movingAverages regist="netval,fund">
-        <![CDATA[
+        <!--
             select
                 f.fundcode,n.FSRQ,n.LJJZ,
                 row_number() over(partition by f.fundcode order by n.FSRQ desc)  rank
@@ -230,6 +230,13 @@
             where
                 f.jjlx='混合型'
             limit 10
+        -->
+        <![CDATA[
+            select
+                fundcode,jjlx,
+                row_number() over(partition by jjlx order by fundcode DESC)  rank
+            from
+                fund
 
 
         ]]>
