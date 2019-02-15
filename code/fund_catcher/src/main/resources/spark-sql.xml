@@ -208,18 +208,17 @@
                 f.jjlx='债券型'
         ]]>
     </gzbd>
-    <kernal regist="fund">
+    <kernal regist="">
         <![CDATA[
             select
-                cast(regexp_replace(f.zcgm,'（.+）|,|亿元','') as double)
+                cast(i.percent as double)
             from
-                fund f
+                index_inx i
             where
-                f.zcgm is not null
-                and f.zcgm !='---'
+                i.percent is not null
         ]]>
     </kernal>
-    <movingAverages regist="netval,fund">
+    <movingAverages regist="netval,fund" >
         <!--
 
         -->

@@ -6,6 +6,7 @@ import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.config.CatcherConfig
 import com.kylin.quantization.util.SqlConfigUtil
 import org.apache.commons.lang3.StringUtils
+import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.{DataFrame, SQLContext}
@@ -19,7 +20,7 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
   * <author> <time> <version>    <desc>
   * 作者姓名 修改时间    版本号 描述
   */
-class ScalaBaseSparkMain {
+abstract class ScalaBaseSparkMain {
   def sparkConf(): SparkConf = {
     val sparkMap = CatcherConfig.proToMap("spark.properties")
     val conf = new SparkConf().setAppName(sparkMap.get("spark.appName"))
@@ -43,13 +44,20 @@ class ScalaBaseSparkMain {
         BaseSparkMain.registerHbaseTable(r,sparkContext,sqlSparkContext)
       }
     }
+    val confMap=getCustomHbaseConf()
+    if(confMap!=null){
+      confMap.foreach{
+        case(tableName,hbaseConf)=>{
+          BaseSparkMain.registerHbaseTable(tableName,hbaseConf,sparkContext,sqlSparkContext)
+        }
+      }
+    }
 
     var df=sqlSparkContext.sql(sql)
-//    df.show()
     return df;
-
-
   }
+
+  def getCustomHbaseConf():Map[String,HBaseConfiguration]
 
 
 

@@ -18,6 +18,18 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="scala-sdk-2.10.7" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.spark:spark-hive_2.10:1.6.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.hive:hive-cli:1.1.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.hive:hive-exec:1.1.0-cdh5.13.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.cloudera.logredactor:logredactor:1.0.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.antlr:ST4:4.0.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: stax:stax-api:1.0.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.calcite:calcite-avatica:1.2.0-incubating" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.calcite:calcite-core:1.2.0-incubating" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.calcite:calcite-linq4j:1.2.0-incubating" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: net.hydromatic:eigenbase-properties:1.1.5" level="project" />
+    <orderEntry type="library" name="Maven: org.codehaus.janino:commons-compiler:2.7.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jodd:jodd-core:3.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.apache.hadoop:hadoop-hdfs:2.6.0-cdh5.13.3" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:11.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.mortbay.jetty:jetty:6.1.26.cloudera.4" level="project" />

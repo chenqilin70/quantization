@@ -1,6 +1,15 @@
 package com.kylin.quantization
 
+import java.io.IOException
+
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
+import com.kylin.quantization.computors.BaseSparkMain
+import com.kylin.quantization.util.RowKeyUtil
+import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.hadoop.hbase.client.Scan
+import org.apache.hadoop.hbase.filter._
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat
+import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
 import org.apache.spark.sql.SQLContext
@@ -18,9 +27,9 @@ import scala.util.control.Breaks
   */
 object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
-  val BAND_WIDTH=2//核密度贷款
+  val BAND_WIDTH=0.5//核密度带宽
   val KERNAL_STEP=1//核密度曲线的步长
-  val RECTANGLE_COUNT=500//直方图分组的个数
+  val RECTANGLE_COUNT=20//直方图分组的个数
   val IS_TEST=false
 
   def main(args: Array[String]): Unit = {
@@ -112,4 +121,23 @@ object KernalMain extends ScalaBaseSparkMain{
     rectangleList.reverse
   }
 
+  override def getCustomHbaseConf(): Map[String, HBaseConfiguration] = {
+    val hconf = HBaseConfiguration.create
+    //需要读取的hbase表名
+    val tableName = "index_inx"
+    hconf.set(TableInputFormat.INPUT_TABLE, tableName)
+    val filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("percent"))
+    val filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("key"))
+    val qulifierFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3)
+    val scan = new Scan().setFilter(qulifierFilterList)
+    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","19490101")))
+    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","20190216")))
+    try
+      hconf.set(TableInputFormat.SCAN, BaseSparkMain.convertScanToString(scan))
+    catch {
+      case e: IOException =>
+        e.printStackTrace()
+    }
+    hconf
+  }
 }
