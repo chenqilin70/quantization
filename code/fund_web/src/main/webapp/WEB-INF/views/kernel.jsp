@@ -16,7 +16,28 @@
     <script>
         $(document).ready(function(){
             var myChart = echarts.init(document.getElementById('chartDiv'));
+            var redis=function(key){
+                var redisdata=""
+                $.ajax({
+                    url:$('#contextPath').val()+"/index/redis",
+                    async:false,
+                    data:{
+                        'key':key
+                    },
+                    dataType:'json',
+                    contentType: "application/json;charset=utf-8",
+                    success:function(result){
+                        console.log(result)
+                        redisdata=result['data']
 
+                    },
+                    error:function(e){
+                        console.error(e)
+                    }
+                })
+                return redisdata
+            }
+            alert(redis('k1'))
 
             var getOption=function(index1,index2,data){
                 // 指定图表的配置项和数据

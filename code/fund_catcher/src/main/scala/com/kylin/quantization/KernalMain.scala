@@ -33,7 +33,7 @@ object KernalMain extends ScalaBaseSparkMain{
   val BAND_WIDTH=0.5//核密度带宽
   val KERNAL_STEP=1//核密度曲线的步长
   val RECTANGLE_COUNT=20//直方图分组的个数
-  val IS_TEST=false
+  val IS_TEST=true
 
   def main(args: Array[String]): Unit = {
     var sparkContext =new SparkContext(sparkConf())
