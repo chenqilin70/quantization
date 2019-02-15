@@ -4,7 +4,8 @@ import java.io.IOException
 
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
-import com.kylin.quantization.util.RowKeyUtil
+import com.kylin.quantization.util.JedisUtil.JedisRunner
+import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Scan
@@ -14,6 +15,7 @@ import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
 import org.apache.spark.sql.SQLContext
+import redis.clients.jedis.Jedis
 
 import scala.util.control.Breaks
 
@@ -59,9 +61,10 @@ object KernalMain extends ScalaBaseSparkMain{
     }
     list=list.reverse
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
+    kernalLebelStr="["+kernalLebelStr+"]";
     val densities = kd.estimate(list.toArray)
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
-
+    densitiesStr="["+densitiesStr+"]";
 
     val splitList=splitByMinMax(BigDecimal(min),BigDecimal(max))
     var rectangleTs= doubleRdd.map(d=>{
@@ -82,13 +85,15 @@ object KernalMain extends ScalaBaseSparkMain{
 
 
 
-    var rectangleLabelStr=splitList.map(m=>m.get("small").get+"-"+m.get("big").get).reduce((a1,a2)=>a1+","+a2)
+    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
+    rectangleLabelStr="["+rectangleLabelStr+"]"
 
     var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
       if(value.isEmpty) "0" else value.get.toString
     } ).reduce((a,b)=>a + "," + b)
+    rectangleDataStr="["+rectangleDataStr+"]"
 
     println("============== kernal data:")
     println("kernalLebelStr  ===>"+kernalLebelStr)
@@ -96,6 +101,16 @@ object KernalMain extends ScalaBaseSparkMain{
     println("============== rectangle data:")
     println("rectangleLabelStr  ===>"+rectangleLabelStr)
     println("rectangleDataStr  ===>"+rectangleDataStr)
+    JedisUtil.jedis[Object](new JedisRunner[Object] {
+      override def run(jedis: Jedis): Object = {
+        jedis.set("kernalLebelStr",kernalLebelStr)
+        jedis.set("densitiesStr",densitiesStr)
+        jedis.set("rectangleLabelStr",rectangleLabelStr)
+        jedis.set("rectangleDataStr",rectangleDataStr)
+      }
+    })
+
+
   }
 
 
