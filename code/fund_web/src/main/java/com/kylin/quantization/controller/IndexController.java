@@ -47,6 +47,12 @@ public class IndexController {
         return "index";
     }
 
+    @RequestMapping("/kernel")
+    public String kernal() {
+        System.out.println("kernel is running");
+        return "kernel";
+    }
+
     @ResponseBody
     @RequestMapping("/corr_index_data")
     public Map<String, Object> corrIndexData() {
