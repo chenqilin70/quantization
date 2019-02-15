@@ -6,6 +6,7 @@ import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.config.CatcherConfig
 import com.kylin.quantization.util.SqlConfigUtil
 import org.apache.commons.lang3.StringUtils
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.rdd.RDD
@@ -57,7 +58,7 @@ abstract class ScalaBaseSparkMain {
     return df;
   }
 
-  def getCustomHbaseConf():Map[String,HBaseConfiguration]
+  def getCustomHbaseConf():Map[String,Configuration]
 
 
 

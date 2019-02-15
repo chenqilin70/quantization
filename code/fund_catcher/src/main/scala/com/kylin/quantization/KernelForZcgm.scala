@@ -186,7 +186,7 @@ object KernelForZcgm extends ScalaBaseSparkMain{
     hconf
   }
 
-  override def getCustomHbaseConf(): Map[String, HBaseConfiguration] = ???
+  override def getCustomHbaseConf(): Map[String, Configuration] = ???
 }
 
 

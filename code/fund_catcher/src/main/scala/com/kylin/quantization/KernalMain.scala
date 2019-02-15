@@ -5,6 +5,7 @@ import java.io.IOException
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.RowKeyUtil
+import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Scan
 import org.apache.hadoop.hbase.filter._
@@ -121,7 +122,7 @@ object KernalMain extends ScalaBaseSparkMain{
     rectangleList.reverse
   }
 
-  override def getCustomHbaseConf(): Map[String, HBaseConfiguration] = {
+  override def getCustomHbaseConf(): Map[String, Configuration] = {
     val hconf = HBaseConfiguration.create
     //需要读取的hbase表名
     val tableName = "index_inx"
@@ -138,6 +139,7 @@ object KernalMain extends ScalaBaseSparkMain{
       case e: IOException =>
         e.printStackTrace()
     }
-    hconf
+    Map[String,Configuration]("" -> hconf)
+
   }
 }
