@@ -125,7 +125,7 @@ object KernalMain extends ScalaBaseSparkMain{
   override def getCustomHbaseConf(): Map[String, Configuration] = {
     val hconf = HBaseConfiguration.create
     //需要读取的hbase表名
-    val tableName = "index_inx"
+    val tableName = "index"
     hconf.set(TableInputFormat.INPUT_TABLE, tableName)
     val filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("percent"))
     val filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("key"))
@@ -139,7 +139,7 @@ object KernalMain extends ScalaBaseSparkMain{
       case e: IOException =>
         e.printStackTrace()
     }
-    Map[String,Configuration]("" -> hconf)
+    Map[String,Configuration]("index_inx" -> hconf)
 
   }
 }
