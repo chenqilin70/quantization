@@ -39,10 +39,7 @@ object KernalMain extends ScalaBaseSparkMain{
     var sparkContext =new SparkContext(sparkConf())
     var sqlContext=new SQLContext(sparkContext)
     var df=sql(SQL_TAB,sparkContext,sqlContext)
-    if(IS_TEST){
-      df.show()
-      return
-    }
+
     var doubleRdd=df.rdd.map(r=>{
       println("r "+r)
       println("size "+r.size)
@@ -52,7 +49,11 @@ object KernalMain extends ScalaBaseSparkMain{
     var max=doubleRdd.max();
     var min=doubleRdd.min();
     val kd=new KernelDensity().setSample(doubleRdd.map(i=>i.toDouble)).setBandwidth(BAND_WIDTH)
-
+    if(IS_TEST){
+      println(min)
+      println(max)
+      return
+    }
 
 
     var list: List[Double] = List()
