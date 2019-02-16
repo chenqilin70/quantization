@@ -263,6 +263,7 @@
                             <phase>package</phase>
                             <goals>
                                 <goal>single</goal>
+                                <goal>assembly</goal>
                             </goals>
                         </execution>
                     </executions>
