@@ -9,6 +9,7 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
  * <author> <time> <version>    <desc>
  * 作者姓名 修改时间    版本号 描述
  */
+@Component
 public class ConvertibleBondRunner   extends CatcherRunner {
     @Autowired
     private HBaseDao hBaseDao;
