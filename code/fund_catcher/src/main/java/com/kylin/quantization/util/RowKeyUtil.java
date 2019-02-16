@@ -73,4 +73,9 @@ public class RowKeyUtil {
     public static String getCodeFromIndexRowKey(String row) {
         return row.substring(0,row.indexOf("_"));
     }
+    public static String getConvertibleBond(String code,int index) {
+        String row=code+"_"+index;
+        row=row.hashCode()+"_"+row;
+        return row;
+    }
 }

@@ -232,6 +232,16 @@ public class HBaseDaoImpl extends BaseDaoImpl implements HBaseDao{
             return flg;
         });
     }
+
+    @Override
+    public boolean createTableIfNotExist(String tableName, String... colums) {
+        boolean flg=false;
+        if(!existTable(tableName)){
+            flg=createTable(tableName,colums);
+        }
+        return flg;
+    }
+
     @Override
     public boolean dropTable(String tableName) {
         return admin(admin->{

@@ -20,6 +20,7 @@ import java.util.List;
  */
 public interface HBaseDao extends BaseDao{
     boolean createTable(String tableName,String ... colums);
+    boolean createTableIfNotExist(String tableName,String ... colums);
     Connection getConn();
     <T> T admin(HBaseExecutors.AdminExecutor<T> executor);
     <T> T table(String tableName,HBaseExecutors.TableExecutor<T> executor);
