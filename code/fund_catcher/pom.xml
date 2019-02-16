@@ -255,6 +255,7 @@
                         <descriptorRefs>
                             <descriptorRef>jar-with-dependencies</descriptorRef>
                         </descriptorRefs>
+                        <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
                     </configuration>
                     <executions>
                         <execution>
