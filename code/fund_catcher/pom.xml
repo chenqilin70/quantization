@@ -242,14 +242,14 @@
                 </plugin>
 
 
-                <!--<plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.5.5</version>
                     <configuration>
                         <archive>
                             <manifest>
-                                <mainClass>com.xxg.Main</mainClass>
+                                <mainClass>com.kylin.quantization.util.HbaseToHiveConverter</mainClass>
                             </manifest>
                         </archive>
                         <descriptorRefs>
@@ -265,7 +265,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>-->
+                </plugin>
 
 
                 <!--<plugin>
