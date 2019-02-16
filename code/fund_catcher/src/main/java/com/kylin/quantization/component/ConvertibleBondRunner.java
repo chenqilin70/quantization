@@ -45,7 +45,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
             hBaseDao.admin(admin -> {
                 admin.disableTable(TableName.valueOf(tableName));
                 admin.truncateTable(TableName.valueOf(tableName),false);
-                admin.enableTable(TableName.valueOf(tableName));
+//                admin.enableTable(TableName.valueOf(tableName));
                 return null;
             });
         });
