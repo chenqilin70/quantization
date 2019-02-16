@@ -51,6 +51,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
             });
         });
         String result = HttpUtil.doGet(conf.get("convertiblebond_list"), CatcherConfig.proToMap("param/convertiblebond_list_param.properties"));
+        logger.info("convertiblebond_list 获取数据："+result);
         JSONArray bonds = JSON.parseObject(result).getJSONArray("data");
         bonds.stream().map(b->((JSONObject)b).getString("BONDCODE")).forEach(code->{
             logger.info("==============================================="+code);
@@ -62,6 +63,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
                     param.put("filter",StringReplaceUtil.replace(param.get("filter"),ssMapUtil.create("bondCode",code.trim())));
                 }
                 String dataStr = HttpUtil.doGet(url, param);
+                logger.info(w+" 获取数据："+dataStr);
                 JSONArray dataArr = JSON.parseArray(dataStr);
                 int index=0;
                 List<Put> putList=new ArrayList<>();
