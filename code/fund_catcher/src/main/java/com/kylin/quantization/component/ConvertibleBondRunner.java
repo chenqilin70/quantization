@@ -42,7 +42,12 @@ public class ConvertibleBondRunner   extends CatcherRunner {
         wds.forEach(w->{
             String tableName = w.replaceAll("_", "");
             hBaseDao.createTableIfNotExist(tableName,"baseinfo");
-            hBaseDao.admin(admin -> {admin.truncateTable(TableName.valueOf(tableName),false);return null;});
+            hBaseDao.admin(admin -> {
+                admin.disableTable(TableName.valueOf(tableName));
+                admin.truncateTable(TableName.valueOf(tableName),false);
+                admin.enableTable(TableName.valueOf(tableName));
+                return null;
+            });
         });
         String result = HttpUtil.doGet(conf.get("convertiblebond_list"), null);
         JSONArray bonds = JSON.parseObject(result).getJSONArray("data");
