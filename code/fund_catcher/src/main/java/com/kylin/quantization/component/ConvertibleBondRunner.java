@@ -3,6 +3,7 @@ package com.kylin.quantization.component;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.util.*;
 import org.apache.hadoop.hbase.TableName;
@@ -49,14 +50,18 @@ public class ConvertibleBondRunner   extends CatcherRunner {
                 return null;
             });
         });
-        String result = HttpUtil.doGet(conf.get("convertiblebond_list"), null);
+        String result = HttpUtil.doGet(conf.get("convertiblebond_list"), CatcherConfig.proToMap("param/convertiblebond_list_param.properties"));
         JSONArray bonds = JSON.parseObject(result).getJSONArray("data");
         bonds.stream().map(b->((JSONObject)b).getString("BONDCODE")).forEach(code->{
-            System.out.println(code);
+            logger.info("==============================================="+code);
             wds.forEach(w->{
                 String url= StringReplaceUtil.replace(conf.get(w),ssMapUtil.create("bondCode",code.trim()));
                 String tableName = w.replaceAll("_", "");
-                String dataStr = HttpUtil.doGet(url, null);
+                Map<String, String> param = CatcherConfig.proToMap("param/" + w + "_param.properties");
+                if(param.containsKey("filter")){
+                    param.put("filter",StringReplaceUtil.replace(param.get("filter"),ssMapUtil.create("bondCode",code.trim())));
+                }
+                String dataStr = HttpUtil.doGet(url, param);
                 JSONArray dataArr = JSON.parseArray(dataStr);
                 int index=0;
                 List<Put> putList=new ArrayList<>();
@@ -65,6 +70,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
                     datajson.keySet().forEach(key->{
                         Put put = PutUtil.getPut(RowKeyUtil.getConvertibleBond(code, index), "baseinfo", key, datajson.getString(key));
                         putList.add(put);
+                        logger.info(key+","+datajson.getString(key));
                     });
                 });
                 hBaseDao.putData(tableName,putList);
