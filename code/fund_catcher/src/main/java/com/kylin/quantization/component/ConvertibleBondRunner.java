@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,16 +41,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
     @Override
     protected void doTask() {
         List<String> wds = Arrays.asList("kzz_lb,kzz_mx,kzz_fxlx,kzz_zqh,kzz_czyt,kzz_zyrq,kzz_hssh".split(","));
-        wds.forEach(w->{
-            String tableName = w.replaceAll("_", "");
-            hBaseDao.createTableIfNotExist(tableName,"baseinfo");
-            hBaseDao.admin(admin -> {
-                admin.disableTable(TableName.valueOf(tableName));
-                admin.truncateTable(TableName.valueOf(tableName),false);
-//                admin.enableTable(TableName.valueOf(tableName));
-                return null;
-            });
-        });
+        initTable(wds);
         String result = HttpUtil.doGet(conf.get("convertiblebond_list"), CatcherConfig.proToMap("param/convertiblebond_list_param.properties"));
         logger.info("convertiblebond_list 获取数据："+result);
         JSONArray bonds = JSON.parseObject(result).getJSONArray("data");
@@ -82,5 +74,32 @@ public class ConvertibleBondRunner   extends CatcherRunner {
 
 
 
+    }
+
+
+    public void initTable(List<String> wds){
+        BlockingQueue<Future<Object>> queue = new LinkedBlockingDeque<Future<Object>>(wds.size());
+        ExecutorService exec = Executors.newFixedThreadPool(4);
+        CompletionService<Object> completionService = new ExecutorCompletionService<Object>(exec, queue);
+        wds.forEach(w->{
+            String tableName = w.replaceAll("_", "");
+            hBaseDao.createTableIfNotExist(tableName,"baseinfo");
+            completionService.submit(()->{
+                hBaseDao.admin(admin -> {
+                    admin.disableTable(TableName.valueOf(tableName));
+                    admin.truncateTable(TableName.valueOf(tableName), false);
+                    return null;
+                });
+                return null;
+            });
+        });
+        wds.forEach(w->{
+            try {
+                completionService.take().get();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        exec.shutdown();
     }
 }
