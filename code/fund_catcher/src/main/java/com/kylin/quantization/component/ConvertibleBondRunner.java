@@ -43,7 +43,7 @@ public class ConvertibleBondRunner   extends CatcherRunner {
         List<String> wds = Arrays.asList("kzz_lb,kzz_mx,kzz_fxlx,kzz_zqh,kzz_czyt,kzz_zyrq,kzz_hssh".split(","));
         initTable(wds);
         String result = HttpUtil.doGet(conf.get("convertiblebond_list"), CatcherConfig.proToMap("param/convertiblebond_list_param.properties"));
-        logger.info("convertiblebond_list 获取数据："+result);
+//        logger.info("convertiblebond_list 获取数据："+result);
         JSONArray bonds = JSON.parseObject(result).getJSONArray("data");
         bonds.stream().map(b->((JSONObject)b).getString("BONDCODE")).forEach(code->{
             logger.info("==============================================="+code);
