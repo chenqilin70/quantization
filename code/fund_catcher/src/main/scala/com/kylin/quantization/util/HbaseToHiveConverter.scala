@@ -40,10 +40,10 @@ object HbaseToHiveConverter {
           println("======================="+tableName)
           dao.scanForEach(tableName,scan,new HBaseExecutors.ScanForEachExecutor {
             override def doEach(result: Result): Unit = {
-              var keyset=result.getMap.keySet()
-              var it=keyset.iterator()
+              var familyMap=result.getFamilyMap(Bytes.toBytes("baseinfo"));
+              var it=familyMap.keySet().iterator()
               while(it.hasNext){
-                println(Bytes.toString(it.next()))
+                print(Bytes.toString(it.next()))
               }
             }
           })
