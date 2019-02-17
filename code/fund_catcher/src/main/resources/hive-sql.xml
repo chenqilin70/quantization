@@ -17,7 +17,7 @@
     <create_table_tamplate>
         <![CDATA[
             CREATE EXTERNAL TABLE IF NOT EXISTS fund_catcher.{tableName}(
-              {fields}
+              key string,{fields}
             )STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
             WITH SERDEPROPERTIES
             (
