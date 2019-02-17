@@ -242,7 +242,7 @@
                 </plugin>
 
 
-                <plugin>
+                <!--<plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <version>2.5.5</version>
@@ -253,7 +253,7 @@
                             </manifest>
                         </archive>
                         <descriptorRefs>
-                            <descriptorRef>jar-with-dependencies</descriptorRef>
+                            <descriptorRef>project</descriptorRef>
                         </descriptorRefs>
                         <archiveBaseDirectory>${project.basedir}</archiveBaseDirectory>
                     </configuration>
@@ -267,7 +267,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
 
 
                 <!--<plugin>
