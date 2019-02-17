@@ -32,8 +32,8 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
     public static Logger logger= LoggerFactory.getLogger(HiveDaoImpl.class);
     @Autowired
     private MapUtil<String,String> ssMapUtil;
-    @Autowired
-    private MapUtil<String,Object> soMapUtil;
+//    @Autowired
+    private MapUtil<String,Object> soMapUtil=new MapUtil<>();
 
     
     @Override
