@@ -14,4 +14,17 @@
                 regexp_replace(a.key,'_.+',''),regexp_replace(b.key,'_.+','')
         ]]>
     </corr_index>
+    <create_table_tamplate>
+        <![CDATA[
+            CREATE EXTERNAL TABLE fund_catcher.{tableName}(
+              {fields}
+            )STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
+            WITH SERDEPROPERTIES
+            (
+                "hbase.columns.mapping" =
+                ":key,{qulifier}"
+            )
+            TBLPROPERTIES("hbase.table.name" = "{tableName}");
+        ]]>
+    </create_table_tamplate>
 </sqls>

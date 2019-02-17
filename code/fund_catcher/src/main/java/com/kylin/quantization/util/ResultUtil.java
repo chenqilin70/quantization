@@ -22,4 +22,5 @@ public class ResultUtil {
     public static String row(Result result){
         return Bytes.toString(result.getRow());
     }
+
 }

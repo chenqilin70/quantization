@@ -37,14 +37,24 @@ object HbaseToHiveConverter {
           var scan=new Scan()
           var filter=new PageFilter(1);
           scan.setFilter(filter)
-          println("======================="+tableName)
           dao.scanForEach(tableName,scan,new HBaseExecutors.ScanForEachExecutor {
             override def doEach(result: Result): Unit = {
+              var fields=new StringBuffer("")
+              var qulifier=new StringBuffer("")
               var familyMap=result.getFamilyMap(Bytes.toBytes("baseinfo"));
-              var it=familyMap.keySet().iterator()
+              var it=familyMap.keySet().iterator();
               while(it.hasNext){
-                print(Bytes.toString(it.next()))
+                var f=Bytes.toString(it.next())
+                fields.append(f+" string,")
+                qulifier.append("baseinfo:"+f+",")
               }
+              val fieldsStr=fields.substring(0,fields.length()-1)
+              val qulifierStr=qulifier.substring(0,qulifier.length()-1)
+              var sql=SqlConfigUtil.getBizSql("create_table_tamplate",SqlConfigUtil.HIVE_DOC)
+              sql=StringReplaceUtil.replace(sql,new MapUtil[String,String]().create("fields",fieldsStr,"qulifier",qulifierStr,"tableName",tableName))
+              println(sql)
+              println("========================")
+
             }
           })
         })
@@ -52,6 +62,9 @@ object HbaseToHiveConverter {
       }
     })
   }
+
+
+
 
 }
 
