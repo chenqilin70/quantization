@@ -24,11 +24,6 @@ import org.slf4j.LoggerFactory
   * 作者姓名 修改时间    版本号 描述
   */
 object HbaseToHiveConverter {
-  val logger= LoggerFactory.getLogger(HbaseToHiveConverter.getClass);
-  {
-    PropertyConfigurator.configure(HbaseToHiveConverter.getClass.getClassLoader.getResourceAsStream("log4j_linux.properties"))
-    logger.info("使用日志配置文件:log4j_linux.properties")
-  }
   def main(args: Array[String]): Unit = {
     convert()
   }
@@ -42,13 +37,13 @@ object HbaseToHiveConverter {
           var scan=new Scan()
           var filter=new PageFilter(1);
           scan.setFilter(filter)
-          logger.info("======================="+tableName)
+          println("======================="+tableName)
           dao.scanForEach(tableName,scan,new HBaseExecutors.ScanForEachExecutor {
             override def doEach(result: Result): Unit = {
               var keyset=result.getMap.keySet()
               var it=keyset.iterator()
               while(it.hasNext){
-                logger.info(Bytes.toString(it.next()))
+                println(Bytes.toString(it.next()))
               }
             }
           })
