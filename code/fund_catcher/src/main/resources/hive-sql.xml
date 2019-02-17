@@ -24,7 +24,7 @@
                 "hbase.columns.mapping" =
                 ":key,{qulifier}"
             )
-            TBLPROPERTIES("hbase.table.name" = "{tableName}");
+            TBLPROPERTIES("hbase.table.name" = "{tableName}")
         ]]>
     </create_table_tamplate>
 </sqls>
