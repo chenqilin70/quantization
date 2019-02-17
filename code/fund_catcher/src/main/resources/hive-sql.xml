@@ -16,7 +16,7 @@
     </corr_index>
     <create_table_tamplate>
         <![CDATA[
-            CREATE EXTERNAL TABLE fund_catcher.{tableName}(
+            CREATE EXTERNAL TABLE IF NOT EXISTS fund_catcher.{tableName}(
               {fields}
             )STORED BY 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'
             WITH SERDEPROPERTIES
