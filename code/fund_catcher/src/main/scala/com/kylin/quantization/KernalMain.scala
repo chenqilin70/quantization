@@ -46,8 +46,8 @@ object KernalMain extends ScalaBaseSparkMain{
       println("getDecimal "+r.getDecimal(0))
       r.getDecimal(0)
     })
-    var max=decimalRdd.max();
-    var min=decimalRdd.min();
+    var max=decimalRdd.reduce((a,b)=>if(a.compareTo(b)>0) a else b)
+    var min=decimalRdd.reduce((a,b)=>if(a.compareTo(b)<0) a else b)
     val kd=new KernelDensity().setSample(decimalRdd.map[Double](r=>r.doubleValue())).setBandwidth(BAND_WIDTH)
     if(IS_TEST){
       println(min)
