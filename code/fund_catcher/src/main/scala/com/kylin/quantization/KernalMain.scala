@@ -159,7 +159,7 @@ object KernalMain extends ScalaBaseSparkMain{
     val qulifierFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3)
     val scan = new Scan().setFilter(qulifierFilterList)
     scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","19490101")))
-    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","20190216")))
+    scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","20190216")))
     try
       hconf.set(TableInputFormat.SCAN, BaseSparkMain.convertScanToString(scan))
     catch {
