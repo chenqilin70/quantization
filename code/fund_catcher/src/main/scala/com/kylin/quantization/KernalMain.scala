@@ -40,24 +40,25 @@ object KernalMain extends ScalaBaseSparkMain{
     var sqlContext=new SQLContext(sparkContext)
     var df=sql(SQL_TAB,sparkContext,sqlContext)
 
-    var doubleRdd=df.rdd.map(r=>{
+    var decimalRdd=df.rdd.map(r=>{
       println("r "+r)
       println("size "+r.size)
-      println("getDouble "+r.getDouble(0))
-      r.getDouble(0)
+      println("getDecimal "+r.getDecimal(0))
+      r.getDecimal(0)
     })
-    var max=doubleRdd.max();
-    var min=doubleRdd.min();
-    val kd=new KernelDensity().setSample(doubleRdd.map(i=>i.toDouble)).setBandwidth(BAND_WIDTH)
+    var max=decimalRdd.max();
+    var min=decimalRdd.min();
+    val kd=new KernelDensity().setSample(decimalRdd.map[Double](r=>r.doubleValue())).setBandwidth(BAND_WIDTH)
     if(IS_TEST){
       println(min)
       println(max)
+      sparkContext.stop()
       return
     }
 
 
     var list: List[Double] = List()
-    for(i<-Range(Math.floor(min).toInt,Math.floor(max).toInt,KERNAL_STEP)){
+    for(i<-Range(Math.floor(min.doubleValue()).toInt,Math.floor(max.doubleValue()).toInt,KERNAL_STEP)){
       list=list.+:(i.toDouble)
     }
     list=list.reverse
@@ -67,15 +68,16 @@ object KernalMain extends ScalaBaseSparkMain{
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
     densitiesStr="["+densitiesStr+"]";
 
-    val splitList=splitByMinMax(BigDecimal(min),BigDecimal(max))
-    var rectangleTs= doubleRdd.map(d=>{
+    val splitList=splitByMinMax(min,max)
+    var rectangleTs= decimalRdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
       loop2.breakable{
         for (s<-splitList){
           val smin=s.get("small").get
           val smax=s.get("big").get
-          if( (d>=smin && d<smax)  || (d.equals(max) && d.equals(smax.toDouble)) ){
+          if( (d.doubleValue()>=smin.doubleValue() && d.doubleValue()<smax.doubleValue())  ||
+            (d.doubleValue().equals(max.doubleValue()) && d.doubleValue().equals(smax.doubleValue())) ){
             tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
             loop2.break()
           }

@@ -211,7 +211,7 @@
     <kernal regist="">
         <![CDATA[
             select
-                cast(i.percent as double)
+                cast(i.percent as decimal(26,8))
             from
                 index_inx i
             where
