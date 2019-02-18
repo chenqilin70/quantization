@@ -11,14 +11,14 @@ package com.kylin.quantization.model;
  */
 public class Index_inx {
     private Double percent;
-    private String key;
+    private String rowkey;
 
-    public String getKey() {
-        return key;
+    public String getRowkey() {
+        return rowkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
     }
 
     public Double getPercent() {
