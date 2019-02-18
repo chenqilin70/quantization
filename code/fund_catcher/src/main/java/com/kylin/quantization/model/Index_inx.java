@@ -11,6 +11,15 @@ package com.kylin.quantization.model;
  */
 public class Index_inx {
     private Double percent;
+    private String key;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     public Double getPercent() {
         return percent;
