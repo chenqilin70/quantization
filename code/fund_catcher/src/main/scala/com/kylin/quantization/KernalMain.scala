@@ -69,9 +69,9 @@ object KernalMain extends ScalaBaseSparkMain{
     var list=splitList.flatMap(m=>{
       var cha=m.get("big").get.-(m.get("small").get)
       var step=cha./(5.0000)
-      var result=List()
+      var result=List[BigDecimal]()
       for(i<-Range(1,6)){
-        result.+:(m.get("small").get.+(step*i))
+        result=result.+:(m.get("small").get.+(step*i))
       }
       result
     }).toList
