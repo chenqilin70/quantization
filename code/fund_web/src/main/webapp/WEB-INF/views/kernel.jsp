@@ -28,7 +28,7 @@
                     contentType: "application/json;charset=utf-8",
                     success:function(result){
                         console.log(result)
-                        redisdata=result['data']
+                        redisdata=result
 
                     },
                     error:function(e){
