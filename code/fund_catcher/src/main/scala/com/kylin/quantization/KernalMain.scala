@@ -65,11 +65,17 @@ object KernalMain extends ScalaBaseSparkMain{
       return
     }
 
+    val splitList=splitByMinMax(min,max)
+//    var list: List[Double] = List()
+    var list=splitList.map(m=>m.get("small").get.+(m.get("big").get)./(2.0000).toDouble).toList
 
-    var list: List[Double] = List()
-    for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
+    /*for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
       list=list.+:(i.toDouble/100.00)
-    }
+    }*/
+
+
+
+
     list=list.reverse
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
@@ -77,7 +83,7 @@ object KernalMain extends ScalaBaseSparkMain{
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
     densitiesStr="["+densitiesStr+"]";
 
-    val splitList=splitByMinMax(min,max)
+
     var rectangleTs= decimalRdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
