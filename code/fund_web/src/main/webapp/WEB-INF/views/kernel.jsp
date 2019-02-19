@@ -93,6 +93,12 @@
                         right:"30px",
                         borderColor:"#c45455",//网格的边框颜色
                         bottom:"20%" //
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
                     }
                 };
                 return option
