@@ -26,7 +26,7 @@ public class JedisUtil {
      */
     static{
         //加载配置文件
-        InputStream in = TestMain.class.getClassLoader().getResourceAsStream("redis.properties");
+        InputStream in = JedisUtil.class.getClassLoader().getResourceAsStream("redis.properties");
         //创建配置文件对象
         Properties prop = new Properties();
         try {
