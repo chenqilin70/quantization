@@ -90,6 +90,10 @@ object KernalMain extends ScalaBaseSparkMain{
     densitiesStr="["+densitiesStr+"]";
 
 
+    var sum=densities.reduce((a1,a2)=>a1.+(a2))
+    println("归一化测试："+sum)
+
+
     var rectangleTs= decimalRdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
