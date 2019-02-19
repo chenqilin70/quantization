@@ -30,8 +30,8 @@ import scala.util.control.Breaks
   */
 object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
-  val BAND_WIDTH=3//核密度带宽
-  val RECTANGLE_COUNT=100//直方图分组的个数
+  val BAND_WIDTH=0.2//核密度带宽
+  val RECTANGLE_COUNT=200//直方图分组的个数
   val IS_TEST=false
 
   def main(args: Array[String]): Unit = {
@@ -73,7 +73,7 @@ object KernalMain extends ScalaBaseSparkMain{
       for(i<-Range(1,6)){
         result=result.+:(m.get("small").get.+(step*i).toDouble)
       }
-      result
+      result.reverse
     }).toList
 
     /*for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
