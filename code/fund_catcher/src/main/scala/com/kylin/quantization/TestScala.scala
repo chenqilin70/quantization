@@ -11,6 +11,9 @@ package com.kylin.quantization
   */
 object TestScala {
   def main(args: Array[String]): Unit = {
+    for(i<-Range(1,6)){
+      print(i)
+    }
   }
 
 }

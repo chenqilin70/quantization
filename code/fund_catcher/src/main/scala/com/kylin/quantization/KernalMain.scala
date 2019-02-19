@@ -67,7 +67,15 @@ object KernalMain extends ScalaBaseSparkMain{
 
     val splitList=splitByMinMax(min,max)
 //    var list: List[Double] = List()
-    var list=splitList.map(m=>m.get("small").get.+(m.get("big").get)./(2.0000).toDouble).toList
+    var list=splitList.flatMap(m=>{
+      var cha=m.get("big").get.-(m.get("small").get)
+      var step=cha./(5.0000)
+      var result=List()
+      for(i<-Range(1,6)){
+        result.+:(m.get("small").get.+(step*1))
+      }
+      result
+    }).toList
 
     /*for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
       list=list.+:(i.toDouble/100.00)
@@ -76,7 +84,6 @@ object KernalMain extends ScalaBaseSparkMain{
 
 
 
-    list=list.reverse
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
     val densities = kd.estimate(list.toArray)
