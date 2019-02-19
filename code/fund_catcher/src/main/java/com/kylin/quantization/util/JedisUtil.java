@@ -65,4 +65,7 @@ public class JedisUtil {
     public  static interface JedisRunner<T>{
         public  T run(Jedis jedis);
     }
+    public static void destroy(){
+        pool.close();
+    }
 }
