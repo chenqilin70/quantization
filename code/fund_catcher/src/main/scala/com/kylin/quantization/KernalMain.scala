@@ -71,7 +71,7 @@ object KernalMain extends ScalaBaseSparkMain{
       var step=cha./(5.0000)
       var result=List()
       for(i<-Range(1,6)){
-        result.+:(m.get("small").get.+(step*1))
+        result.+:(m.get("small").get.+(step*i))
       }
       result
     }).toList
