@@ -32,7 +32,7 @@ object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
   val BAND_WIDTH=0.5//核密度带宽
   val KERNAL_STEP=1//核密度曲线的步长
-  val RECTANGLE_COUNT=20//直方图分组的个数
+  val RECTANGLE_COUNT=100//直方图分组的个数
   val IS_TEST=false
 
   def main(args: Array[String]): Unit = {
@@ -67,8 +67,8 @@ object KernalMain extends ScalaBaseSparkMain{
 
 
     var list: List[Double] = List()
-    for(i<-Range(Math.floor(min.doubleValue()).toInt,Math.floor(max.doubleValue()).toInt,KERNAL_STEP)){
-      list=list.+:(i.toDouble)
+    for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
+      list=list.+:(i.toDouble/100.00)
     }
     list=list.reverse
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)

@@ -111,7 +111,7 @@
     </script>
     <style>
         .chartDiv{
-            height: 800px;
+            height: 1000px;
         }
 
     </style>
