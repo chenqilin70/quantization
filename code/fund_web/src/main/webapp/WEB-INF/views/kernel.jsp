@@ -35,10 +35,14 @@
                         console.error(e)
                     }
                 })
-                alert("OK"+redisdata)
                 return redisdata
             }
-            alert(redis('k1'))
+            console(eval(redis('kernalLebelStr')))
+            console(eval(redis('densitiesStr')))
+            console(eval(redis('rectangleLabelStr')))
+            console(eval(redis('rectangleDataStr')))
+
+
 
             var getOption=function(index1,index2,data){
                 // 指定图表的配置项和数据
