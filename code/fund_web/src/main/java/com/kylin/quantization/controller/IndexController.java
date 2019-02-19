@@ -3,6 +3,7 @@ package com.kylin.quantization.controller;
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.model.Fund;
 import com.kylin.quantization.service.IndexService;
+import com.kylin.quantization.util.JedisUtil;
 import com.kylin.quantization.util.MapUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +52,11 @@ public class IndexController {
     public String kernal() {
         System.out.println("kernel is running");
         return "kernel";
+    }
+    @ResponseBody
+    @RequestMapping("/redis")
+    public String redis(String key) {
+        return JedisUtil.jedis(j->j.get(key));
     }
 
     @ResponseBody
