@@ -81,7 +81,7 @@ object KernalMain extends ScalaBaseSparkMain{
     }*/
 
 
-
+    println(list)
 
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
