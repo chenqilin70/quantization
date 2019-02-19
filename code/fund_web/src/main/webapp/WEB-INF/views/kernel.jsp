@@ -37,10 +37,10 @@
                 })
                 return redisdata
             }
-            console(eval(redis('kernalLebelStr')))
-            console(eval(redis('densitiesStr')))
-            console(eval(redis('rectangleLabelStr')))
-            console(eval(redis('rectangleDataStr')))
+            console.log(eval(redis('kernalLebelStr')))
+            console.log(eval(redis('densitiesStr')))
+            console.log(eval(redis('rectangleLabelStr')))
+            console.log(eval(redis('rectangleDataStr')))
 
 
 
