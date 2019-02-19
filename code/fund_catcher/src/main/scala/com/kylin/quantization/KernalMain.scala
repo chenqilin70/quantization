@@ -121,6 +121,7 @@ object KernalMain extends ScalaBaseSparkMain{
         jedis.set("rectangleDataStr",rectangleDataStr)
       }
     })
+    JedisUtil.destroy()
 
 
   }

@@ -35,6 +35,7 @@
                         console.error(e)
                     }
                 })
+                alert("OK"+redisdata)
                 return redisdata
             }
             alert(redis('k1'))
