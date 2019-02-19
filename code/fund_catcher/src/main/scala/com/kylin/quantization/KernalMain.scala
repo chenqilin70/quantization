@@ -30,7 +30,7 @@ import scala.util.control.Breaks
   */
 object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
-  val BAND_WIDTH=0.5//核密度带宽
+  val BAND_WIDTH=3//核密度带宽
   val RECTANGLE_COUNT=100//直方图分组的个数
   val IS_TEST=false
 
