@@ -42,6 +42,7 @@ abstract class ScalaBaseSparkMain {
     var regist=SqlConfigUtil.attr(sqlTab,"regist",SqlConfigUtil.SPARK_DOC);
     if(StringUtils.isNotBlank(regist)){
       for(r<-regist.split(",")){
+        println("即将注册"+r)
         BaseSparkMain.registerHbaseTable(r,sparkContext,sqlSparkContext)
       }
     }
@@ -53,7 +54,7 @@ abstract class ScalaBaseSparkMain {
         }
       }
     }
-
+    println("执行sql"+sql)
     var df=sqlSparkContext.sql(sql)
     return df;
   }
