@@ -67,8 +67,8 @@ object KernalMain extends ScalaBaseSparkMain{
     }
 
     val splitList=splitByMinMax(min,max)
-//    var list: List[Double] = List()
-    var list=splitList.flatMap(m=>{
+//
+    /*var list=splitList.flatMap(m=>{
       var cha=m.get("big").get.-(m.get("small").get)
       var step=cha./(5.0000)
       var result=List[Double]()
@@ -76,14 +76,16 @@ object KernalMain extends ScalaBaseSparkMain{
         result=result.+:(m.get("small").get.+(step*i).toDouble)
       }
       result.reverse
-    }).toList
+    }).toList*/
 
-    /*for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
-      list=list.+:(i.toDouble/100.00)
-    }*/
+    var list: List[Double] = List()
+    for(i<-Range(Math.floor(min.doubleValue()).toInt,Math.floor(max.doubleValue()).toInt,60*60*24)){
+      list=list.+:(i.toDouble)
+    }
+    list=list.reverse
 
 
-    println(list)
+//    println(list)
 
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
