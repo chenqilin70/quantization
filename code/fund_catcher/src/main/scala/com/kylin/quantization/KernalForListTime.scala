@@ -29,7 +29,7 @@ import scala.util.control.Breaks
   * 作者姓名 修改时间    版本号 描述
   */
 object KernalForListTime extends ScalaBaseSparkMain{
-  val SQL_TAB="kernal_list"//sql标签
+  val SQL_TAB="kernal_percent"//sql标签
   val BAND_WIDTH=0.2//核密度带宽
   val RECTANGLE_COUNT=20//直方图分组的个数
   val IS_TEST=false
