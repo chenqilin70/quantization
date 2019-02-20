@@ -209,7 +209,7 @@
         ]]>
     </gzbd>
 
-    <kernal regist="kzzlb">
+    <kernal_delist regist="kzzlb">
         <![CDATA[
             select
                 cast(
@@ -221,25 +221,27 @@
             where
                  DELISTDATE is not null and DELISTDATE!='' and DELISTDATE!='-'
         ]]>
-    </kernal>
+    </kernal_delist>
 
-    <test regist="kzzlb">
+    <kernal_list regist="kzzlb">
         <![CDATA[
             select
                 cast(
-                    unix_timestamp(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1), 'yyyy-MM-dd')
-                    as decimal(26,8)
+                    months_between( to_date(substr(delistdate,1,instr(delistdate,"T")-1)),to_date(substr(listdate,1,instr(listdate,"T")-1)))/12.0000
+                    as  decimal(26,8)
                 )
             from
                 kzzlb
             where
-                 DELISTDATE is not null and DELISTDATE!='' and DELISTDATE!='-'
+                 delistdate is not null
+                 and delistdate!=''
+                 and delistdate!='-'
         ]]>
-    </test>
+    </kernal_list>
 
 
 
-    <kernal_inx regist="">
+    <kernal_percent regist="">
         <![CDATA[
             select
                 cast(i.percent as decimal(26,8)),i.rowkey as rowkey
@@ -248,7 +250,7 @@
             where
                 i.percent is not null
         ]]>
-    </kernal_inx>
+    </kernal_percent>
     <movingAverages regist="netval,fund" >
         <!--
 
