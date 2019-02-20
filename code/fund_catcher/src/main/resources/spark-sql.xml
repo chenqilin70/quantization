@@ -223,7 +223,7 @@
     <test regist="kzzlb">
         <![CDATA[
             select
-                to_date(substr(delistdate,1,instr(delistdate,"T")-1))
+                to_date(substr(delistdate,1,instr(delistdate,"T")-1)) as delistdate
             from
                 kzzlb
             where
