@@ -100,14 +100,12 @@ object KernalForListTime extends ScalaBaseSparkMain{
           }
         }
       }
+      println(tuple+"]]]]]]]]]]]]]]]]]]")
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
 
-    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("small").get+"'").reduce((a1,a2)=>a1+","+a2)
+    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-    rectangleTs.foreach(a=>{
-      println(a+"+++++++++++")
-    })
 
     var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
@@ -131,6 +129,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
       }
     })
     JedisUtil.destroy()
+    sparkContext.stop()
 
 
   }
