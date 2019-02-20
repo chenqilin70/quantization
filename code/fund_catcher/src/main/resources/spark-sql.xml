@@ -227,15 +227,15 @@
         <![CDATA[
             select
                 cast(
-                    months_between( to_date(substr(delistdate,1,instr(delistdate,"T")-1)),to_date(substr(listdate,1,instr(listdate,"T")-1)))/12.0000
+                    months_between( to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)),to_date(substr(LISTDATE,1,instr(LISTDATE,"T")-1)))/12.0000
                     as  decimal(26,8)
                 )
             from
                 kzzlb
             where
-                 delistdate is not null
-                 and delistdate!=''
-                 and delistdate!='-'
+                 DELISTDATE is not null
+                 and DELISTDATE!=''
+                 and DELISTDATE!='-'
         ]]>
     </kernal_list>
 
