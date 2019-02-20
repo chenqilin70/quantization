@@ -7,7 +7,7 @@ import java.util.Date
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.JedisUtil.JedisRunner
-import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
+import com.kylin.quantization.util.{JedisUtil, MapUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Scan
@@ -117,8 +117,12 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var sf=new SimpleDateFormat("yyyyMMdd")
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-
-    var rectangleMap=rectangleTs.collectAsMap()
+    var ssMapUtil=new MapUtil[String,String]()
+    var rectangleMap = rectangleTs.map(t=>ssMapUtil.create(t._1,t._2)).reduce((a,b)=>{
+      a.putAll(b)
+      a
+    })
+//    var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
       if(value.isEmpty) "0" else value.get.toString
