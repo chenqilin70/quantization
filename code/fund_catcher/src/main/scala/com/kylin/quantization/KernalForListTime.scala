@@ -97,7 +97,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
 
-    var rectangleTs= decimalRdd.map(d=>{
+    var rectangleMap= decimalRdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
       loop2.breakable{
@@ -112,12 +112,12 @@ object KernalForListTime extends ScalaBaseSparkMain{
         }
       }
       tuple
-    }).reduceByKey((d1,d2)=>d1+d2)
+    }).reduceByKey((d1,d2)=>d1+d2).map(t=>Map(t._1 -> t._2)).reduce((a,b)=>a++b)
 
     var sf=new SimpleDateFormat("yyyyMMdd")
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-    var rectangleMap = rectangleTs.map(t=>Map(t._1 -> t._2)).reduce((a,b)=>a++b)
+//    var rectangleMap = rectangleTs
 //    var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
