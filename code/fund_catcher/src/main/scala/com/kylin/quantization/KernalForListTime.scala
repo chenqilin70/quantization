@@ -29,7 +29,7 @@ import scala.util.control.Breaks
   * 作者姓名 修改时间    版本号 描述
   */
 object KernalForListTime extends ScalaBaseSparkMain{
-  val SQL_TAB="kernal_percent"//sql标签
+  val SQL_TAB="kernal_list"//sql标签
   val BAND_WIDTH=0.2//核密度带宽
   val RECTANGLE_COUNT=20//直方图分组的个数
   val IS_TEST=false
@@ -112,7 +112,13 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
 
+
+    return
+
     var rectangleMap=rectangleTs.collectAsMap()
+
+
+
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
       if(value.isEmpty) "0" else value.get.toString
