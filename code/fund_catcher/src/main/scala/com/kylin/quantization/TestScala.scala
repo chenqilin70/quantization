@@ -20,6 +20,7 @@ object TestScala  extends ScalaBaseSparkMain{
     val sqlContext = new SQLContext(sparkContext)
     var df=sql("test",sparkContext,sqlContext )
     df.show()
+    df.show(100)
     sparkContext.stop()
   }
 
