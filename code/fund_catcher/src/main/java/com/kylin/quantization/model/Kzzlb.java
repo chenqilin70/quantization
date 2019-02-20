@@ -30,7 +30,7 @@ public class Kzzlb {
     private String AISSUEVOL	   ;
     private String LUCKRATE		   ;
     private String MarketType	   ;
-    private String DELISTDATE	   ;
+    private String delistdate	   ;
     private String PB		   ;
     private String CORRESNAME	   ;
 
@@ -266,12 +266,12 @@ public class Kzzlb {
         MarketType = marketType;
     }
 
-    public String getDELISTDATE() {
-        return DELISTDATE;
+    public String getDelistdate() {
+        return delistdate;
     }
 
-    public void setDELISTDATE(String DELISTDATE) {
-        this.DELISTDATE = DELISTDATE;
+    public void setDelistdate(String delistdate) {
+        this.delistdate = delistdate;
     }
 
     public String getPB() {
