@@ -23,7 +23,7 @@ import scala.util.control.Breaks
   * <author> <time> <version>    <desc>
   * 作者姓名 修改时间    版本号 描述
   */
-object KernalForDelistTime extends ScalaBaseSparkMain{
+object KernalForListTime extends ScalaBaseSparkMain{
   val SQL_TAB="kernal_list"//sql标签
   val BAND_WIDTH=0.5//核密度带宽
   val RECTANGLE_COUNT=20//直方图分组的个数
