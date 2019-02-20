@@ -108,7 +108,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("small").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-    println(rectangleTs)
+    println("==================================="+rectangleTs)
     var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
