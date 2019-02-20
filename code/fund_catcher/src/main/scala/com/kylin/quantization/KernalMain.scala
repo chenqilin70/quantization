@@ -112,7 +112,7 @@ object KernalMain extends ScalaBaseSparkMain{
     }).reduceByKey((d1,d2)=>d1+d2)
 
     var sf=new SimpleDateFormat("yyyyMMdd")
-    var rectangleLabelStr=splitList.map(m=>"'"+sf.format(new Date(m.get("small").get.toLong)*1000l)+"-"+sf.format(new Date(m.get("big").get.toLong*1000l))+"'").reduce((a1,a2)=>a1+","+a2)
+    var rectangleLabelStr=splitList.map(m=>"'"+sf.format(new Date(m.get("small").get.toLong*1000l))+"-"+sf.format(new Date(m.get("big").get.toLong*1000l))+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
 
     var rectangleMap=rectangleTs.collectAsMap()
