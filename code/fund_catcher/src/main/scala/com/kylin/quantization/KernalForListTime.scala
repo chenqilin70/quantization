@@ -40,9 +40,6 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var df=sql(SQL_TAB,sparkContext,sqlContext)
 
     var decimalRdd=df.rdd.map(r=>{
-      println("r "+r)
-      println("size "+r.size)
-      println("getDecimal "+r.getDecimal(0))
       r.getDecimal(0)
     })
     var max=decimalRdd.reduce((a,b)=>if(a.compareTo(b)>0) a else b)
@@ -89,9 +86,9 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
     densitiesStr="["+densitiesStr+"]";
 
+    var rectangleMap=Map[String,Int]()
+    decimalRdd.collect().foreach(d=>{
 
-    var rectangleTs= decimalRdd.map(d=>{
-      var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
       loop2.breakable{
         for (s<-splitList){
@@ -99,13 +96,18 @@ object KernalForListTime extends ScalaBaseSparkMain{
           val smax=s.get("big").get
           if( (d.doubleValue()>=smin.doubleValue() && d.doubleValue()<smax.doubleValue())  ||
             (d.doubleValue().equals(max.doubleValue()) && d.doubleValue().equals(smax.doubleValue())) ){
-            tuple=new Tuple2[String,Int](smin.toString()+"-"+smax.toString(),1)
+            var v=rectangleMap.get(smin.toString()+"-"+smax.toString())
+            if(v.isEmpty){
+              rectangleMap+=(smin.toString()+"-"+smax.toString()->1)
+            }else{
+              rectangleMap+=(smin.toString()+"-"+smax.toString()->(v.get+1))
+            }
+
             loop2.break()
           }
         }
       }
-      tuple
-    }).reduceByKey((d1,d2)=>d1+d2)
+    })
 
 
 
@@ -114,8 +116,6 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
 
-
-    var rectangleMap=rectangleTs.collectAsMap()
     return
 
 
