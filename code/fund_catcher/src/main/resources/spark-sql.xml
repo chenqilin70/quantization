@@ -224,7 +224,7 @@
         <![CDATA[
             select
                 to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)) as delistdate
-                ,unix_timestamp(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1), 'yyyy-MM-dd');
+                ,unix_timestamp(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1), 'yyyy-MM-dd')
             from
                 kzzlb
             where
