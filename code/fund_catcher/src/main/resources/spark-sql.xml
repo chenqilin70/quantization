@@ -223,11 +223,11 @@
     <test regist="kzzlb">
         <![CDATA[
             select
-                to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)) as DELISTDATE
+                to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)) as delistdate
             from
                 kzzlb
             where
-                 delistdate is not null and delistdate!='' and delistdate!='-'
+                 DELISTDATE is not null and DELISTDATE!='' and DELISTDATE!='-'
         ]]>
     </test>
 
