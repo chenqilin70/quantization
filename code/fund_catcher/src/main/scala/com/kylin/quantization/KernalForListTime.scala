@@ -1,13 +1,11 @@
 package com.kylin.quantization
 
 import java.io.IOException
-import java.text.SimpleDateFormat
-import java.util.Date
 
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.JedisUtil.JedisRunner
-import com.kylin.quantization.util.{JedisUtil, MapUtil, RowKeyUtil}
+import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Scan
@@ -22,7 +20,6 @@ import redis.clients.jedis.Jedis
 import scala.util.control.Breaks
 
 /**
-  * kzz退市时间核密度估计
   * ClassName: KernalForFxrq
   * Description:
   * Author: aierxuan
@@ -33,7 +30,7 @@ import scala.util.control.Breaks
   */
 object KernalForListTime extends ScalaBaseSparkMain{
   val SQL_TAB="kernal_list"//sql标签
-  val BAND_WIDTH=0.5//核密度带宽
+  val BAND_WIDTH=0.2//核密度带宽
   val RECTANGLE_COUNT=20//直方图分组的个数
   val IS_TEST=false
 
@@ -68,8 +65,8 @@ object KernalForListTime extends ScalaBaseSparkMain{
     }
 
     val splitList=splitByMinMax(min,max)
-    //
-    /*var list=splitList.flatMap(m=>{
+    //    var list: List[Double] = List()
+    var list=splitList.flatMap(m=>{
       var cha=m.get("big").get.-(m.get("small").get)
       var step=cha./(5.0000)
       var result=List[Double]()
@@ -77,16 +74,14 @@ object KernalForListTime extends ScalaBaseSparkMain{
         result=result.+:(m.get("small").get.+(step*i).toDouble)
       }
       result.reverse
-    }).toList*/
+    }).toList
 
-    var list: List[Double] = List()
-    for(i<-Range(Math.floor(min.doubleValue()).toInt*10,Math.floor(max.doubleValue()).toInt,1)){
-      list=list.+:(i.toDouble/10.0000)
-    }
-    list=list.reverse
+    /*for(i<-Range(Math.floor(min.doubleValue()).toInt*100,Math.floor(max.doubleValue()).toInt*100,KERNAL_STEP)){
+      list=list.+:(i.toDouble/100.00)
+    }*/
 
 
-    //    println(list)
+    println(list)
 
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
@@ -95,9 +90,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
     densitiesStr="["+densitiesStr+"]";
 
 
-
-
-    var rectangleMap= decimalRdd.map(d=>{
+    var rectangleTs= decimalRdd.map(d=>{
       var tuple:Tuple2[String,Int]=null
       var loop2=new Breaks
       loop2.breakable{
@@ -112,16 +105,17 @@ object KernalForListTime extends ScalaBaseSparkMain{
         }
       }
       tuple
-    }).reduceByKey((d1,d2)=>d1+d2).map(t=>Map(t._1 -> t._2)).reduce((a,b)=>a++b)
+    }).reduceByKey((d1,d2)=>d1+d2)
 
-    var sf=new SimpleDateFormat("yyyyMMdd")
+
+
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-//    var rectangleMap = rectangleTs
-//    var rectangleMap=rectangleTs.collectAsMap()
+
+    var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
-      if(value==null) "0" else value.toString
+      if(value.isEmpty) "0" else value.get.toString
     } ).reduce((a,b)=>a + "," + b)
     rectangleDataStr="["+rectangleDataStr+"]"
 
@@ -169,7 +163,23 @@ object KernalForListTime extends ScalaBaseSparkMain{
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {
-    null
+    val hconf = HBaseConfiguration.create
+    //需要读取的hbase表名
+    val tableName = "index"
+    hconf.set(TableInputFormat.INPUT_TABLE, tableName)
+    val filter2 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("percent"))
+    val filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("key"))
+    val qulifierFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3)
+    val scan = new Scan().setFilter(qulifierFilterList)
+    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","19490101")))
+    scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","20190216")))
+    try
+      hconf.set(TableInputFormat.SCAN, BaseSparkMain.convertScanToString(scan))
+    catch {
+      case e: IOException =>
+        e.printStackTrace()
+    }
+    Map[String,Configuration]("index_inx" -> hconf)
 
   }
 }

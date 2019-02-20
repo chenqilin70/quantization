@@ -225,16 +225,13 @@
 
     <kernal_list regist="kzzlb">
         <!--
-            cast(
-                    months_between( to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)),to_date(substr(LISTDATE,1,instr(LISTDATE,"T")-1)))/12.0000
-                    as  decimal(26,8)
-                )
+
         -->
         <![CDATA[
             select
                 cast(
-                    unix_timestamp(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1), 'yyyy-MM-dd')
-                    as decimal(26,8)
+                    months_between( to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)),to_date(substr(LISTDATE,1,instr(LISTDATE,"T")-1)))/12.0000
+                    as  decimal(26,8)
                 )
             from
                 kzzlb
