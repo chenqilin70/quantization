@@ -117,11 +117,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var sf=new SimpleDateFormat("yyyyMMdd")
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
-    var ooMapUtil=new MapUtil[Object,Object]()
-    var rectangleMap = rectangleTs.map(t=>ooMapUtil.create(t._1,t._2)).reduce((a,b)=>{
-      a.putAll(b)
-      a
-    })
+    var rectangleMap = rectangleTs.map(t=>Map(t._1 -> t._2)).reduce((a,b)=>a++b)
 //    var rectangleMap=rectangleTs.collectAsMap()
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
