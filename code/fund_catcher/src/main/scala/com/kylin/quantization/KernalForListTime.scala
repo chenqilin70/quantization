@@ -35,9 +35,6 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var df=sql(SQL_TAB,sparkContext,sqlContext)
 
     var decimalRdd=df.rdd.map(r=>{
-      println("r "+r)
-      println("size "+r.size)
-      println("getDecimal "+r.getDecimal(0))
       r.getDecimal(0)
     })
     var max=decimalRdd.reduce((a,b)=>if(a.compareTo(b)>0) a else b)
