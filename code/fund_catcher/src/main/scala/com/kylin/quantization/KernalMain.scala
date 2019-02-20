@@ -1,6 +1,8 @@
 package com.kylin.quantization
 
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
@@ -109,9 +111,8 @@ object KernalMain extends ScalaBaseSparkMain{
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
 
-
-
-    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
+    var sf=new SimpleDateFormat("yyyyMMdd")
+    var rectangleLabelStr=splitList.map(m=>"'"+sf.format(new Date(m.get("small").get.toLong))+"-"+sf.format(new Date(m.get("big").get.toLong))+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
 
     var rectangleMap=rectangleTs.collectAsMap()
