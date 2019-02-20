@@ -1,292 +1,292 @@
 package com.kylin.quantization.model;
 
 public class Kzzlb {
-    private String key			;
-    private String aissuevol		;
-    private String bcode			;
-    private String bondcode			;
-    private String correscode		;
-    private String corresname		;
-    private String delistdate		;
-    private String fstplacvalperstk		;
-    private String gdyx_startdate		;
-    private String hscfj			;
-    private String issueprice		;
-    private String limitbuyipub		;
-    private String listdate			;
-    private String luckrate			;
-    private String memo			;
-    private String markettype		;
-    private String parvalue			;
-    private String pb			;
-    private String qscfj			;
-    private String securityshortname	;
-    private String sname			;
-    private String startdate		;
-    private String swapprice		;
-    private String swapscode		;
-    private String texch			;
-    private String yjl			;
-    private String zgj			;
-    private String zgjzgj			;
-    private String zgjzgjjz			;
-    private String zgj_hq			;
-    private String zqhdate			;
-    private String zqnew			;
+    private String rowkey;
+    private String YJL		   ;
+    private String SNAME		   ;
+    private String LIMITBUYIPUB	   ;
+    private String ZGJ_HQ		   ;
+    private String GDYX_STARTDATE	   ;
+    private String FSTPLACVALPERSTK	   ;
+    private String SWAPPRICE	   ;
+    private String MEMO		   ;
+    private String QSCFJ		   ;
+    private String HSCFJ		   ;
+    private String LISTDATE		   ;
+    private String PARVALUE		   ;
+    private String ZQNEW		   ;
+    private String SWAPSCODE	   ;
+    private String BCODE		   ;
+    private String CORRESCODE	   ;
+    private String ZGJZGJ		   ;
+    private String STARTDATE	   ;
+    private String ISSUEPRICE	   ;
+    private String ZQHDATE		   ;
+    private String TEXCH		   ;
+    private String BONDCODE		   ;
+    private String ZGJZGJJZ		   ;
+    private String ZGJ		   ;
+    private String SECURITYSHORTNAME   ;
+    private String AISSUEVOL	   ;
+    private String LUCKRATE		   ;
+    private String MarketType	   ;
+    private String DELISTDATE	   ;
+    private String PB		   ;
+    private String CORRESNAME	   ;
 
-    public String getKey() {
-        return key;
+    public String getRowkey() {
+        return rowkey;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public void setRowkey(String rowkey) {
+        this.rowkey = rowkey;
     }
 
-    public String getAissuevol() {
-        return aissuevol;
+    public String getYJL() {
+        return YJL;
     }
 
-    public void setAissuevol(String aissuevol) {
-        this.aissuevol = aissuevol;
+    public void setYJL(String YJL) {
+        this.YJL = YJL;
     }
 
-    public String getBcode() {
-        return bcode;
+    public String getSNAME() {
+        return SNAME;
     }
 
-    public void setBcode(String bcode) {
-        this.bcode = bcode;
+    public void setSNAME(String SNAME) {
+        this.SNAME = SNAME;
     }
 
-    public String getBondcode() {
-        return bondcode;
+    public String getLIMITBUYIPUB() {
+        return LIMITBUYIPUB;
     }
 
-    public void setBondcode(String bondcode) {
-        this.bondcode = bondcode;
+    public void setLIMITBUYIPUB(String LIMITBUYIPUB) {
+        this.LIMITBUYIPUB = LIMITBUYIPUB;
     }
 
-    public String getCorrescode() {
-        return correscode;
+    public String getZGJ_HQ() {
+        return ZGJ_HQ;
     }
 
-    public void setCorrescode(String correscode) {
-        this.correscode = correscode;
+    public void setZGJ_HQ(String ZGJ_HQ) {
+        this.ZGJ_HQ = ZGJ_HQ;
     }
 
-    public String getCorresname() {
-        return corresname;
+    public String getGDYX_STARTDATE() {
+        return GDYX_STARTDATE;
     }
 
-    public void setCorresname(String corresname) {
-        this.corresname = corresname;
+    public void setGDYX_STARTDATE(String GDYX_STARTDATE) {
+        this.GDYX_STARTDATE = GDYX_STARTDATE;
     }
 
-    public String getDelistdate() {
-        return delistdate;
+    public String getFSTPLACVALPERSTK() {
+        return FSTPLACVALPERSTK;
     }
 
-    public void setDelistdate(String delistdate) {
-        this.delistdate = delistdate;
+    public void setFSTPLACVALPERSTK(String FSTPLACVALPERSTK) {
+        this.FSTPLACVALPERSTK = FSTPLACVALPERSTK;
     }
 
-    public String getFstplacvalperstk() {
-        return fstplacvalperstk;
+    public String getSWAPPRICE() {
+        return SWAPPRICE;
     }
 
-    public void setFstplacvalperstk(String fstplacvalperstk) {
-        this.fstplacvalperstk = fstplacvalperstk;
+    public void setSWAPPRICE(String SWAPPRICE) {
+        this.SWAPPRICE = SWAPPRICE;
     }
 
-    public String getGdyx_startdate() {
-        return gdyx_startdate;
+    public String getMEMO() {
+        return MEMO;
     }
 
-    public void setGdyx_startdate(String gdyx_startdate) {
-        this.gdyx_startdate = gdyx_startdate;
+    public void setMEMO(String MEMO) {
+        this.MEMO = MEMO;
     }
 
-    public String getHscfj() {
-        return hscfj;
+    public String getQSCFJ() {
+        return QSCFJ;
     }
 
-    public void setHscfj(String hscfj) {
-        this.hscfj = hscfj;
+    public void setQSCFJ(String QSCFJ) {
+        this.QSCFJ = QSCFJ;
     }
 
-    public String getIssueprice() {
-        return issueprice;
+    public String getHSCFJ() {
+        return HSCFJ;
     }
 
-    public void setIssueprice(String issueprice) {
-        this.issueprice = issueprice;
+    public void setHSCFJ(String HSCFJ) {
+        this.HSCFJ = HSCFJ;
     }
 
-    public String getLimitbuyipub() {
-        return limitbuyipub;
+    public String getLISTDATE() {
+        return LISTDATE;
     }
 
-    public void setLimitbuyipub(String limitbuyipub) {
-        this.limitbuyipub = limitbuyipub;
+    public void setLISTDATE(String LISTDATE) {
+        this.LISTDATE = LISTDATE;
     }
 
-    public String getListdate() {
-        return listdate;
+    public String getPARVALUE() {
+        return PARVALUE;
     }
 
-    public void setListdate(String listdate) {
-        this.listdate = listdate;
+    public void setPARVALUE(String PARVALUE) {
+        this.PARVALUE = PARVALUE;
     }
 
-    public String getLuckrate() {
-        return luckrate;
+    public String getZQNEW() {
+        return ZQNEW;
     }
 
-    public void setLuckrate(String luckrate) {
-        this.luckrate = luckrate;
+    public void setZQNEW(String ZQNEW) {
+        this.ZQNEW = ZQNEW;
     }
 
-    public String getMemo() {
-        return memo;
+    public String getSWAPSCODE() {
+        return SWAPSCODE;
     }
 
-    public void setMemo(String memo) {
-        this.memo = memo;
+    public void setSWAPSCODE(String SWAPSCODE) {
+        this.SWAPSCODE = SWAPSCODE;
     }
 
-    public String getMarkettype() {
-        return markettype;
+    public String getBCODE() {
+        return BCODE;
     }
 
-    public void setMarkettype(String markettype) {
-        this.markettype = markettype;
+    public void setBCODE(String BCODE) {
+        this.BCODE = BCODE;
     }
 
-    public String getParvalue() {
-        return parvalue;
+    public String getCORRESCODE() {
+        return CORRESCODE;
     }
 
-    public void setParvalue(String parvalue) {
-        this.parvalue = parvalue;
+    public void setCORRESCODE(String CORRESCODE) {
+        this.CORRESCODE = CORRESCODE;
     }
 
-    public String getPb() {
-        return pb;
+    public String getZGJZGJ() {
+        return ZGJZGJ;
     }
 
-    public void setPb(String pb) {
-        this.pb = pb;
+    public void setZGJZGJ(String ZGJZGJ) {
+        this.ZGJZGJ = ZGJZGJ;
     }
 
-    public String getQscfj() {
-        return qscfj;
+    public String getSTARTDATE() {
+        return STARTDATE;
     }
 
-    public void setQscfj(String qscfj) {
-        this.qscfj = qscfj;
+    public void setSTARTDATE(String STARTDATE) {
+        this.STARTDATE = STARTDATE;
     }
 
-    public String getSecurityshortname() {
-        return securityshortname;
+    public String getISSUEPRICE() {
+        return ISSUEPRICE;
     }
 
-    public void setSecurityshortname(String securityshortname) {
-        this.securityshortname = securityshortname;
+    public void setISSUEPRICE(String ISSUEPRICE) {
+        this.ISSUEPRICE = ISSUEPRICE;
     }
 
-    public String getSname() {
-        return sname;
+    public String getZQHDATE() {
+        return ZQHDATE;
     }
 
-    public void setSname(String sname) {
-        this.sname = sname;
+    public void setZQHDATE(String ZQHDATE) {
+        this.ZQHDATE = ZQHDATE;
     }
 
-    public String getStartdate() {
-        return startdate;
+    public String getTEXCH() {
+        return TEXCH;
     }
 
-    public void setStartdate(String startdate) {
-        this.startdate = startdate;
+    public void setTEXCH(String TEXCH) {
+        this.TEXCH = TEXCH;
     }
 
-    public String getSwapprice() {
-        return swapprice;
+    public String getBONDCODE() {
+        return BONDCODE;
     }
 
-    public void setSwapprice(String swapprice) {
-        this.swapprice = swapprice;
+    public void setBONDCODE(String BONDCODE) {
+        this.BONDCODE = BONDCODE;
     }
 
-    public String getSwapscode() {
-        return swapscode;
+    public String getZGJZGJJZ() {
+        return ZGJZGJJZ;
     }
 
-    public void setSwapscode(String swapscode) {
-        this.swapscode = swapscode;
+    public void setZGJZGJJZ(String ZGJZGJJZ) {
+        this.ZGJZGJJZ = ZGJZGJJZ;
     }
 
-    public String getTexch() {
-        return texch;
+    public String getZGJ() {
+        return ZGJ;
     }
 
-    public void setTexch(String texch) {
-        this.texch = texch;
+    public void setZGJ(String ZGJ) {
+        this.ZGJ = ZGJ;
     }
 
-    public String getYjl() {
-        return yjl;
+    public String getSECURITYSHORTNAME() {
+        return SECURITYSHORTNAME;
     }
 
-    public void setYjl(String yjl) {
-        this.yjl = yjl;
+    public void setSECURITYSHORTNAME(String SECURITYSHORTNAME) {
+        this.SECURITYSHORTNAME = SECURITYSHORTNAME;
     }
 
-    public String getZgj() {
-        return zgj;
+    public String getAISSUEVOL() {
+        return AISSUEVOL;
     }
 
-    public void setZgj(String zgj) {
-        this.zgj = zgj;
+    public void setAISSUEVOL(String AISSUEVOL) {
+        this.AISSUEVOL = AISSUEVOL;
     }
 
-    public String getZgjzgj() {
-        return zgjzgj;
+    public String getLUCKRATE() {
+        return LUCKRATE;
     }
 
-    public void setZgjzgj(String zgjzgj) {
-        this.zgjzgj = zgjzgj;
+    public void setLUCKRATE(String LUCKRATE) {
+        this.LUCKRATE = LUCKRATE;
     }
 
-    public String getZgjzgjjz() {
-        return zgjzgjjz;
+    public String getMarketType() {
+        return MarketType;
     }
 
-    public void setZgjzgjjz(String zgjzgjjz) {
-        this.zgjzgjjz = zgjzgjjz;
+    public void setMarketType(String marketType) {
+        MarketType = marketType;
     }
 
-    public String getZgj_hq() {
-        return zgj_hq;
+    public String getDELISTDATE() {
+        return DELISTDATE;
     }
 
-    public void setZgj_hq(String zgj_hq) {
-        this.zgj_hq = zgj_hq;
+    public void setDELISTDATE(String DELISTDATE) {
+        this.DELISTDATE = DELISTDATE;
     }
 
-    public String getZqhdate() {
-        return zqhdate;
+    public String getPB() {
+        return PB;
     }
 
-    public void setZqhdate(String zqhdate) {
-        this.zqhdate = zqhdate;
+    public void setPB(String PB) {
+        this.PB = PB;
     }
 
-    public String getZqnew() {
-        return zqnew;
+    public String getCORRESNAME() {
+        return CORRESNAME;
     }
 
-    public void setZqnew(String zqnew) {
-        this.zqnew = zqnew;
+    public void setCORRESNAME(String CORRESNAME) {
+        this.CORRESNAME = CORRESNAME;
     }
 }
