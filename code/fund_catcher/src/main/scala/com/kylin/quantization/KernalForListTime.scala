@@ -1,11 +1,19 @@
 package com.kylin.quantization
 
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
 
-import com.kylin.quantization.util.JedisUtil
+import com.kylin.quantization.KernelForZcgm.splitByMinMax
+import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.JedisUtil.JedisRunner
+import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.hbase.HBaseConfiguration
+import org.apache.hadoop.hbase.client.Scan
+import org.apache.hadoop.hbase.filter._
+import org.apache.hadoop.hbase.mapreduce.TableInputFormat
+import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
 import org.apache.spark.sql.SQLContext
@@ -35,6 +43,9 @@ object KernalForListTime extends ScalaBaseSparkMain{
     var df=sql(SQL_TAB,sparkContext,sqlContext)
 
     var decimalRdd=df.rdd.map(r=>{
+      println("r "+r)
+      println("size "+r.size)
+      println("getDecimal "+r.getDecimal(0))
       r.getDecimal(0)
     })
     var max=decimalRdd.reduce((a,b)=>if(a.compareTo(b)>0) a else b)
@@ -57,8 +68,8 @@ object KernalForListTime extends ScalaBaseSparkMain{
     }
 
     val splitList=splitByMinMax(min,max)
-//
-    var list=splitList.flatMap(m=>{
+    //
+    /*var list=splitList.flatMap(m=>{
       var cha=m.get("big").get.-(m.get("small").get)
       var step=cha./(5.0000)
       var result=List[Double]()
@@ -66,16 +77,16 @@ object KernalForListTime extends ScalaBaseSparkMain{
         result=result.+:(m.get("small").get.+(step*i).toDouble)
       }
       result.reverse
-    }).toList
+    }).toList*/
 
-/*    var list: List[Double] = List()
-    for(i<-Range(Math.floor(min.doubleValue()).toInt,Math.floor(max.doubleValue()).toInt,60*60*24)){
-      list=list.+:(i.toDouble)
+    var list: List[Double] = List()
+    for(i<-Range(Math.floor(min.doubleValue()).toInt*10,Math.floor(max.doubleValue()).toInt,1)){
+      list=list.+:(i.toDouble/10.0000)
     }
-    list=list.reverse*/
+    list=list.reverse
 
 
-//    println(list)
+    //    println(list)
 
     var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
@@ -100,10 +111,10 @@ object KernalForListTime extends ScalaBaseSparkMain{
           }
         }
       }
-      println(tuple+"]]]]]]]]]]]]]]]]]]")
       tuple
     }).reduceByKey((d1,d2)=>d1+d2)
 
+    var sf=new SimpleDateFormat("yyyyMMdd")
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
 
@@ -129,7 +140,6 @@ object KernalForListTime extends ScalaBaseSparkMain{
       }
     })
     JedisUtil.destroy()
-    sparkContext.stop()
 
 
   }
@@ -160,5 +170,6 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {
     null
+
   }
 }
