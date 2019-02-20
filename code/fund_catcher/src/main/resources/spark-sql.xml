@@ -208,7 +208,32 @@
                 f.jjlx='债券型'
         ]]>
     </gzbd>
+
     <kernal regist="">
+        <![CDATA[
+            select
+                to_date(substr(delistdate,1,instr(delistdate,"T")-1))
+            from
+                kzzlb
+            where
+                 delistdate is not null and delistdate!='' and delistdate!='-'
+        ]]>
+    </kernal>
+
+    <test regist="kzzlb">
+        <![CDATA[
+            select
+                to_date(substr(delistdate,1,instr(delistdate,"T")-1))
+            from
+                kzzlb
+            where
+                 delistdate is not null and delistdate!='' and delistdate!='-'
+        ]]>
+    </test>
+
+
+
+    <kernal_inx regist="">
         <![CDATA[
             select
                 cast(i.percent as decimal(26,8)),i.rowkey as rowkey
@@ -217,7 +242,7 @@
             where
                 i.percent is not null
         ]]>
-    </kernal>
+    </kernal_inx>
     <movingAverages regist="netval,fund" >
         <!--
 

@@ -30,8 +30,8 @@ import scala.util.control.Breaks
   */
 object KernalMain extends ScalaBaseSparkMain{
   val SQL_TAB="kernal"//sql标签
-  val BAND_WIDTH=0.2//核密度带宽
-  val RECTANGLE_COUNT=200//直方图分组的个数
+  val BAND_WIDTH=3//核密度带宽
+  val RECTANGLE_COUNT=40//直方图分组的个数
   val IS_TEST=false
 
   def main(args: Array[String]): Unit = {
@@ -90,8 +90,6 @@ object KernalMain extends ScalaBaseSparkMain{
     densitiesStr="["+densitiesStr+"]";
 
 
-    var sum=densities.reduce((a1,a2)=>a1.+(a2))
-    println("归一化测试："+sum)
 
 
     var rectangleTs= decimalRdd.map(d=>{
