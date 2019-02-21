@@ -89,8 +89,7 @@ object KernelForPercent extends ScalaBaseSparkMain{
       JedisUtil.incr("accumulator")
       Tuple2(b,percent)
     }).collect()
-    var cdfLabelStr="["+cdfArr.map(c=>c._1.toString).reduce((c1,c2)=>c1+","+c2)+"]"
-    var cdfDataStr="["+cdfArr.map(c=>c._2.toString).reduce((c1,c2)=>c1+","+c2)+"]"
+    var cdfDataStr="["+cdfArr.map(c=>"["+c._1.toString+","+c._2.toString+"]").reduce((c1,c2)=>c1+","+c2)+"]"
     /**结束计算累计分布函数**/
 
 
@@ -142,7 +141,6 @@ object KernelForPercent extends ScalaBaseSparkMain{
     println("============== rectangle data:")
     println("rectangleLabelStr  ===>"+rectangleLabelStr)
     println("rectangleDataStr  ===>"+rectangleDataStr)
-    println("cdfLabelStr  ===>"+cdfLabelStr)
     println("cdfDataStr  ===>"+cdfDataStr)
     JedisUtil.jedis[Object](new JedisRunner[Object] {
       override def run(jedis: Jedis): Object = {
@@ -150,7 +148,7 @@ object KernelForPercent extends ScalaBaseSparkMain{
         jedis.set("densitiesStr",densitiesStr)
         jedis.set("rectangleLabelStr",rectangleLabelStr)
         jedis.set("rectangleDataStr",rectangleDataStr)
-        jedis.set("cdfLabelStr",cdfLabelStr)
+//        jedis.set("cdfLabelStr",cdfLabelStr)
         jedis.set("cdfDataStr",cdfDataStr)
       }
     })

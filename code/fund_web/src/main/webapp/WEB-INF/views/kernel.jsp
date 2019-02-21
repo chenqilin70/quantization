@@ -59,8 +59,7 @@
                         data: eval(redis('kernalLebelStr'))
                     },
                     {
-                        type: 'category',
-                        data: eval(redis('cdfLabelStr')),
+                        type: 'value',
                         position:'bottom',
                         offset:100
                     }],
