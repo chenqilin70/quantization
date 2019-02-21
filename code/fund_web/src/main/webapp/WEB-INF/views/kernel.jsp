@@ -50,12 +50,11 @@
                     xAxis: [{
                         type: 'value',
                         axisLabel:{
-                            rotate:40
-                        },
-                        axisLabel:{
+                            // rotate:40,
                             formatter:function(val,index){
-                                return rectangleLabel[index]
-                            }
+                                return val+"左右"
+                            },
+                            interval:0
                         }
                     },
                     {
