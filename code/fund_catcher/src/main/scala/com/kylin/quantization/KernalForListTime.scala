@@ -94,8 +94,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
         for (s<-splitList){
           val smin=s.get("small").get
           val smax=s.get("big").get
-          if( (d.doubleValue()>=smin.doubleValue() && d.doubleValue()<smax.doubleValue())  ||
-            (d.doubleValue().equals(max.doubleValue()) && d.doubleValue().equals(smax.doubleValue())) ){
+          if( (d.doubleValue()>=smin.doubleValue() && d.doubleValue()<smax.doubleValue())   ){
             var v=rectangleMap.get(smin.toString()+"-"+smax.toString())
             if(v.isEmpty){
               rectangleMap+=(smin.toString()+"-"+smax.toString()->1)
@@ -154,16 +153,18 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
   def splitByMinMax(min: BigDecimal,max: BigDecimal): List[Map[String,BigDecimal]] = {
+    var max1=max.+(BigDecimal("0.0001"))
+    var min1=min.-(BigDecimal("0.0001"))
     var  rectangleList: List[Map[String,BigDecimal]] = List()
-    val stepLen=(max.-(min))./(RECTANGLE_COUNT)
-    var small=min
+    val stepLen=(max1.-(min1))./(RECTANGLE_COUNT)
+    var small=min1
     var big=BigDecimal(0.0)
     // 创建 Breaks 对象
     val loop = new Breaks;
     loop.breakable{
       while (true){
         big=small.+(stepLen)
-        if(big>max){
+        if(big>max1){
           loop.break()
         }
         rectangleList=rectangleList.+:(Map("small"->small.setScale(4,BigDecimal.RoundingMode.HALF_UP),"big"->big.setScale(4,BigDecimal.RoundingMode.HALF_UP)))
