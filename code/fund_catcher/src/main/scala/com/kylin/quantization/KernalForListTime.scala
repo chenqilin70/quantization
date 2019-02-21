@@ -2,20 +2,22 @@ package com.kylin.quantization
 
 import java.io.IOException
 
-import com.kylin.quantization.KernelForZcgm.splitByMinMax
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.util.JedisUtil.JedisRunner
 import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.HBaseConfiguration
 import org.apache.hadoop.hbase.client.Scan
-import org.apache.hadoop.hbase.filter._
+import org.apache.hadoop.hbase.filter.{CompareFilter, FilterList, QualifierFilter, RegexStringComparator}
+import org.apache.spark.{AccumulatorParam, SparkConf, SparkContext}
+
 import org.apache.hadoop.hbase.mapreduce.TableInputFormat
 import org.apache.hadoop.hbase.util.Bytes
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.stat.KernelDensity
 import org.apache.spark.sql.SQLContext
 import redis.clients.jedis.Jedis
+import org.apache.spark._
 
 import scala.util.control.Breaks
 
@@ -121,10 +123,12 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
 
-
     var count=decimalRdd.count();
     var cdf=list.map(v=>BigDecimal(decimalRdd.filter(d=>d.doubleValue()<=v).count())./(BigDecimal(count)).toString()).reduce((a1,a2)=>a1+","+a2)
     var cdfStr="["+cdf+"]"
+
+
+
 
 
 
