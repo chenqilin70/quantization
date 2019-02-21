@@ -67,7 +67,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
       var cha=m.get("big").get.-(m.get("small").get)
       var step=cha./(5.0000)
       var result=List[Double]()
-      for(i<-Range(1,6)){
+      for(i<-Range(0,5)){
         result=result.+:(m.get("small").get.+(step*i).toDouble)
       }
       result.reverse
