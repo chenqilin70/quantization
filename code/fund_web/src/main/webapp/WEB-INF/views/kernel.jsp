@@ -57,11 +57,13 @@
                     {
                         type: 'category',
                         data: eval(redis('kernalLebelStr'))
-                    }/*,
+                    },
                     {
                         type: 'category',
-                        data: null//eval(redis('cdfLabelStr'))
-                    }*/],
+                        data: null,//eval(redis('cdfLabelStr')),
+                        position:'bottom',
+                        offset:20
+                    }],
                     yAxis: [
                         {
                             type: 'value',
