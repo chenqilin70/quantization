@@ -54,10 +54,14 @@
                             rotate:40
                         }
                     },
-                        {
-                            type: 'category',
-                            data: eval(redis('kernalLebelStr'))
-                        }],
+                    {
+                        type: 'category',
+                        data: eval(redis('kernalLebelStr'))
+                    },
+                    {
+                        type: 'category',
+                        data: eval(redis('cdfLabelStr'))
+                    }],
                     yAxis: [
                         {
                             type: 'value',
@@ -75,22 +79,22 @@
                         }
                     ],
                     series: [{
-                        data: eval(redis('rectangleDataStr')),
-                        type: 'bar',
-                        yAxisIndex: 0,
-                        xAxisIndex:0
-                    },
-                    {
-                        data: eval(redis('densitiesStr')),
-                        type: 'line',
-                        yAxisIndex: 1,
-                        xAxisIndex:1,
-                        symbol: "none"
-                    },
+                            data: eval(redis('rectangleDataStr')),
+                            type: 'bar',
+                            yAxisIndex: 0,
+                            xAxisIndex:0
+                        },
                         {
-                            data: eval(redis('cdfStr')),
+                            data: eval(redis('densitiesStr')),
                             type: 'line',
                             yAxisIndex: 1,
+                            xAxisIndex:1,
+                            symbol: "none"
+                        },
+                        {
+                            data: eval(redis('cdfDataStr')),
+                            type: 'line',
+                            yAxisIndex: 2,
                             xAxisIndex:1,
                             symbol: "none"
                         }],
