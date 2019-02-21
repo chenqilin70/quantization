@@ -136,6 +136,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
       var c=if(value.isEmpty) "0" else value.get.toString
       "["+m.get("small").get.+(m.get("big").get)./(BigDecimal(2.0000))+","+c+"]"
     } ).reduce((a,b)=>a + "," + b)
+    rectangleDataStr="["+rectangleDataStr+"]"
 
 
 
