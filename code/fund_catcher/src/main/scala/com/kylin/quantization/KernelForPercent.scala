@@ -144,7 +144,7 @@ object KernelForPercent extends ScalaBaseSparkMain{
 
 
     println("============== kernal data:")
-    println("kernalLebelStr  ===>"+kernalLebelStr)
+//    println("kernalLebelStr  ===>"+kernalLebelStr)
     println("densitiesStr  ===>"+densitiesStr)
     println("============== rectangle data:")
     println("rectangleLabelStr  ===>"+rectangleLabelStr)
@@ -152,7 +152,7 @@ object KernelForPercent extends ScalaBaseSparkMain{
     println("cdfDataStr  ===>"+cdfDataStr)
     JedisUtil.jedis[Object](new JedisRunner[Object] {
       override def run(jedis: Jedis): Object = {
-        jedis.set("kernalLebelStr",kernalLebelStr)
+//        jedis.set("kernalLebelStr",kernalLebelStr)
         jedis.set("densitiesStr",densitiesStr)
         jedis.set("rectangleLabelStr",rectangleLabelStr)
         jedis.set("rectangleDataStr",rectangleDataStr)
