@@ -18,13 +18,6 @@ import redis.clients.jedis.Jedis
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-    JedisUtil.jedis[Object](new JedisRunner[Object] {
-      override def run(jedis: Jedis): AnyRef = {
-        jedis.incr("accumulator")
-        println(jedis.get("accumulator"))
-        null
-      }
-    })
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {
