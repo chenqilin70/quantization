@@ -89,8 +89,8 @@ object KernelForPercent extends ScalaBaseSparkMain{
       JedisUtil.incr("accumulator")
       Tuple2(b,percent)
     }).collect()
-    var cdfLabelStr="["+cdfArr.filter(c=>c._2.toDouble<=0.2).map(c=>c._1.toString).reduce((c1,c2)=>c1+","+c2)+"]"
-    var cdfDataStr="["+cdfArr.filter(c=>c._2.toDouble<=0.2).map(c=>c._2.toString).reduce((c1,c2)=>c1+","+c2)+"]"
+    var cdfLabelStr="["+cdfArr.map(c=>c._1.toString).reduce((c1,c2)=>c1+","+c2)+"]"
+    var cdfDataStr="["+cdfArr.map(c=>c._2.toString).reduce((c1,c2)=>c1+","+c2)+"]"
     /**结束计算累计分布函数**/
 
 
