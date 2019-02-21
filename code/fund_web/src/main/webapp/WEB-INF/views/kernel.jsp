@@ -92,14 +92,14 @@
                             yAxisIndex: 1,
                             xAxisIndex:1,
                             symbol: "none"
-                        }/*,
+                        },
                         {
-                            data: null,//eval(redis('cdfDataStr')),
+                            data: eval(redis('cdfDataStr')),
                             type: 'line',
-                            yAxisIndex: 2,
-                            xAxisIndex:1,
+                            yAxisIndex: 1,
+                            xAxisIndex:2,
                             symbol: "none"
-                        }*/],
+                        }],
                     grid:{//直角坐标系内绘图网格
                         show:true,//是否显示直角坐标系网格。[ default: false ]
                         left:"20%",//grid 组件离容器左侧的距离。
