@@ -60,9 +60,9 @@
                     },
                     {
                         type: 'category',
-                        data: null,//eval(redis('cdfLabelStr')),
+                        data: eval(redis('cdfLabelStr')),
                         position:'bottom',
-                        offset:20
+                        offset:100
                     }],
                     yAxis: [
                         {
