@@ -62,6 +62,23 @@ public class JedisUtil {
         return t;
 
     }
+    public static void set(String key,String value){
+        jedis(j->{
+            j.set(key,value);
+            return null;
+        });
+    }
+    public static Long incr(String key){
+        return jedis(j->{
+            return j.incr(key);
+        });
+    }
+
+    public static String get(String key){
+        return jedis(j->{
+            return j.get(key);
+        });
+    }
     public  static interface JedisRunner<T>{
         public  T run(Jedis jedis);
     }
