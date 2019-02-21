@@ -1,9 +1,11 @@
 package com.kylin.quantization
 
-import com.kylin.quantization.util.RowKeyUtil
+import com.kylin.quantization.util.JedisUtil.JedisRunner
+import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.sql.{DataFrame, SQLContext}
+import redis.clients.jedis.Jedis
 
 /**
   * ClassName: TestScala
@@ -16,11 +18,13 @@ import org.apache.spark.sql.{DataFrame, SQLContext}
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-    val sparkContext = new JavaSparkContext(sparkConf())
-    val sqlContext = new SQLContext(sparkContext)
-    var df=sql("test",sparkContext,sqlContext )
-    df.show(100)
-    sparkContext.stop()
+    JedisUtil.jedis[Object](new JedisRunner[Object] {
+      override def run(jedis: Jedis): AnyRef = {
+        jedis.incr("accumulator")
+        println(jedis.get("accumulator"))
+        null
+      }
+    })
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {

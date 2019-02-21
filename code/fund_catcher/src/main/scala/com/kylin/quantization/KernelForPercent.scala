@@ -82,12 +82,17 @@ object KernelForPercent extends ScalaBaseSparkMain{
 
 
     var broadcast=sparkContext.broadcast(BigDecimal(count))
-    var accumulator= sparkContext.accumulator(1)
+   /* JedisUtil.jedis[Object](new JedisRunner[Object] {
+      override def run(jedis: Jedis): AnyRef = {
+        jedis.set("accumulator","1")
+        jedis.incr()
+        null
+      }
+    })*/
     var cdfArr=decimalRdd.sortBy(b=>b).map(b=>{
       var bcount=broadcast.value
-      var percent=BigDecimal(accumulator.value)./(bcount)
-      accumulator.add(1)
-      Tuple2(b,percent)
+//      var percent=BigDecimal(accumulator.value)./(bcount)
+      Tuple2(b,null)
     }).collect()
     var cdfLabelStr="["+cdfArr.map(c=>c._1.toString).reduce((c1,c2)=>c1+","+c2)+"]"
     var cdfDataStr="["+cdfArr.map(c=>c._2.toString).reduce((c1,c2)=>c1+","+c2)+"]"
