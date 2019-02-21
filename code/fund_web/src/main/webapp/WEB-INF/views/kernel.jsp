@@ -60,7 +60,7 @@
                     },
                     {
                         type: 'category',
-                        data: eval(redis('cdfLabelStr'))
+                        data: null//eval(redis('cdfLabelStr'))
                     }],
                     yAxis: [
                         {
@@ -92,7 +92,7 @@
                             symbol: "none"
                         },
                         {
-                            data: eval(redis('cdfDataStr')),
+                            data: null,//eval(redis('cdfDataStr')),
                             type: 'line',
                             yAxisIndex: 2,
                             xAxisIndex:1,
