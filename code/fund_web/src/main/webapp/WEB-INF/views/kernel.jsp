@@ -60,7 +60,7 @@
                     {
                         type: 'value',
                         position:'bottom',
-                        offset:100
+                        offset:30
                     }],
                     yAxis: [
                         {

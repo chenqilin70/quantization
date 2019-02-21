@@ -82,11 +82,20 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
     println(list)
 
-    var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
+    /*var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
     val densities = kd.estimate(list.toArray)
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
-    densitiesStr="["+densitiesStr+"]";
+    densitiesStr="["+densitiesStr+"]";*/
+    val densities = kd.estimate(list.toArray)
+    var densitiesStr="["
+    for(i <- Range(0,list.size)){
+      densitiesStr=densitiesStr+"["+list.apply(i)+","+densities.apply(i)+"],"
+    }
+    densitiesStr=densitiesStr.substring(0,densitiesStr.size-1)
+    densitiesStr=densitiesStr+"]"
+
+
 
     var rectangleMap=Map[String,Int]()
     decimalRdd.collect().foreach(d=>{
@@ -112,20 +121,37 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
 
-    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
+    /*var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
 
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
       if(value.isEmpty) "0" else value.get.toString
     } ).reduce((a,b)=>a + "," + b)
-    rectangleDataStr="["+rectangleDataStr+"]"
+    rectangleDataStr="["+rectangleDataStr+"]"*/
+    var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
+    rectangleLabelStr="["+rectangleLabelStr+"]"
+    var rectangleDataStr=splitList.map(m=>{
+      var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
+      var c=if(value.isEmpty) "0" else value.get.toString
+      "["+m.get("small").get.+(m.get("big").get)./(BigDecimal(2.0000))+","+c+"]"
+    } ).reduce((a,b)=>a + "," + b)
 
 
 
-    var count=decimalRdd.count();
+    /*var count=decimalRdd.count();
     var cdf=list.map(v=>BigDecimal(decimalRdd.filter(d=>d.doubleValue()<=v).count())./(BigDecimal(count)).toString()).reduce((a1,a2)=>a1+","+a2)
-    var cdfStr="["+cdf+"]"
+    var cdfStr="["+cdf+"]"*/
+    var count=decimalRdd.count();
+    var broadcast=sparkContext.broadcast(BigDecimal(count))
+    JedisUtil.set("accumulator","1")
+    var cdfArr=decimalRdd.sortBy(b=>b).map(b=>{
+      var bcount=broadcast.value
+      var percent=BigDecimal(JedisUtil.get("accumulator"))./(bcount)
+      JedisUtil.incr("accumulator")
+      Tuple2(b,percent)
+    }).collect()
+    var cdfDataStr="["+cdfArr.map(c=>"["+c._1.toString+","+c._2.toString+"]").reduce((c1,c2)=>c1+","+c2)+"]"
 
 
 
@@ -133,19 +159,19 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
     println("============== kernal data:")
-    println("kernalLebelStr  ===>"+kernalLebelStr)
+//    println("kernalLebelStr  ===>"+kernalLebelStr)
     println("densitiesStr  ===>"+densitiesStr)
     println("============== rectangle data:")
     println("rectangleLabelStr  ===>"+rectangleLabelStr)
     println("rectangleDataStr  ===>"+rectangleDataStr)
-    println("cdfStr  ===>"+cdfStr)
+//    println("cdfStr  ===>"+cdfStr)
     JedisUtil.jedis[Object](new JedisRunner[Object] {
       override def run(jedis: Jedis): Object = {
-        jedis.set("kernalLebelStr",kernalLebelStr)
+//        jedis.set("kernalLebelStr",kernalLebelStr)
         jedis.set("densitiesStr",densitiesStr)
         jedis.set("rectangleLabelStr",rectangleLabelStr)
         jedis.set("rectangleDataStr",rectangleDataStr)
-        jedis.set("cdfStr",cdfStr)
+//        jedis.set("cdfStr",cdfStr)
       }
     })
     JedisUtil.destroy()
