@@ -247,7 +247,7 @@
     <kernal_percent regist="">
         <![CDATA[
             select
-                cast(i.percent as decimal(26,8)),i.rowkey as rowkey
+                cast(i.percent as decimal(26,4)),i.rowkey as rowkey
             from
                 index_inx i
             where
