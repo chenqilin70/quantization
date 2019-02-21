@@ -172,6 +172,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
         jedis.set("rectangleLabelStr",rectangleLabelStr)
         jedis.set("rectangleDataStr",rectangleDataStr)
 //        jedis.set("cdfStr",cdfStr)
+        jedis.set("cdfDataStr",cdfDataStr)
       }
     })
     JedisUtil.destroy()
