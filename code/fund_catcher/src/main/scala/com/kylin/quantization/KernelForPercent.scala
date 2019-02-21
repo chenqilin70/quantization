@@ -130,9 +130,11 @@ object KernelForPercent extends ScalaBaseSparkMain{
     var rectangleLabelStr=splitList.map(m=>"'"+m.get("small").get+"-"+m.get("big").get+"'").reduce((a1,a2)=>a1+","+a2)
     rectangleLabelStr="["+rectangleLabelStr+"]"
     var rectangleMap=rectangleTs.collectAsMap()
+
     var rectangleDataStr=splitList.map(m=>{
       var value=rectangleMap.get(m.get("small").get+"-"+m.get("big").get)
-      if(value.isEmpty) "0" else value.get.toString
+      var c=if(value.isEmpty) "0" else value.get.toString
+      "["+m.get("small").get.+(m.get("big").get)./(BigDecimal(2.0000))+","+c+"]"
     } ).reduce((a,b)=>a + "," + b)
     rectangleDataStr="["+rectangleDataStr+"]"
     /**结束计算条形图数据**/

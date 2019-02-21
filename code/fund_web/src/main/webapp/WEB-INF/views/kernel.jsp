@@ -38,7 +38,7 @@
                 return redisdata
             }
 
-
+            var rectangleLabel=eval(redis("rectangleLabelStr"))
 
             var getOption=function(index1,index2,data){
                 // 指定图表的配置项和数据
@@ -48,10 +48,14 @@
 
                 var option = option = {
                     xAxis: [{
-                        type: 'category',
-                        data: eval(redis('rectangleLabelStr')),
+                        type: 'value',
                         axisLabel:{
                             rotate:40
+                        },
+                        axisLabel:{
+                            formatter:function(val,index){
+                                return rectangleLabel[index]
+                            }
                         }
                     },
                     {
