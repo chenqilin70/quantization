@@ -55,10 +55,6 @@
                         }
                     },
                     {
-                        type: 'category',
-                        data: eval(redis('kernalLebelStr'))
-                    },
-                    {
                         type: 'value',
                         position:'bottom',
                         offset:100
@@ -96,7 +92,7 @@
                             data: eval(redis('cdfDataStr')),
                             type: 'line',
                             yAxisIndex: 1,
-                            xAxisIndex:2,
+                            xAxisIndex:1,
                             symbol: "none"
                         }],
                     grid:{//直角坐标系内绘图网格

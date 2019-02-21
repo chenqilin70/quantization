@@ -67,11 +67,19 @@ object KernelForPercent extends ScalaBaseSparkMain{
 
 
     /**开始计算和密度估计**/
-    var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
+    /*var kernalLebelStr=list.map(a=>a.toString).reduce((a1,a2)=>a1+","+a2)
     kernalLebelStr="["+kernalLebelStr+"]";
     val densities = kd.estimate(list.toArray)
     var densitiesStr=densities.map(d=>d.toString).reduce((a1,a2)=>a1+","+a2)
-    densitiesStr="["+densitiesStr+"]";
+    densitiesStr="["+densitiesStr+"]";*/
+
+    val densities = kd.estimate(list.toArray)
+    var densitiesStr="["
+    for(i <- Range(0,list.size)){
+      densitiesStr=densitiesStr+"["+list.apply(i)+","+densities.apply(i)+"],"
+    }
+    densitiesStr=densitiesStr.substring(0,densitiesStr.size-1)
+    densitiesStr=densitiesStr+"]"
     /**结束计算和密度估计**/
 
 
