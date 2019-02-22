@@ -102,8 +102,9 @@ object KernelForPercent extends ScalaBaseSparkMain{
 
 
     /**开始计算箱型图**/
-
-
+    var boxData=decimalRdd.map(d=>d.toString).reduce((d1,d2)=>d1+","+d2)
+    var boxDataStr="[["+boxData+"]]"
+    JedisUtil.set("boxData",boxDataStr)
     /**结束计算箱型图**/
 
 
