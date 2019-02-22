@@ -79,8 +79,6 @@ $(document).ready(function(){
                 }],
             grid:{//直角坐标系内绘图网格
                 show:true,//是否显示直角坐标系网格。[ default: false ]
-                left:"20%",//grid 组件离容器左侧的距离。
-                right:"30px",
                 borderColor:"#c45455",//网格的边框颜色
                 bottom:"20%" //
             },
@@ -149,17 +147,15 @@ $(document).ready(function(){
             ],
             grid:{//直角坐标系内绘图网格
                 show:true,//是否显示直角坐标系网格。[ default: false ]
-                left:"20%",//grid 组件离容器左侧的距离。
-                right:"30px",
                 borderColor:"#c45455",//网格的边框颜色
                 bottom:"20%" //
             },
             tooltip: {
-                trigger: 'axis',
+                trigger: 'item',
                 axisPointer: {
                     type: 'shadow'
                 }
-            }
+            },
         };
         return option
     }
