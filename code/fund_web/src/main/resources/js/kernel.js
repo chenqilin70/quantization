@@ -45,16 +45,15 @@ $(document).ready(function(){
                 {
                     type: 'value',
                     name: '个数',
+                    position:'left',
                     axisLabel: {
                         formatter: '{value} 个'
                     }
                 },
                 {
                     type: 'value',
-                    name: '估计',
-                    axisLabel: {
-                        formatter: '{value} '
-                    }
+                    position:'right',
+                    name: '估计'
                 }
             ],
             series: [{
