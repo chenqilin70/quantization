@@ -99,7 +99,7 @@ $(document).ready(function(){
 
     var getBoxOption=function(){
 
-        var data = echarts.dataTool.prepareBoxplotData(redis("boxData"));
+        var data = echarts.dataTool.prepareBoxplotData(eval(redis("boxData")));
 
         var option = option = {
             xAxis: {
