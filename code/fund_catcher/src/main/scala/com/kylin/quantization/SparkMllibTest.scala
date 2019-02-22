@@ -28,7 +28,7 @@ object SparkMllibTest extends ScalaBaseSparkMain{
 
     val data =df.rdd.map(r=>new Tuple2(   if(r.getDecimal(0).doubleValue()>4.3)"长" else "短"   ,r.getString(1)))
     val fractions: Map[String , Double] =Map("长"->0.4,"短"->0.6)
-    val exactSample = data.sampleByKeyExact(withReplacement = false, fractions)
+    val exactSample = data.sampleByKey(withReplacement = false, fractions)
     exactSample.collectAsMap().foreach((cd)=>{
       println(cd._1+":"+cd._2)
     })
