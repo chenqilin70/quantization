@@ -4,6 +4,7 @@
   Date: 2019-01-30
   Time: 16:41
   To change this template use File | Settings | File Templates.
+
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -13,7 +14,9 @@
     <script src="<%=request.getContextPath()%>/js/jquery-3.3.1.min.js"  type="text/javascript"  ></script>
     <script src="<%=request.getContextPath()%>/bootstrap/js/bootstrap.js"  type="text/javascript"  ></script>
     <script src="<%=request.getContextPath()%>/js/echarts.min.js"  type="text/javascript"  ></script>
+    <script src="<%=request.getContextPath()%>/js/dataTool.js"  type="text/javascript"  ></script>
     <script src="<%=request.getContextPath()%>/js/kernel.js"  type="text/javascript"  ></script>
+
     <style>
         .chartDiv{
             height: 1000px;
