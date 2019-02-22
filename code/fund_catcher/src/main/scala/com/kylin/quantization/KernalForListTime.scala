@@ -156,6 +156,13 @@ object KernalForListTime extends ScalaBaseSparkMain{
 
 
 
+    /**开始计算箱型图**/
+    var boxData=decimalRdd.map(d=>d.toString).reduce((d1,d2)=>d1+","+d2)
+    var boxDataStr="[["+boxData+"]]"
+    /**结束计算箱型图**/
+
+
+
 
 
 
@@ -174,6 +181,7 @@ object KernalForListTime extends ScalaBaseSparkMain{
         jedis.set("rectangleDataStr",rectangleDataStr)
 //        jedis.set("cdfStr",cdfStr)
         jedis.set("cdfDataStr",cdfDataStr)
+        jedis.set("boxData",boxDataStr)
       }
     })
     JedisUtil.destroy()
