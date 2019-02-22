@@ -44,8 +44,6 @@ $(document).ready(function(){
             yAxis: [
                 {
                     type: 'value',
-                    name: '个数',
-                    nameLocation:'start',
                     position:'left',
                     axisLabel: {
                         formatter: '{value} 个'
@@ -53,9 +51,7 @@ $(document).ready(function(){
                 },
                 {
                     type: 'value',
-                    position:'right',
-                    name: '估计',
-                    nameLocation:'start'
+                    position:'right'
                 }
             ],
             series: [{
