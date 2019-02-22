@@ -16,6 +16,6 @@ object SparkStreamingTest  extends ScalaBaseSparkMain{
 
     streamContext.start()
     streamContext.awaitTermination()
-    streamContext.stop(false)
+    streamContext.stop(true)
   }
 }
