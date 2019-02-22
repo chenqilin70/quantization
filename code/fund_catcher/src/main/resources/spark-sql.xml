@@ -242,6 +242,25 @@
         ]]>
     </kernal_list>
 
+    <mltest regist="kzzlb">
+        <!--
+
+        -->
+        <![CDATA[
+            select
+                cast(
+                    months_between( to_date(substr(DELISTDATE,1,instr(DELISTDATE,"T")-1)),to_date(substr(LISTDATE,1,instr(LISTDATE,"T")-1)))/12.0000
+                    as  decimal(26,8)
+                )as months,bondcode as bondcode
+            from
+                kzzlb
+            where
+                 DELISTDATE is not null
+                 and DELISTDATE!=''
+                 and DELISTDATE!='-'
+        ]]>
+    </mltest>
+
 
 
     <kernal_percent regist="">

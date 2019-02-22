@@ -9,7 +9,7 @@ object SparkMllibTest extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
     var sparkContext=new SparkContext(sparkConf())
     var sqlSparkContext=new SQLContext(sparkContext)
-    var df=sql("kernal_list",sparkContext,sqlSparkContext)
+    var df=sql("mltest",sparkContext,sqlSparkContext)
 
     val observations: RDD[Vector] = df.rdd.map(m=>Vectors.dense(m.getDecimal(0).doubleValue()))
     val summary: MultivariateStatisticalSummary = Statistics.colStats(observations)
@@ -23,6 +23,22 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     println("summary.variance"+summary.variance) //列向量方差
     println("summary.numNonzeros"+summary.numNonzeros) //每个列的非零值个数
     println("summary.count"+summary.count)
+
+
+
+    val data =df.rdd.map(r=>new Tuple2(   if(r.getDecimal(0).doubleValue()>4.3)"长" else "短"   ,r.getString(1)))
+    val fractions: Map[String , Double] =Map("长"->0.4,"短"->0.6)
+    val exactSample = data.sampleByKeyExact(withReplacement = false, fractions)
+    exactSample.collectAsMap().foreach((cd)=>{
+      println(cd._1+":"+cd._2)
+    })
+
+    var ccount=exactSample.filter(s=>s._1.equals("长")).count()
+    var dcount=exactSample.filter(s=>s._1.equals("短")).count()
+    println("chang :"+ccount)
+    println("duan :"+dcount)
+
+
 
 
     sparkContext.stop()
