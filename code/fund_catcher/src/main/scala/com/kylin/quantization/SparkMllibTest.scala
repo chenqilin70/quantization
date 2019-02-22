@@ -1,7 +1,9 @@
 package com.kylin.quantization
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
-import org.apache.spark.mllib.linalg.{Vector, Vectors}
+import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
+import org.apache.spark.mllib.regression.LabeledPoint
+import org.apache.spark.mllib.stat.test.ChiSqTestResult
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
@@ -53,6 +55,26 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     dcount=exactSample.filter(s=>s._1.equals("短")).count()
     println("chang :"+ccount)
     println("duan :"+dcount)
+
+
+
+
+
+
+
+    /*val vec: Vector = ... //事件的频率组成的vector
+    val goodnessOfFitTestResult = Statistics.chiSqTest(vec)
+    println(goodnessOfFitTestResult)
+    val mat: Matrix = ... //偶然性matrix
+    val independenceTestResult = Statistics.chiSqTest(mat)
+    println(independenceTestResult)
+    val obs:RDD[LabeledPoint] = ... //(feature, label) pairs
+    val featureTestResults: Arra[ChiSqTestResult] = Statistics.chiSqTest(obs)
+    var i = 1
+    featureTestResults.foreach{ result =>
+      println(s"Column $i:\n result")
+      i += 1
+    } //summary of the test*/
 
 
 
