@@ -21,7 +21,7 @@ import org.json4s.jackson.Serialization
 object SparkMllibTest extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
     var sc=new SparkContext(sparkConf())
-    val u = normalRDD(sc, 50000L, 10)//生成100个服从标准正态分面N(0,1)的随机RDD数据，10为指定的分区数
+    val u = normalRDD(sc, 100L, 10)//生成100个服从标准正态分面N(0,1)的随机RDD数据，10为指定的分区数
 
     val v = u.map(x => 1.0 + 2.0 * x)//转换使其服从N(1,4)的正太分布
 
