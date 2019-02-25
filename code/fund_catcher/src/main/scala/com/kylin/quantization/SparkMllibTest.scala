@@ -1,5 +1,6 @@
 package com.kylin.quantization
 import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.serializer.SerializerFeature
 import com.kylin.quantization.util.JedisUtil
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
@@ -40,7 +41,7 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     })
     result=result :+ (map1)
     result=result :+ (map2)
-    var resultJson=JSON.toJSONString(result)
+    var resultJson=JSON.toJSONString(result,SerializerFeature.PrettyFormat)
     println(resultJson)
     JedisUtil.set("lineSeries",resultJson)
 
