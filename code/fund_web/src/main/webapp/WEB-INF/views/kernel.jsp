@@ -26,14 +26,14 @@
 </head>
 <body>
 <div id="contextPath"><%=request.getContextPath()%></div>
-    <div class="row">
-        <div id="chartDiv" class="chartDiv col-lg-offset-1 col-lg-10 col-md-offset-1  col-md-10  col-sm-offset-1 col-sm-10 col-xs-offset-1  col-xs-10">
+<div class="row">
+    <div id="chartDiv" class="chartDiv col-lg-offset-1 col-lg-10 col-md-offset-1  col-md-10  col-sm-offset-1 col-sm-10 col-xs-offset-1  col-xs-10">
 
-        </div>
-
-        <div id="boxChartDiv" class="chartDiv col-lg-offset-1 col-lg-10 col-md-offset-1  col-md-10  col-sm-offset-1 col-sm-10 col-xs-offset-1  col-xs-10">
-
-        </div>
     </div>
+
+    <div id="boxChartDiv" class="chartDiv col-lg-offset-1 col-lg-10 col-md-offset-1  col-md-10  col-sm-offset-1 col-sm-10 col-xs-offset-1  col-xs-10">
+
+    </div>
+</div>
 </body>
 </html>

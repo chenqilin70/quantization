@@ -20,12 +20,10 @@ import redis.clients.jedis.Jedis
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-
-    val v1 = Vectors.dense(43.0, 9.0)
-
-    val v2 = Vectors.dense(44.0, 4.0)
-
-    val c1 = Statistics.chiSqTest(v1, v2)
+  var list1=List[Int]()
+    var aaa=list1 :+ List(5)
+    println(list1)
+    println(aaa)
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {

@@ -1,4 +1,6 @@
 package com.kylin.quantization
+import com.alibaba.fastjson.JSON
+import com.kylin.quantization.util.JedisUtil
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.linalg.{Matrix, Vector, Vectors}
@@ -7,79 +9,42 @@ import org.apache.spark.mllib.stat.test.ChiSqTestResult
 import org.apache.spark.mllib.stat.{MultivariateStatisticalSummary, Statistics}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SQLContext
+import org.apache.spark.SparkContext
+import org.apache.spark.mllib.random.RandomRDDs._
+
 object SparkMllibTest extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-    var sparkContext=new SparkContext(sparkConf())
-    var sqlSparkContext=new SQLContext(sparkContext)
-    var df=sql("mltest",sparkContext,sqlSparkContext)
+    var sc=new SparkContext(sparkConf())
+    val u = normalRDD(sc, 1000000L, 10)//生成100个服从标准正态分面N(0,1)的随机RDD数据，10为指定的分区数
 
-    val observations: RDD[Vector] = df.rdd.map(m=>Vectors.dense(m.getDecimal(0).doubleValue()))
-    val summary: MultivariateStatisticalSummary = Statistics.colStats(observations)
-
-    /**
-      * 最大值、最小值、平均值、方差、非零元素的数量以及总数
-      */
-    println("summary.max"+summary.max)
-    println("summary.min"+summary.min)
-    println("summary.mean"+summary.mean) //每个列值组成的密集向量
-    println("summary.variance"+summary.variance) //列向量方差
-    println("summary.numNonzeros"+summary.numNonzeros) //每个列的非零值个数
-    println("summary.count"+summary.count)
+    val v = u.map(x => 1.0 + 2.0 * x)//转换使其服从N(1,4)的正太分布
 
 
+    var result=List[Map[String,Object]]();
 
-    val data =df.rdd.map(r=>new Tuple2(   if(r.getDecimal(0).doubleValue()>4.3)"长" else "短"   ,r.getString(1)))
-    val fractions: Map[String , Double] =Map("长"->0.4,"短"->0.6)
-    var exactSample = data.sampleByKey(withReplacement = true, fractions,0)
-    exactSample.collect().foreach((cd)=>{
-      println(cd._1+":"+cd._2)
+    var map1=Map("type" -> "line","data" -> {
+      var ucollect=u.collect()
+      var ulist=List[List[Any]]()
+      for(i <- Range(0,ucollect.size)){
+        ulist=ulist :+ List(i,ucollect(i))
+      }
+      ulist
     })
-
-
-    var cdatacount=data.filter(s=>s._1.equals("长")).count()
-    var ddatacount=data.filter(s=>s._1.equals("短")).count()
-    println("cdatacount :"+cdatacount)
-    println("ddatacount :"+ddatacount)
-
-    var ccount=exactSample.filter(s=>s._1.equals("长")).count()
-    var dcount=exactSample.filter(s=>s._1.equals("短")).count()
-    println("chang :"+ccount)
-    println("duan :"+dcount)
-
-
-    exactSample = data.sampleByKeyExact(withReplacement = true, fractions,0)
-    exactSample.collect().foreach((cd)=>{
-      println(cd._1+":"+cd._2)
+    var map2=Map("type" -> "line","data" -> {
+      var vcollect=v.collect()
+      var vlist=List[List[Any]]()
+      for(i <- Range(0,vcollect.size)){
+        vlist=vlist :+ List(i,vcollect(i))
+      }
+      vlist
     })
-    ccount=exactSample.filter(s=>s._1.equals("长")).count()
-    dcount=exactSample.filter(s=>s._1.equals("短")).count()
-    println("chang :"+ccount)
-    println("duan :"+dcount)
+    result=result :+ (map1)
+    result=result :+ (map2)
+    var resultJson=JSON.toJSONString(result)
+    println(resultJson)
+    JedisUtil.set("lineSeries",resultJson)
 
-
-
-
-
-
-
-    /*val vec: Vector = ... //事件的频率组成的vector
-    val goodnessOfFitTestResult = Statistics.chiSqTest(vec)
-    println(goodnessOfFitTestResult)
-    val mat: Matrix = ... //偶然性matrix
-    val independenceTestResult = Statistics.chiSqTest(mat)
-    println(independenceTestResult)
-    val obs:RDD[LabeledPoint] = ... //(feature, label) pairs
-    val featureTestResults: Arra[ChiSqTestResult] = Statistics.chiSqTest(obs)
-    var i = 1
-    featureTestResults.foreach{ result =>
-      println(s"Column $i:\n result")
-      i += 1
-    } //summary of the test*/
-
-
-
-
-    sparkContext.stop()
+    sc.stop()
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {null}
