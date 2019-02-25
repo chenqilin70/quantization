@@ -31,7 +31,6 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     for(i <- Range(0,ucollect.size)){
       ulist=ulist :+ List(i,ucollect(i))
     }
-    println(ulist)
     var map1=Map("type" -> "line","data" -> ulist)
 
     var vcollect=v.collect()
@@ -39,7 +38,6 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     for(i <- Range(0,vcollect.size)){
       vlist=vlist :+ List(i,vcollect(i))
     }
-    println(vlist)
     var map2=Map("type" -> "line","data" -> vlist)
 
 
@@ -47,7 +45,9 @@ object SparkMllibTest extends ScalaBaseSparkMain{
 
     result=result :+ (map1)
     result=result :+ (map2)
-    var resultJson=JSON.toJSONString(result,SerializerFeature.PrettyFormat)
+    println(result)
+    println("=========================================")
+    var resultJson=JSON.toJSONString(result,SerializerFeature.WriteMapNullValue)
 
     println(resultJson)
     JedisUtil.set("lineSeries",resultJson)
