@@ -53,6 +53,11 @@ public class IndexController {
         System.out.println("kernel is running");
         return "kernel";
     }
+    @RequestMapping("/line")
+    public String line() {
+        System.out.println("line is running");
+        return "line";
+    }
     @ResponseBody
     @RequestMapping("/redis")
     public String redis(String key) {
