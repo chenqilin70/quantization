@@ -11,8 +11,10 @@ import org.apache.spark.sql.SQLContext
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.random.RandomRDDs._
 import org.json4s.JsonDSL._
+import org.json4s.NoTypeHints
 import org.json4s.jackson.JsonMethods._
-import org.json4s._
+import org.json4s.jackson.Serialization._
+import org.json4s.jackson.Serialization
 
 
 
@@ -32,18 +34,19 @@ object SparkMllibTest extends ScalaBaseSparkMain{
     for(i <- Range(0,ucollect.size)){
       ulist=ulist :+ List(i,ucollect(i))
     }
-    var map1=("type" -> "line")~("data" -> ulist)
+    var map1=Map("type" -> "line","data" -> ulist)
 
     var vcollect=v.collect()
     var vlist=List[List[Any]]()
     for(i <- Range(0,vcollect.size)){
       vlist=vlist :+ List(i,vcollect(i))
     }
-    var map2=("type" -> "line")~("data" -> vlist)
+    var map2=Map("type" -> "line","data" -> vlist)
 
     var result=List(map1,map2);
     println("=========================================")
-    var resultJson=compact(render(result))
+    implicit val formats = Serialization.formats(NoTypeHints)
+    var resultJson=write(result)
     println(resultJson)
     JedisUtil.set("lineSeries",resultJson)
     JedisUtil.destroy()

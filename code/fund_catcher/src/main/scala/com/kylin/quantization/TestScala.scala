@@ -1,5 +1,6 @@
 package com.kylin.quantization
 
+import com.alibaba.fastjson.JSONObject
 import com.kylin.quantization.util.JedisUtil.JedisRunner
 import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
@@ -9,8 +10,10 @@ import org.apache.spark.mllib.stat.Statistics
 import org.apache.spark.sql.{DataFrame, SQLContext}
 import redis.clients.jedis.Jedis
 import org.json4s.JsonDSL._
+import org.json4s.NoTypeHints
 import org.json4s.jackson.JsonMethods._
-import org.json4s._
+import org.json4s.jackson.Serialization._
+import org.json4s.jackson.Serialization
 
 /**
   * ClassName: TestScala
@@ -23,11 +26,25 @@ import org.json4s._
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-    var test=("asdf"->"sdfsdf")
-    var m1=("111"->List(1,2)) ~ ("222"->"eee")
-    var m2=("111"->List(1,2)) ~ ("222"->"eee")
+//    var json=new JSONObject()
+//    json.put("aaaa",List(1,2,3))
+//    println(json.toJSONString)
 
-    println(compact(render(List(m1,m2))))
+
+    implicit val formats = Serialization.formats(NoTypeHints)
+    val m = Map(
+      "name" -> "john doe",
+      "age" -> 18,
+      "hasChild" -> true,
+      "childs" -> List(
+        Map("name" -> "dorothy", "age" -> 5, "hasChild" -> List(1,2,3,4,5)),
+        Map("name" -> "bill", "age" -> 8, "hasChild" -> false)))
+
+    val mm = Map(
+      "1" -> Map ("1"->"1.2")
+    )
+
+    println(write(List(m,mm)))
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {
