@@ -346,7 +346,7 @@
                     or l.DELISTDATE =''
                 )
             order by
-                l.YJL,m.MRTYDATE
+                cast(l.YJL as decimal),m.MRTYDATE
 
         ]]>
     </kzz_select2>
