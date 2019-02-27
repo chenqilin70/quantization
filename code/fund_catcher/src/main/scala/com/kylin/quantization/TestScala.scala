@@ -33,7 +33,7 @@ object TestScala  extends ScalaBaseSparkMain{
 //    var str="第一年到第五年的利率分别为:第一年0.8%、第二年1.0%、第三年1.2%、第四年1.6%、第五年2.0%。"
 //    var pattern =new Regex("\\d{1,}\\.{1}\\d{1,}")
 //    println(  (pattern findAllIn str).mkString(",")   )
-    for(i <-Range(2,4,1)){
+    for(i <-Range(8,4,1)){
       println(i)
     }
 

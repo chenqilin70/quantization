@@ -30,7 +30,13 @@ object KzzSelect extends ScalaBaseSparkMain{
       kzzmx.setNowyear(d.getString(4))
       kzzmx.setFRSTVALUEDATE(d.getString(5))
       var RATEDESList=(pattern findAllIn d.getString(2)).map(i=>BigDecimal(i)).toList
-      var nowyearRate=RATEDESList.apply(kzzmx.getNowyear.toInt)
+      var nowyearRate:BigDecimal=null
+      if(kzzmx.getNowyear.toInt>RATEDESList.size-1){
+        nowyearRate=BigDecimal(0)
+      }else{
+        nowyearRate=RATEDESList.apply(kzzmx.getNowyear.toInt)
+      }
+
 
       var daoqijiazhi=BigDecimal(0)
       for(i<-Range(kzzmx.getNowyear.toInt,RATEDESList.size,1)){
