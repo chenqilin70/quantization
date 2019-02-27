@@ -2,7 +2,7 @@ package com.kylin.quantization
 
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.model.{Kzzmx, Workedkzzmx}
-import com.kylin.quantization.util.JedisUtil
+import com.kylin.quantization.util.{HdfsUtil, JedisUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.random.RandomRDDs._
@@ -49,14 +49,18 @@ object KzzSelect extends ScalaBaseSparkMain{
     var worked_kzzmx=sqlSc.createDataFrame(javaRdds,classOf[Workedkzzmx])
     BaseSparkMain.registerHbaseTable("worked_kzzmx",worked_kzzmx)
 
-    println("bondcode\tname\tzaixianjia\tyijialv\tdaoqiri\tdaoQiJiaZhi\thuiShouJia\tnowyear\tFRSTVALUEDATE\tRATEDES")
+
     var df2=sql("kzz_select2",sc,sqlSc)
+    var sb=new StringBuilder("")
     df2.collect().foreach(r=>{
       for(i<-Range(0,r.size)){
-        print(r.get(i)+"\t")
+        sb.append(r.get(i)+"\001")
       }
-      println("")
+      sb.append("\n")
     })
+    HdfsUtil.copyFileToHDFS(sb.toString(),"/workspace/externalData/workedkzz")
+
+
     sc.stop()
   }
 

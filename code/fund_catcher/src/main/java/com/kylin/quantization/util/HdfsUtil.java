@@ -5,6 +5,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -40,6 +41,19 @@ public class HdfsUtil {
         System.out.println("拷贝完成...");
         os.flush();
         os.close();
+        // fs不要随意关闭
+//		fs.close();
+    }
+    public static void copyFileToHDFS(String src, String destPath) throws Exception {
+        FileSystem fs = getFs();
+        OutputStream os = fs.create(new Path(destPath));
+        // copy
+        InputStream in=new ByteArrayInputStream(src.getBytes("utf-8"));
+        IOUtils.copyBytes(in, os, 4096, true);
+        System.out.println("拷贝完成...");
+        os.flush();
+        os.close();
+        in.close();
         // fs不要随意关闭
 //		fs.close();
     }
