@@ -39,7 +39,7 @@ object KzzSelect extends ScalaBaseSparkMain{
 
 
       var daoqijiazhi=BigDecimal(0)
-      for(i<-Range(kzzmx.getNowyear.toInt,RATEDESList.size,1)){
+      for(i<-Range(if(kzzmx.getNowyear.toInt==0) 0 else (kzzmx.getNowyear.toInt-1),RATEDESList.size,1)){
         daoqijiazhi=daoqijiazhi.+(RATEDESList.apply(i))
       }
       kzzmx.setDaoQiJiaZhi(daoqijiazhi.+(100).toString())
