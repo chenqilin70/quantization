@@ -319,10 +319,13 @@
                 l.BONDCODE as bondcode,
                 l.SNAME as name,
                 l.ZQNEW as zaixianjia ,
-                l.YJL as yijialv,
-                m.MRTYDATE as  daoqiri,
                 m.daoQiJiaZhi,
                 m.huiShouJia,
+                l.YJL as yijialv,
+                if(cast(l.ZQNEW as decimal(28,6))<=100.0,'1重仓期',
+                    if(cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6)),'2加仓期',
+                        if(cast(l.ZQNEW as decimal(28,6))<=cast(m.daoQiJiaZhi as decimal(28,6)),'3建仓期','4等待期'))) as period,
+                m.MRTYDATE as  daoqiri,
                 m.nowyear,
                 m.FRSTVALUEDATE,
                 m.RATEDES
@@ -331,7 +334,15 @@
                  kzzlb l
                  left join worked_kzzmx m on l.rowkey=m.rowkey
             where
-                (
+                l.DELISTDATE is  null
+                or l.DELISTDATE ='-'
+                or l.DELISTDATE =''
+            order by
+                period,cast(l.YJL as decimal),m.MRTYDATE
+
+        ]]>
+        <!--
+            (
                     cast(l.ZQNEW as decimal(28,6))<=100.0
                     or
                     cast(l.ZQNEW as decimal(28,6))<=cast(m.daoQiJiaZhi as decimal(28,6))
@@ -339,16 +350,7 @@
                     cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6))
 
                 )
-                and
-                (
-                    l.DELISTDATE is  null
-                    or l.DELISTDATE ='-'
-                    or l.DELISTDATE =''
-                )
-            order by
-                cast(l.YJL as decimal),m.MRTYDATE
-
-        ]]>
+        -->
     </kzz_select2>
 
 </sqls>
