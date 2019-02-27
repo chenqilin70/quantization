@@ -25,10 +25,6 @@ object SparkMllibTest extends ScalaBaseSparkMain{
 
     val v = u.map(x => 1.0 + 2.0 * x)//转换使其服从N(1,4)的正太分布
 
-
-
-
-
     var ucollect=u.collect()
     var ulist=List[List[Any]]()
     for(i <- Range(0,ucollect.size)){

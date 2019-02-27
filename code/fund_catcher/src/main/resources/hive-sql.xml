@@ -27,4 +27,28 @@
             TBLPROPERTIES("hbase.table.name" = "{tableName}")
         ]]>
     </create_table_tamplate>
+
+
+    <kzz_select>
+        <![CDATA[
+            select
+                l.bondcode as key,l.sname as name,l.zqnew as zaixianjia
+                ,l.yjl as yijialv,m.mrtydate as  daoqiri
+            from
+                 kzzlb l
+                 left join kzzmx m on l.key=m.key
+            where
+                cast(l.zqnew as decimal(28,6))<=100.0
+                and cast(l.yjl as decimal(18,6))<=15
+                and
+                (
+                    l.delistdate is  null
+                    or l.delistdate ='-'
+                    or l.delistdate =''
+                )
+            order by
+                m.mrtydate
+
+        ]]>
+    </kzz_select>
 </sqls>
