@@ -30,10 +30,10 @@ import java.util.Map;
 public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
     private Connection conn=null;
     public static Logger logger= LoggerFactory.getLogger(HiveDaoImpl.class);
-    @Autowired
-    private MapUtil<String,String> ssMapUtil;
 //    @Autowired
-    private MapUtil<String,Object> soMapUtil=new MapUtil<>();
+    private MapUtil<String,String> ssMapUtil=new MapUtil<String,String>();
+//    @Autowired
+    private MapUtil<String,Object> soMapUtil=new MapUtil<String,Object>();
 
     
     @Override
