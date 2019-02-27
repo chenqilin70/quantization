@@ -1,5 +1,7 @@
 package com.kylin.quantization
 
+import java.util.regex.{Matcher, Pattern}
+
 import com.alibaba.fastjson.JSONObject
 import com.kylin.quantization.util.JedisUtil.JedisRunner
 import com.kylin.quantization.util.{JedisUtil, RowKeyUtil}
@@ -15,6 +17,8 @@ import org.json4s.jackson.JsonMethods._
 import org.json4s.jackson.Serialization._
 import org.json4s.jackson.Serialization
 
+import scala.util.matching.Regex
+
 /**
   * ClassName: TestScala
   * Description:
@@ -26,25 +30,13 @@ import org.json4s.jackson.Serialization
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-//    var json=new JSONObject()
-//    json.put("aaaa",List(1,2,3))
-//    println(json.toJSONString)
+//    var str="第一年到第五年的利率分别为:第一年0.8%、第二年1.0%、第三年1.2%、第四年1.6%、第五年2.0%。"
+//    var pattern =new Regex("\\d{1,}\\.{1}\\d{1,}")
+//    println(  (pattern findAllIn str).mkString(",")   )
+    for(i <-Range(2,4,1)){
+      println(i)
+    }
 
-
-    implicit val formats = Serialization.formats(NoTypeHints)
-    val m = Map(
-      "name" -> "john doe",
-      "age" -> 18,
-      "hasChild" -> true,
-      "childs" -> List(
-        Map("name" -> "dorothy", "age" -> 5, "hasChild" -> List(1,2,3,4,5)),
-        Map("name" -> "bill", "age" -> 8, "hasChild" -> false)))
-
-    val mm = Map(
-      "1" -> Map ("1"->"1.2")
-    )
-
-    println(write(List(m,mm)))
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {

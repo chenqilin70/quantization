@@ -301,6 +301,8 @@
         <![CDATA[
             select
                 rowkey,BONDCODE,RATEDES,MRTYDATE
+                ,ceil(months_between(to_date(now()),to_date(regexp_replace(FRSTVALUEDATE,'T.*','')))/12) as nowyear
+                ,FRSTVALUEDATE
             from
                 kzzmx
         ]]>
@@ -308,9 +310,39 @@
     <kzz_select2>
         <![CDATA[
             select
-                *
+                l.BONDCODE as bondcode,
+                l.SNAME as name,
+                l.ZQNEW as zaixianjia ,
+                l.YJL as yijialv,
+                m.MRTYDATE as  daoqiri,
+                m.daoQiJiaZhi,
+                m.huiShouJia,
+                m.nowyear,
+                m.FRSTVALUEDATE,
+                m.RATEDES
+
             from
-                worked_kzzmx
+                 kzzlb l
+                 left join worked_kzzmx m on l.rowkey=m.rowkey
+            where
+                (
+                    cast(l.ZQNEW as decimal(28,6))<=100.0
+                    or
+                    cast(l.ZQNEW as decimal(28,6))<=cast(m.daoQiJiaZhi as decimal(28,6))
+                    or
+                    cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6))
+
+                )
+
+                and
+                (
+                    l.DELISTDATE is  null
+                    or l.DELISTDATE ='-'
+                    or l.DELISTDATE =''
+                )
+            order by
+                l.YJL,m.MRTYDATE
+
         ]]>
     </kzz_select2>
 
