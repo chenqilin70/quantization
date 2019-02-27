@@ -302,7 +302,7 @@
             select
                 rowkey,BONDCODE,RATEDES,MRTYDATE
                 ,cast(
-                    ceil(months_between(to_date(now()),to_date(regexp_replace(FRSTVALUEDATE,'T.*','')))/12)
+                    ceil(months_between(to_date(now()),to_date(regexp_replace(FRSTVALUEDATE,'T.*','')))/12.00)
                     as string
                 ) as nowyear
                 ,FRSTVALUEDATE

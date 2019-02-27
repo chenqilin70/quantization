@@ -51,7 +51,12 @@ object KzzSelect extends ScalaBaseSparkMain{
 
 
     var df2=sql("kzz_select2",sc,sqlSc)
-    df2.show(20)
+    df2.foreach(r=>{
+      for(i<-Range(0,r.size)){
+        print(r.get(i)+"\t")
+      }
+      println("")
+    })
     sc.stop()
   }
 
