@@ -297,5 +297,21 @@
 
         ]]>
     </movingAverages>
+    <kzz_select1 regist="kzzmx">
+        <![CDATA[
+            select
+                rowkey,bondcode,ratedes,mrtydate
+            from
+                kzzmx
+        ]]>
+    </kzz_select1>
+    <kzz_select2>
+        <![CDATA[
+            select
+                *
+            from
+                kzz_select2
+        ]]>
+    </kzz_select2>
 
 </sqls>
