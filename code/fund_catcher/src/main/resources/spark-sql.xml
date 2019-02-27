@@ -301,7 +301,10 @@
         <![CDATA[
             select
                 rowkey,BONDCODE,RATEDES,MRTYDATE
-                ,ceil(months_between(to_date(now()),to_date(regexp_replace(FRSTVALUEDATE,'T.*','')))/12) as nowyear
+                ,cast(
+                    ceil(months_between(to_date(now()),to_date(regexp_replace(FRSTVALUEDATE,'T.*','')))/12)
+                    as string
+                ) as nowyear
                 ,FRSTVALUEDATE
             from
                 kzzmx
