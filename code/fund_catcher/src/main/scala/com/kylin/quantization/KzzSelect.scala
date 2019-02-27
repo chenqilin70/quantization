@@ -12,7 +12,7 @@ import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization._
 
 
-object SparkMllibTest extends ScalaBaseSparkMain{
+object KzzSelect extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
     var sc=new SparkContext(sparkConf())
     var sqlSc=new SQLContext(sc)
