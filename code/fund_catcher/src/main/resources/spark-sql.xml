@@ -310,7 +310,7 @@
             select
                 *
             from
-                kzz_select2
+                worked_kzzmx
         ]]>
     </kzz_select2>
 
