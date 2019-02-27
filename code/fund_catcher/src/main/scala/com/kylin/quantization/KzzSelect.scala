@@ -31,10 +31,10 @@ object KzzSelect extends ScalaBaseSparkMain{
       kzzmx.setFRSTVALUEDATE(d.getString(5))
       var RATEDESList=(pattern findAllIn d.getString(2)).map(i=>BigDecimal(i)).toList
       var nowyearRate:BigDecimal=null
-      if(kzzmx.getNowyear.toInt>RATEDESList.size-1){
+      if(kzzmx.getNowyear.toInt>RATEDESList.size){
         nowyearRate=BigDecimal(0)
       }else{
-        nowyearRate=RATEDESList.apply(kzzmx.getNowyear.toInt)
+        nowyearRate=RATEDESList.apply(kzzmx.getNowyear.toInt-1)
       }
 
 
@@ -49,7 +49,7 @@ object KzzSelect extends ScalaBaseSparkMain{
     var worked_kzzmx=sqlSc.createDataFrame(javaRdds,classOf[Workedkzzmx])
     BaseSparkMain.registerHbaseTable("worked_kzzmx",worked_kzzmx)
 
-
+    println("bondcode\tname\tzaixianjia\tyijialv\tdaoqiri\tdaoQiJiaZhi\thuiShouJia\tnowyear\tFRSTVALUEDATE\tRATEDES")
     var df2=sql("kzz_select2",sc,sqlSc)
     df2.collect().foreach(r=>{
       for(i<-Range(0,r.size)){
