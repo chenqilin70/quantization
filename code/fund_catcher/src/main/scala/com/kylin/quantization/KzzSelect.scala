@@ -34,7 +34,7 @@ object KzzSelect extends ScalaBaseSparkMain{
       if(kzzmx.getNowyear.toInt>RATEDESList.size){
         nowyearRate=BigDecimal(0)
       }else{
-        nowyearRate=RATEDESList.apply(kzzmx.getNowyear.toInt-1)
+        nowyearRate=RATEDESList.apply(if(kzzmx.getNowyear.toInt==0) 0 else (kzzmx.getNowyear.toInt-1))
       }
 
 
