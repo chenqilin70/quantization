@@ -308,6 +308,9 @@
                 ,FRSTVALUEDATE
             from
                 kzzmx
+            where
+                RATEDES is not null
+                and RATEDES !=''
         ]]>
     </kzz_select1>
     <kzz_select2 regist="kzzlb">
