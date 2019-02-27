@@ -300,7 +300,7 @@
     <kzz_select1 regist="kzzmx">
         <![CDATA[
             select
-                rowkey,bondcode,ratedes,mrtydate
+                rowkey,BONDCODE,RATEDES,MRTYDATE
             from
                 kzzmx
         ]]>
