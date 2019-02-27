@@ -307,7 +307,7 @@
                 kzzmx
         ]]>
     </kzz_select1>
-    <kzz_select2>
+    <kzz_select2 regist="kzzlb">
         <![CDATA[
             select
                 l.BONDCODE as bondcode,
@@ -333,7 +333,6 @@
                     cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6))
 
                 )
-
                 and
                 (
                     l.DELISTDATE is  null
