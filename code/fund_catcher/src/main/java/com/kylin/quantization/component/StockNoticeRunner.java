@@ -30,6 +30,7 @@ public class StockNoticeRunner  extends CatcherRunner{
     private Map<String,String> conf;
     @Autowired
     private StockRunner stockRunner;
+    public static final String INDEX="stock_notice";
     @Override
     protected String getTask() {
         return "stockNotice";
@@ -37,6 +38,10 @@ public class StockNoticeRunner  extends CatcherRunner{
 
     @Override
     protected void doTask() {
+        if(ESUtil.isExists(INDEX)){
+            ESUtil.deleteIndex(INDEX);
+        }
+        ESUtil.createIndex(INDEX,5,0);
         for(String stockcode:stockRunner.getStockList()){
             String html = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("stock_notice_list"),ssMapUtil.create("pageno","1","stockcode",stockcode)), null);
             Document parseHtml = Jsoup.parse(html);
@@ -80,7 +85,7 @@ public class StockNoticeRunner  extends CatcherRunner{
         ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
         String sourceJson=JSON.toJSONString(source);
 
-        ESUtil.putData(sourceJson,"stock_notice");
+        ESUtil.putData(sourceJson,INDEX);
     }
 
 
