@@ -62,7 +62,6 @@ public class StockRunner  extends CatcherRunner{
         String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
         String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
         List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
-        codes.forEach(c-> System.out.print(c+","));
         return codes;
     }
 }
