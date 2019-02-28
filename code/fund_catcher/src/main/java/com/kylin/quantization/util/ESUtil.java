@@ -153,10 +153,7 @@ public class ESUtil {
 
     }
 
-    public static boolean truncateIndex(String ... indexNames){
-        AcknowledgedResponse acknowledgedResponse = new DeleteIndexRequestBuilder(getEsClient(), DeleteIndexAction.INSTANCE, indexNames).execute().actionGet();
-        return acknowledgedResponse.isAcknowledged();
-    }
+
 
 
 

@@ -1,8 +1,6 @@
 package com.kylin.quantization.component;
 
-import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.dao.HBaseDao;
-import com.kylin.quantization.model.LoadDataModel;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
 import org.apache.log4j.Logger;
@@ -52,11 +50,8 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         String indexName="stock_notice";
-        /*for(int i=0;i<4;i++){
-            ESUtil.putData(JSON.toJSONString(new LoadDataModel("/workspace/"+i,"netval"+i).setOverwrite(LoadDataModel.OVERWRITE_TABLE)),"stock_notice");
-        }*/
-        ESUtil.truncateIndex(indexName);
-
+        ESUtil.deleteIndex(indexName);
+        ESUtil.createIndex(indexName,5,0);
     }
 
 
