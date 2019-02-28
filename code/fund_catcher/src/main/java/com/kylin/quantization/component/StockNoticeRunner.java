@@ -1,12 +1,18 @@
 package com.kylin.quantization.component;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
-import com.kylin.quantization.util.HttpUtil;
-import com.kylin.quantization.util.MapUtil;
+import com.kylin.quantization.util.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,46 +37,50 @@ public class StockNoticeRunner  extends CatcherRunner{
 
     @Override
     protected void doTask() {
-        stockRunner.getStockList();
-    }
-
-
-
-
-    public void createStudentIndex(TransportClient client, String indexName) {
-        CreateIndexRequestBuilder cib = client.admin().indices().prepareCreate(indexName);
-        XContentBuilder mapping = null;
-        try {
-            mapping = XContentFactory.jsonBuilder()
-                    .startObject()//表示开始设置值
-                    .startObject("properties")//设置只定义字段，不传参
-                    .startObject("no") //定义字段名
-                    .field("type", "text") //设置数据类型
-                    .endObject()
-                    .startObject("name")
-                    .field("type", "text")
-                    .endObject()
-                    .startObject("addreess")
-                    .field("type", "text")
-                    .endObject()
-                    .startObject("age")
-                    .field("type", "integer")
-                    .endObject()
-                    .startObject("phone")
-                    .field("type", "text")
-                    .endObject()
-                    .startObject("score")
-                    .field("type", "integer")
-                    .endObject()
-                    .endObject()
-                    .endObject();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for(String stockcode:stockRunner.getStockList()){
+            String html = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("stock_notice_list"),ssMapUtil.create("pageno","1","stockcode",stockcode)), null);
+            Document parseHtml = Jsoup.parse(html);
+//        System.out.println(html);
+            Elements divs = parseHtml.getElementsByClass("articleh normal_post");
+//        System.out.println(divs.size());
+            for(Element e:divs){
+                Elements spans = e.getElementsByTag("span");
+                Element a = spans.get(2).getElementsByTag("a").get(0);
+                String href = conf.get("stock_notice_detail")+a.attr("href");
+                String title=a.attr("title");
+                dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
+            }
         }
 
-        cib.addMapping("student", mapping);
-        cib.execute().actionGet();
-
     }
+
+
+
+
+    private  void dealDetail(String href,Map<String,String> source) {
+        String detailHtml = HttpUtil.doGet(href, null);
+        Document doc = Jsoup.parse(detailHtml);
+
+        Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
+        String publishdate=ps.get(0).text().replaceAll("公告日期：","");
+
+        Elements as = doc.select("#zwconbody > div > p > a[href^=\"http://pdf.dfcfw.com\"]");
+        String pdfhref = as.get(0).attr("href");
+        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
+        HttpEntity entity = closeableHttpResponse.getEntity();
+        String text="";
+        if(entity!=null){
+            try {
+                text= PDFUtil.getText(entity.getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
+        String sourceJson=JSON.toJSONString(source);
+        System.out.println(sourceJson);
+        ESUtil.putData(sourceJson,"stock_notice");
+    }
+
 
 }
