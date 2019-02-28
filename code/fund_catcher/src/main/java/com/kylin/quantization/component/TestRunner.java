@@ -11,6 +11,7 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -52,7 +53,9 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         String indexName="stock_notice";
-        ESUtil.putData("{\t\"abc\":3242,\t\"birth\":\"2019-02-03\"\t}","stock_notice");
+        System.out.println(ESUtil.deleteIndex(indexName));
+
+
 
     }
 

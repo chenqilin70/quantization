@@ -1,7 +1,10 @@
 package com.kylin.quantization.util;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexAction;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.action.delete.DeleteAction;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
@@ -10,6 +13,8 @@ import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.index.reindex.DeleteByQueryAction;
+import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetSocketAddress;
@@ -146,6 +151,11 @@ public class ESUtil {
                 .actionGet();
         return response;
 
+    }
+
+    public static boolean truncateIndex(String ... indexNames){
+        AcknowledgedResponse acknowledgedResponse = new DeleteIndexRequestBuilder(getEsClient(), DeleteIndexAction.INSTANCE, indexNames).execute().actionGet();
+        return acknowledgedResponse.isAcknowledged();
     }
 
 
