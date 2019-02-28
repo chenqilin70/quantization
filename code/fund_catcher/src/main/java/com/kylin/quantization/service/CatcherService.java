@@ -8,10 +8,7 @@ import com.kylin.quantization.dao.HiveDao;
 import com.kylin.quantization.dao.MysqlDao;
 import com.kylin.quantization.model.Fund;
 import com.kylin.quantization.util.*;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
@@ -25,17 +22,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class CatcherService {
@@ -208,6 +201,51 @@ public class CatcherService {
     public void getIndexVal(String indexCode) {
         logger.info("getIndexVal  start,indexCode:"+indexCode);
         String tableName="index";
+        createHbaseTableIfNotExists(tableName);
+        //symbol=SZ128038&begin=1551420485789&period=day&type=before&count=-142&indicator=kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy,pe,pb,ps,pcf,market_capital,agt,ggt,balance
+        String json = HttpUtil.doGetWithHead(conf.get("kline_val"), ssMapUtil.create(
+                "symbol", indexCode, "begin", getNewestDate(indexCode,"index"), "period", "day", "type", "before", "count"
+                , Integer.MAX_VALUE+"", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
+        , "head/kline_val_head.properties");
+        dealKlineData(tableName,json,indexCode);
+        logger.info("getIndexVal  end ,indexCode:"+indexCode);
+    }
+
+    public void getStockVal(String stockCode) {
+        logger.info("getStockVal  start,stockCode:"+stockCode);
+        String tableName="stock";
+        createHbaseTableIfNotExists(tableName);
+        String json = HttpUtil.doGetWithHead(conf.get("kline_val"), ssMapUtil.create(
+                "symbol", stockCode, "begin", getNewestDate(stockCode,"stock"), "period", "day", "type", "before", "count"
+                , Integer.MAX_VALUE+"", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy,pe,pb,ps,pcf,market_capital,agt,ggt,balance")
+                , "head/kline_val_head.properties");
+        dealKlineData(tableName,json,stockCode);
+        logger.info("getStockVal  end ,indexCode:"+stockCode);
+    }
+    public void dealKlineData(String tableName,String json,String code){
+        JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
+        JSONArray columns = dataJson.getJSONArray("column");
+        JSONArray items = dataJson.getJSONArray("item");
+        for(int i=0;i<items.size();i++){
+            JSONArray item = items.getJSONArray(i);
+            LinkedList<Put> putList=new LinkedList<>();
+            String rowKey=RowKeyUtil.getKlineRowkey(code,item.getString(0));
+
+            for(int j=0;j<columns.size();j++){
+                String qualifier = columns.getString(j);
+                String val = item.getString(j);
+                putList.add(PutUtil.getPut(rowKey,"baseinfo",qualifier,val==null?"":val));
+            }
+            logger.info(tableName+" 入库中，rowkey："+rowKey);
+            boolean isPut = hBaseDao.putData(tableName, putList);
+            if(!isPut){
+                logger.error(tableName+" 数据插入失败，已忽略，rowkey:"+rowKey);
+            }
+        }
+    }
+
+
+    public void createHbaseTableIfNotExists(String tableName){
         boolean exist = hBaseDao.existTable(tableName);
         if(!exist){
             boolean create = hBaseDao.createTable(tableName, "baseinfo");
@@ -215,38 +253,15 @@ public class CatcherService {
                 throw new RuntimeException("hbase创建表index失败！");
             }
         }
-        String json = HttpUtil.doGetWithHead(conf.get("index_val"), ssMapUtil.create(
-                "symbol", indexCode, "begin", getNewestDate(indexCode), "period", "day", "type", "before", "count"
-                , Integer.MAX_VALUE+"", "indicator", "kline,ma,macd,kdj,boll,rsi,wr,bias,cci,psy")
-        ,"head/index_val_head.properties");
-        JSONObject dataJson = JSON.parseObject(json).getJSONObject("data");
-        JSONArray columns = dataJson.getJSONArray("column");
-        JSONArray items = dataJson.getJSONArray("item");
-        for(int i=0;i<items.size();i++){
-            JSONArray item = items.getJSONArray(i);
-            LinkedList<Put> putList=new LinkedList<>();
-            String rowKey=RowKeyUtil.getIndexRowkey(indexCode,item.getString(0));
-
-            for(int j=0;j<columns.size();j++){
-                String qualifier = columns.getString(j);
-                String val = item.getString(j);
-                putList.add(PutUtil.getPut(rowKey,"baseinfo",qualifier,val==null?"":val));
-            }
-            logger.info("index 入库中，rowkey："+rowKey);
-            boolean isPut = hBaseDao.putData(tableName, putList);
-            if(!isPut){
-                logger.error("index 数据插入失败，已忽略，rowkey:"+rowKey);
-            }
-        }
-        logger.info("getIndexVal  end ,indexCode:"+indexCode);
     }
+
 
     /**
      * 根据给定的index，找到其最新netval的日期的后一天
      * @param index
      * @return
      */
-    public String getNewestDate(String index) {
+    public String getNewestDate(String index,String indexOrStock) {
         String newestDate= "19491001";
 
         Date tomorrow=getTomorrow();
@@ -254,13 +269,13 @@ public class CatcherService {
         Scan scan= null;
         try {
             scan = new Scan()
-                    .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(index,tomorrow.getTime()+"")))
-                    .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(index,sf.parse(newestDate).getTime()+"")))
+                    .setStartRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey(index,tomorrow.getTime()+"")))
+                    .setStopRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey(index,sf.parse(newestDate).getTime()+"")))
                     .setReversed(true);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        String result=hBaseDao.scan("index",scan,scanner -> {
+        String result=hBaseDao.scan(indexOrStock,scan,scanner -> {
             Result next = scanner.next();
             String date="";
             if(next!=null){

@@ -1,8 +1,10 @@
 package com.kylin.quantization.component;
 
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.HttpUtil;
+import com.kylin.quantization.util.MapUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,31 +14,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
-
 @Component
-public class IndexRunner  extends CatcherRunner {
+public class StockRunner  extends CatcherRunner{
     @Autowired
-    private CatcherService service;
+    private HBaseDao hBaseDao;
     @Autowired
     private Map<String,String> conf;
+    @Autowired
+    private MapUtil<String,String> ssMapUtil;
+    @Autowired
+    private CatcherService service;
 
     @Override
     protected String getTask() {
-        return "index";
+        return "stock";
     }
 
     @Override
     protected void doTask() {
-        String indexs = conf.get("indexs");
-        String[] split = indexs.split(",");
-        List<String> indexList = Arrays.asList(split).stream().map(i -> i.substring(0, i.indexOf("/"))).collect(Collectors.toList());
+        List<String> stockList = getStockList();
         ExecutorService pool= Executors.newFixedThreadPool(5);
         List<Future<Object>> futureList=new ArrayList<>();
-        indexList.forEach(i->{
+        stockList.forEach(i->{
             Future<Object> submit = pool.submit(new Callable<Object>() {
                 @Override
                 public Object call() throws Exception {
-                    service.getIndexVal(i);
+                    service.getStockVal(i);
                     return null;
                 }
             });
@@ -51,11 +54,17 @@ public class IndexRunner  extends CatcherRunner {
                 e.printStackTrace();
             }
         });
-        service.flushAndCompact("index");
+        service.flushAndCompact("stock");
         pool.shutdown();
 
     }
 
 
-
+    public List<String> getStockList(){
+        String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
+        String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
+        List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
+        codes.forEach(c-> System.out.print(c+","));
+        return codes;
+    }
 }

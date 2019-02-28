@@ -224,8 +224,8 @@ object KernalForListTime extends ScalaBaseSparkMain{
     val filter3 = new QualifierFilter(CompareFilter.CompareOp.EQUAL, new RegexStringComparator("key"))
     val qulifierFilterList = new FilterList(FilterList.Operator.MUST_PASS_ONE, filter2, filter3)
     val scan = new Scan().setFilter(qulifierFilterList)
-    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","19490101")))
-    scan.setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey(".INX","20190216")))
+    scan.setStartRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey(".INX","19490101")))
+    scan.setStopRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey(".INX","20190216")))
     try
       hconf.set(TableInputFormat.SCAN, BaseSparkMain.convertScanToString(scan))
     catch {

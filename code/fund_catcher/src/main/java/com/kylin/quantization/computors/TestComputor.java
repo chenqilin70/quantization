@@ -80,8 +80,8 @@ public class TestComputor  extends BaseSparkMain{
         hconf.set(TableInputFormat.INPUT_TABLE, tableName);
         Filter closeFilter =new QualifierFilter(CompareFilter.CompareOp.EQUAL,new RegexStringComparator("close"));
         Scan scan = new Scan()
-//                .setStartRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "19491001")))
-//                .setStopRow(Bytes.toBytes(RowKeyUtil.getIndexRowkey("SH000300", "20190125")))
+//                .setStartRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey("SH000300", "19491001")))
+//                .setStopRow(Bytes.toBytes(RowKeyUtil.getKlineRowkey("SH000300", "20190125")))
                 .setFilter(closeFilter);
 
         try {

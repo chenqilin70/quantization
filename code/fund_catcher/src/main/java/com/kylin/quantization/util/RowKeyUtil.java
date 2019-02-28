@@ -44,7 +44,7 @@ public class RowKeyUtil {
         code=code.substring(0,code.indexOf("_"));
         return code;
     }
-    public static String getIndexRowkey(String code,String date){
+    public static String getKlineRowkey(String code,String date){
         SimpleDateFormat sf=new SimpleDateFormat("yyyyMMdd");
         String result="";
         if(date.length()==8){
