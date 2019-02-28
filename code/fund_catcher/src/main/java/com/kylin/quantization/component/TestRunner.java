@@ -49,7 +49,7 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        System.out.println(ESUtil.getEsClient());
+        ESUtil.createIndex("stock_notice",5,1);
     }
 
 
