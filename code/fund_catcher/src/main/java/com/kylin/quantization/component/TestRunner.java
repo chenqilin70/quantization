@@ -52,9 +52,7 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         String indexName="stock_notice";
-        for(int i=0;i<4;i++){
-            ESUtil.putData(JSON.toJSONString(new LoadDataModel("/workspace/"+i,"netval"+i).setOverwrite(LoadDataModel.OVERWRITE_TABLE)),"stock_notice");
-        }
+        ESUtil.putData("{\t\"abc\":3242,\t\"birth\":\"2019-02-03\"\t}","stock_notice");
 
     }
 
