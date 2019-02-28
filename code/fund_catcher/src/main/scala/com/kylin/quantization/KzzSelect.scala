@@ -11,7 +11,7 @@ import com.kylin.quantization.util.{HdfsUtil, JedisUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.random.RandomRDDs._
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{SQLContext, SaveMode}
 import org.json4s.NoTypeHints
 import org.json4s.jackson.Serialization
 import org.json4s.jackson.Serialization._
@@ -56,12 +56,12 @@ object KzzSelect extends ScalaBaseSparkMain{
 
 
     var df2=sql("kzz_select2",sc,sqlSc)
-    var destPath="hdfs:///nameservice1/workspace/externalData/workedkzz.parquet"
-    df2.write.format("parquet").save(destPath)
+    var destPath="hdfs://nameservice1:9000/workspace/externalData/workedkzz.parquet"
+    df2.write.format("parquet").mode(SaveMode.Overwrite).save(destPath)
     var dao=new HiveDaoImpl()
     dao.executeSql("create_worked_kzz",false)
 
-    var load=new LoadDataModel(destPath,"workedkzz").setLocal(LoadDataModel.HDFS_FILE).setOverwrite(LoadDataModel.OVERWRITE_TABLE)
+    var load=new LoadDataModel(destPath,"fund_catcher.workedkzz").setLocal(LoadDataModel.HDFS_FILE).setOverwrite(LoadDataModel.OVERWRITE_TABLE)
     dao.loadData(load)
     sc.stop()
   }

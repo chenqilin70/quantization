@@ -29,7 +29,7 @@
     </create_table_tamplate>
     <create_worked_kzz>
         <![CDATA[
-            create external  table if not exists  workedkzz(
+            create external  table if not exists fund_catcher.workedkzz(
                 bondcode        string,
                 name            string,
                 zaixianjia      string,
