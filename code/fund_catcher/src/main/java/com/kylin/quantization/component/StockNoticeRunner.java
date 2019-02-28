@@ -65,6 +65,7 @@ public class StockNoticeRunner  extends CatcherRunner{
         String publishdate=ps.get(0).text().replaceAll("公告日期：","");
 
         Elements as = doc.select("#zwconbody > div > p > a[href^=\"http://pdf.dfcfw.com\"]");
+        System.out.println("============="+as);
         String pdfhref = as.get(0).attr("href");
         CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
         HttpEntity entity = closeableHttpResponse.getEntity();
@@ -78,7 +79,7 @@ public class StockNoticeRunner  extends CatcherRunner{
         }
         ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
         String sourceJson=JSON.toJSONString(source);
-        System.out.println(sourceJson);
+
         ESUtil.putData(sourceJson,"stock_notice");
     }
 
