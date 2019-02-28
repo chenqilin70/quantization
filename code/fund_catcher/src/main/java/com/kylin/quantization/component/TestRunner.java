@@ -50,7 +50,7 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         String indexName="stock_notice";
-        ESUtil.deleteIndex(indexName);
+//        ESUtil.deleteIndex(indexName);
         ESUtil.createIndex(indexName,5,0);
     }
 
