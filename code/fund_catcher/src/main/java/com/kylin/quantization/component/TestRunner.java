@@ -2,6 +2,7 @@ package com.kylin.quantization.component;
 
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.service.CatcherService;
+import com.kylin.quantization.util.ESUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -48,40 +49,7 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        System.setProperty("es.set.netty.runtime.available.processors", "false");
-        //创建客户端
-        TransportClient client = null;
-        try {
-            client = new PreBuiltTransportClient(Settings.EMPTY)
-                    .addTransportAddresses(
-                            new TransportAddress(InetAddress.getByName(HOST),PORT));
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Elasticsearch connect info:" + client.toString());
-
-
-        IndexResponse response = null;
-        try {
-            response = client.prepareIndex("testindex", "testindex", "1").setSource(
-                    XContentFactory.jsonBuilder()
-                            .startObject().field("userName", "张三")
-                            .field("sendDate", new Date())
-                            .field("msg", "你好李四")
-                            .endObject()).get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("索引名称:" + response.getIndex() + "\n类型:" + response.getType()
-                + "\n文档ID:" + response.getId() + "\n当前实例状态:" + response.status());
-
-
-
-
-        //关闭客户端
-        client.close();
+        System.out.println(ESUtil.getEsClient());
     }
 
 

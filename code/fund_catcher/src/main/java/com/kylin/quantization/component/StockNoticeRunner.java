@@ -17,6 +17,8 @@ public class StockNoticeRunner  extends CatcherRunner{
     private MapUtil<String,String> ssMapUtil;
     @Autowired
     private Map<String,String> conf;
+    @Autowired
+    private StockRunner stockRunner;
     @Override
     protected String getTask() {
         return "stockNotice";
@@ -24,12 +26,6 @@ public class StockNoticeRunner  extends CatcherRunner{
 
     @Override
     protected void doTask() {
-        String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
-        System.out.println(stock_list);
-        System.out.println("==============");
-        String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
-        List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
-        codes.forEach(c-> System.out.println(c));
-        System.out.println(codes.size());
+        stockRunner.getStockList()
     }
 }

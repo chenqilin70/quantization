@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 @Component
 public class StockRunner  extends CatcherRunner{
     @Autowired
-    private HBaseDao hBaseDao;
-    @Autowired
     private Map<String,String> conf;
     @Autowired
     private MapUtil<String,String> ssMapUtil;

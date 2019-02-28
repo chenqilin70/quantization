@@ -25,16 +25,46 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 
-
 public class TestMain {
-    private static Map<String,String> conf=CatcherConfig.proToMap("conf.properties");
+    private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
 
     public static void main(String[] args) throws ParseException, IOException {
 
 
+    }
+}
 
 
 
 
 
-    }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
