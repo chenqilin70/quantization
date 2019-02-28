@@ -46,7 +46,7 @@
     </create_worked_kzz>
     <load_data>
         <![CDATA[
-            load data {local}  inpath '{inpath}' {overwrite} into table {tableName};
+            load data {local}  inpath '{inpath}' {overwrite} into table {tableName}
         ]]>
     </load_data>
 

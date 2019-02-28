@@ -58,6 +58,7 @@ object KzzSelect extends ScalaBaseSparkMain{
     var df2=sql("kzz_select2",sc,sqlSc)
     var destPath="hdfs://nameservice1/workspace/externalData/workedkzz"
     df2.write.format("parquet").mode(SaveMode.Overwrite).save(destPath)
+    df2.write.format("parquet").mode(SaveMode.Overwrite).parquet(destPath+"parquet")
     var dao=new HiveDaoImpl()
     dao.executeSql("create_worked_kzz",false)
 
