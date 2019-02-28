@@ -1,7 +1,10 @@
 package com.kylin.quantization.dao.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.dao.HiveDao;
+import com.kylin.quantization.model.LoadDataModel;
 import com.kylin.quantization.util.ExceptionTool;
 import com.kylin.quantization.util.MapUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
@@ -114,6 +117,12 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
             logger.info("获得数据的个数:" + list.size());
         }
         return list;
+    }
+
+
+    public  void loadData(LoadDataModel model){
+        HashMap map=JSON.parseObject(JSON.toJSONString(model, SerializerFeature.WriteMapNullValue),HashMap.class);
+        executeSql("load_data",false,map);
     }
 
 

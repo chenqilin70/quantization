@@ -27,6 +27,28 @@
             TBLPROPERTIES("hbase.table.name" = "{tableName}")
         ]]>
     </create_table_tamplate>
+    <create_worked_kzz>
+        <![CDATA[
+            create external  table if not exists  workedkzz(
+                bondcode        string,
+                name            string,
+                zaixianjia      string,
+                daoqijiazhi     string,
+                huishoujia      string,
+                yijialv         string,
+                period          string,
+                daoqiri         string,
+                nowyear         string,
+                frstvaluedate   string,
+                ratedes         string
+            ) stored as parquet
+        ]]>
+    </create_worked_kzz>
+    <load_data>
+        <![CDATA[
+            load data {local}  inpath '{inpath}' {overwrite} into table {tableName};
+        ]]>
+    </load_data>
 
 
     <kzz_select>

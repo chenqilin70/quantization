@@ -319,16 +319,17 @@
                 l.BONDCODE as bondcode,
                 l.SNAME as name,
                 l.ZQNEW as zaixianjia ,
-                m.daoQiJiaZhi,
-                m.huiShouJia,
+                m.daoQiJiaZhi as daoqijiazhi,
+                m.huiShouJia as huishoujia,
                 l.YJL as yijialv,
-                if(cast(l.ZQNEW as decimal(28,6))<=100.0,'1重仓期',
-                    if(cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6)),'2加仓期',
-                        if(cast(l.ZQNEW as decimal(28,6))<=cast(m.daoQiJiaZhi as decimal(28,6)),'3建仓期','4等待期'))) as period,
+                if(cast(l.ZQNEW as decimal(28,6))<=95.0,'0满仓期',
+                    if(cast(l.ZQNEW as decimal(28,6))<=100.0,'1重仓期',
+                        if(cast(l.ZQNEW as decimal(28,6))<=cast(m.huiShouJia as decimal(28,6)),'2加仓期',
+                            if(cast(l.ZQNEW as decimal(28,6))<=cast(m.daoQiJiaZhi as decimal(28,6)),'3建仓期','4等待期')))) as period,
                 m.MRTYDATE as  daoqiri,
-                m.nowyear,
-                m.FRSTVALUEDATE,
-                m.RATEDES
+                m.nowyear as nowyear,
+                m.FRSTVALUEDATE as frstvaluedate,
+                m.RATEDES as ratedes
 
             from
                  kzzlb l
@@ -352,5 +353,6 @@
                 )
         -->
     </kzz_select2>
+
 
 </sqls>

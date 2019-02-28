@@ -1,5 +1,7 @@
 package com.kylin.quantization.dao;
 
+import com.kylin.quantization.model.LoadDataModel;
+
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
@@ -17,5 +19,6 @@ public interface HiveDao extends BaseDao {
     Connection getConn();
     List<Map<String,Object>> executeSql(String tab,boolean result);
     List<Map<String, Object>> executeSql(String tab,boolean result,Map<String,String> params);
+    void loadData(LoadDataModel model);
 
 }

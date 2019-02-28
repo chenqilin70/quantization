@@ -1,9 +1,14 @@
 package com.kylin.quantization
 
 import java.io.ByteArrayInputStream
+import java.util
 import java.util.regex.{Matcher, Pattern}
+import java.util.HashMap
 
-import com.alibaba.fastjson.JSONObject
+import com.alibaba.fastjson.serializer.{SerializeFilter, SerializerFeature}
+import com.alibaba.fastjson.{JSON, JSONObject}
+import com.kylin.quantization.dao.impl.HiveDaoImpl
+import com.kylin.quantization.model.LoadDataModel
 import com.kylin.quantization.util.JedisUtil.JedisRunner
 import com.kylin.quantization.util.{HdfsUtil, JedisUtil, RowKeyUtil}
 import org.apache.hadoop.conf.Configuration
@@ -31,8 +36,7 @@ import scala.util.matching.Regex
   */
 object TestScala  extends ScalaBaseSparkMain{
   def main(args: Array[String]): Unit = {
-      var s="喀什灯笼裤飞机"
-      HdfsUtil.copyFileToHDFS(new ByteArrayInputStream(s.getBytes("utf-8")),"/workspace/a.txt")
+
   }
 
   override def getCustomHbaseConf(): Map[String, Configuration] = {

@@ -1,7 +1,12 @@
 package com.kylin.quantization
 
+import java.util.HashMap
+
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.serializer.SerializerFeature
 import com.kylin.quantization.computors.BaseSparkMain
-import com.kylin.quantization.model.{Kzzmx, Workedkzzmx}
+import com.kylin.quantization.dao.impl.HiveDaoImpl
+import com.kylin.quantization.model.{Kzzmx, LoadDataModel, Workedkzzmx}
 import com.kylin.quantization.util.{HdfsUtil, JedisUtil}
 import org.apache.hadoop.conf.Configuration
 import org.apache.spark.SparkContext
@@ -58,9 +63,13 @@ object KzzSelect extends ScalaBaseSparkMain{
       }
       sb.append("\n")
     })
-    HdfsUtil.copyFileToHDFS(sb.toString(),"/workspace/externalData/workedkzz")
+    var destPath="hdfs:///nameservice1/workspace/externalData/workedkzz.parquet"
+    df2.write.format("parquet").save(destPath)
+    var dao=new HiveDaoImpl()
+    dao.executeSql("create_worked_kzz",false)
 
-
+    var load=new LoadDataModel(destPath,"workedkzz").setLocal(LoadDataModel.HDFS_FILE).setOverwrite(LoadDataModel.OVERWRITE_TABLE)
+    dao.loadData(load)
     sc.stop()
   }
 
