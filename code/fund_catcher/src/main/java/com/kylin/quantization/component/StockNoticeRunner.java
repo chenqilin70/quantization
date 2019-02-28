@@ -69,8 +69,7 @@ public class StockNoticeRunner  extends CatcherRunner{
         Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
         String publishdate=ps.get(0).text().replaceAll("公告日期：","");
 
-        Elements as = doc.select("#zwconbody > div > p > a[href^=\"http://pdf.dfcfw.com\"]");
-        System.out.println("============="+as);
+        Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
         String pdfhref = as.get(0).attr("href");
         CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
         HttpEntity entity = closeableHttpResponse.getEntity();
