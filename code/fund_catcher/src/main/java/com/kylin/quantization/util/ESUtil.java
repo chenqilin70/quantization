@@ -2,6 +2,7 @@ package com.kylin.quantization.util;
 
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
@@ -12,6 +13,7 @@ import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetSocketAddress;
+import java.util.UUID;
 
 public class ESUtil {
     //集群名,默认值elasticsearch
@@ -129,6 +131,21 @@ public class ESUtil {
                 .execute()
                 .actionGet();
         return deleteResponse.isAcknowledged()?true:false;
+    }
+
+
+
+    public static IndexResponse putData(String source, String indexName) {
+        //将对象转换为json
+        //设置index，type，id用uuid代替。
+        IndexResponse response = getEsClient().prepareIndex(indexName, indexName)
+                //必须为对象单独指定ID
+                .setId(UUID.randomUUID().toString())
+                .setSource(source,XContentType.JSON)
+                .execute()
+                .actionGet();
+        return response;
+
     }
 
 
