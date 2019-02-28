@@ -26,6 +26,6 @@ public class StockNoticeRunner  extends CatcherRunner{
 
     @Override
     protected void doTask() {
-        stockRunner.getStockList()
+        stockRunner.getStockList();
     }
 }
