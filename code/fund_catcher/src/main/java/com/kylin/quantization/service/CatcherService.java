@@ -448,26 +448,34 @@ public class CatcherService {
                         text= EntityUtils.toString(entity,"gbk");
                     }else if(filehref.endsWith("doc")){
                         InputStream inputStream = entity.getContent();
-
+                        HWPFDocument hwpfDocument=null;
                         try{
-
-                            HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
+                            hwpfDocument = new HWPFDocument(inputStream);
                             text=hwpfDocument.getText().toString();
                         }catch (IllegalArgumentException e){
-                            /*CloseableHttpResponse tempResponse=null;
+                            CloseableHttpResponse tempResponse=null;
+                            XWPFDocument xdoc=null;
                             try{
                                 tempResponse= HttpUtil.doGetFile(filehref);
-                                XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
+                                xdoc= new XWPFDocument(tempResponse.getEntity().getContent());
                                 POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
                                 text = extractor.getText();
+
                             }catch (Exception ex){
                                 logger.error(ExceptionTool.toString(ex));
                             }finally {
                                 if(tempResponse!=null){
                                     tempResponse.close();
                                 }
-                            }*/
+                                if(xdoc!=null){
+                                    xdoc.close();
+                                }
+                            }
 
+                        }finally {
+                            if(hwpfDocument!=null){
+                                hwpfDocument.close();
+                            }
                         }
 
                     }else {
@@ -487,7 +495,7 @@ public class CatcherService {
             ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
             String sourceJson=JSON.toJSONString(source);
             logger.info(sourceJson.substring(0,10));
-//            ESUtil.putData(sourceJson,"stock_notice");
+            ESUtil.putData(sourceJson,"stock_notice");
         }catch (Exception e){
             logger.error("dealDetail错误："+ExceptionTool.toString(e));
         }
