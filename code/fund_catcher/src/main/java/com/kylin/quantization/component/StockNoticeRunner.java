@@ -2,6 +2,9 @@ package com.kylin.quantization.component;
 
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.service.CatcherService;
+import com.kylin.quantization.thread.ForkJoinExecutor;
+import com.kylin.quantization.thread.StockNoticeTask;
 import com.kylin.quantization.util.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -29,6 +32,8 @@ public class StockNoticeRunner  extends CatcherRunner{
     @Autowired
     private Map<String,String> conf;
     @Autowired
+    private CatcherService service;
+    @Autowired
     private StockRunner stockRunner;
     public static final String INDEX="stock_notice";
     @Override
@@ -42,50 +47,14 @@ public class StockNoticeRunner  extends CatcherRunner{
             ESUtil.deleteIndex(INDEX);
         }
         ESUtil.createIndex(INDEX,5,0);
-        for(String stockcode:stockRunner.getStockList()){
-            String html = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("stock_notice_list"),ssMapUtil.create("pageno","1","stockcode",stockcode)), null);
-            Document parseHtml = Jsoup.parse(html);
-//        System.out.println(html);
-            Elements divs = parseHtml.getElementsByClass("articleh normal_post");
-//        System.out.println(divs.size());
-            for(Element e:divs){
-                Elements spans = e.getElementsByTag("span");
-                Element a = spans.get(2).getElementsByTag("a").get(0);
-                String href = conf.get("stock_notice_detail")+a.attr("href");
-                String title=a.attr("title");
-                dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
-            }
-        }
-
+        StockNoticeTask stockNoticeTask = new StockNoticeTask(stockRunner.getStockList(), 600, service);
+        ForkJoinExecutor.exec(stockNoticeTask,20);
     }
 
 
 
 
-    private  void dealDetail(String href,Map<String,String> source) {
-        String detailHtml = HttpUtil.doGet(href, null);
-        Document doc = Jsoup.parse(detailHtml);
 
-        Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
-        String publishdate=ps.get(0).text().replaceAll("公告日期：","");
-
-        Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
-        String pdfhref = as.get(0).attr("href");
-        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String text="";
-        if(entity!=null){
-            try {
-                text= PDFUtil.getText(entity.getContent());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
-        String sourceJson=JSON.toJSONString(source);
-
-        ESUtil.putData(sourceJson,INDEX);
-    }
 
 
 }

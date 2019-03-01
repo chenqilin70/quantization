@@ -13,6 +13,8 @@ import org.apache.hadoop.hbase.TableName;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -372,5 +375,53 @@ public class CatcherService {
             return null;
         });
         logger.info("corrIndex end");
+    }
+
+    public void stockNotice(String stockcode) {
+        String html = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("stock_notice_list"),ssMapUtil.create("pageno","1","stockcode",stockcode)), null);
+        Document parseHtml = Jsoup.parse(html);
+//        System.out.println(html);
+        Elements divs = parseHtml.getElementsByClass("articleh normal_post");
+//        System.out.println(divs.size());
+        for(Element e:divs){
+            Elements spans = e.getElementsByTag("span");
+            Element a = spans.get(2).getElementsByTag("a").get(0);
+            String href = conf.get("stock_notice_detail")+a.attr("href");
+            String title=a.attr("title");
+            dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
+        }
+    }
+
+
+
+    private  void dealDetail(String href,Map<String,String> source) {
+        String detailHtml = HttpUtil.doGet(href, null);
+        Document doc = Jsoup.parse(detailHtml);
+
+        Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
+        if(ps.get(0)==null){
+            logger.error("ps为空："+doc.select("#zwconbody > div > p").toString());
+        }
+        String publishdate=ps.get(0).text().replaceAll("公告日期：","");
+
+        Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
+        if(as.get(0)==null){
+            logger.error("as为空："+doc.select("#zwconbody > div > p").toString());
+        }
+        String pdfhref = as.get(0).attr("href");
+        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
+        HttpEntity entity = closeableHttpResponse.getEntity();
+        String text="";
+        if(entity!=null){
+            try {
+                text= PDFUtil.getText(entity.getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
+        String sourceJson=JSON.toJSONString(source);
+
+        ESUtil.putData(sourceJson,"stock_notice");
     }
 }
