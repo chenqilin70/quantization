@@ -47,8 +47,8 @@ public class StockNoticeRunner  extends CatcherRunner{
             ESUtil.deleteIndex(INDEX);
         }
         ESUtil.createIndex(INDEX,5,0);
-        StockNoticeTask stockNoticeTask = new StockNoticeTask(stockRunner.getStockList(), 500, service);
-        ForkJoinExecutor.exec(stockNoticeTask,15);
+        StockNoticeTask stockNoticeTask = new StockNoticeTask(stockRunner.getStockList(), 1000, service);
+        ForkJoinExecutor.exec(stockNoticeTask,9);
     }
 
 
