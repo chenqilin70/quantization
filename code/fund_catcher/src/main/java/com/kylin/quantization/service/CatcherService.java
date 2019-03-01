@@ -400,13 +400,13 @@ public class CatcherService {
 
         Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
         if(ps.size()==0){
-            logger.error("ps为空："+doc.select("#zwconbody > div > p").toString());
+            logger.error("ps为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
         }
         String publishdate=ps.get(0).text().replaceAll("公告日期：","");
 
         Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
         if(as.size()==0){
-            logger.error("as为空："+doc.select("#zwconbody > div > p").toString());
+            logger.error("as为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
         }
         String pdfhref = as.get(0).attr("href");
         CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
