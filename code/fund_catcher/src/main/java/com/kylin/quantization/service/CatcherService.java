@@ -261,7 +261,7 @@ public class CatcherService {
         if(!exist){
             boolean create = hBaseDao.createTable(tableName, "baseinfo");
             if(!create){
-                throw new RuntimeException("hbase创建表index失败！");
+                throw new RuntimeException("hbase创建表"+tableName+"失败！");
             }
         }
     }
@@ -403,73 +403,77 @@ public class CatcherService {
 
 
     private  void dealDetail(String href,Map<String,String> source) {
-        String detailHtml = HttpUtil.doGet(href, null);
-        Document doc = Jsoup.parse(detailHtml);
+        try{
+            String detailHtml = HttpUtil.doGet(href, null);
+            Document doc = Jsoup.parse(detailHtml);
 
-        Elements posttimeEles = doc.select("#zwconbody > div > p[class='publishdate']");
-        String publishdate="";
-        if(posttimeEles.size()==0){
+            Elements posttimeEles = doc.select("#zwconbody > div > p[class='publishdate']");
+            String publishdate="";
+            if(posttimeEles.size()==0){
 //            System.out.println("ps为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());zwfbtime
-            posttimeEles=doc.select(".post_time");
-            if(posttimeEles.size()==0 || posttimeEles.text().length()<9){
-                posttimeEles=doc.select(".zwfbtime");
-                String posttime=posttimeEles.get(0).text();
+                posttimeEles=doc.select(".post_time");
+                if(posttimeEles.size()==0 || posttimeEles.text().length()<9){
+                    posttimeEles=doc.select(".zwfbtime");
+                    String posttime=posttimeEles.get(0).text();
 
-                Pattern pattern=Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-                Matcher matcher = pattern.matcher(posttime);
-                matcher.find();
-                publishdate=matcher.group();
-            }else{
-                publishdate=posttimeEles.get(0).text().substring(0,10);
-            }
-
-        }else{
-            publishdate=posttimeEles.get(0).text().replaceAll("公告日期：","");
-        }
-
-
-        Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
-        if(as.size()==0){
-            as=doc.select(".zwtitlepdf a");
-//            System.out.println("as为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
-        }
-        String filehref = as.get(0).attr("href");
-        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(filehref);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String text="";
-        if(entity!=null){
-            try {
-                if(filehref.endsWith("pdf")){
-                    text= PDFUtil.getText(entity.getContent());
-                }else if(filehref.endsWith("txt")){
-                    text= EntityUtils.toString(entity,"gbk");
-                }else if(filehref.endsWith("doc")){
-                    InputStream inputStream = entity.getContent();
-
-                    try{
-
-                        HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
-                        text=hwpfDocument.getText().toString();
-                    }catch (IllegalArgumentException e){
-                        CloseableHttpResponse tempResponse = HttpUtil.doGetFile(filehref);
-                        XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
-                        POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
-                        text = extractor.getText();
-                        tempResponse.close();
-                    }
-
-                }else {
-                    throw new RuntimeException("文件格式无法解析：href:"+filehref);
+                    Pattern pattern=Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+                    Matcher matcher = pattern.matcher(posttime);
+                    matcher.find();
+                    publishdate=matcher.group();
+                }else{
+                    publishdate=posttimeEles.get(0).text().substring(0,10);
                 }
-                closeableHttpResponse.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+
+            }else{
+                publishdate=posttimeEles.get(0).text().replaceAll("公告日期：","");
             }
 
+
+            Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
+            if(as.size()==0){
+                as=doc.select(".zwtitlepdf a");
+//            System.out.println("as为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
+            }
+            String filehref = as.get(0).attr("href");
+            CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(filehref);
+            HttpEntity entity = closeableHttpResponse.getEntity();
+            String text="";
+            if(entity!=null){
+                try {
+                    if(filehref.endsWith("pdf")){
+                        text= PDFUtil.getText(entity.getContent());
+                    }else if(filehref.endsWith("txt")){
+                        text= EntityUtils.toString(entity,"gbk");
+                    }else if(filehref.endsWith("doc")){
+                        InputStream inputStream = entity.getContent();
+
+                        try{
+
+                            HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
+                            text=hwpfDocument.getText().toString();
+                        }catch (IllegalArgumentException e){
+                            CloseableHttpResponse tempResponse = HttpUtil.doGetFile(filehref);
+                            XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
+                            POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                            text = extractor.getText();
+                            tempResponse.close();
+                        }
+
+                    }else {
+                        logger.error("文件格式无法解析：href:"+filehref);
+                    }
+                    closeableHttpResponse.close();
+                } catch (IOException e) {
+                    logger.error("解析entity错误：",ExceptionTool.toString(e));
+                }
+
+            }
+            SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
+            String sourceJson=JSON.toJSONString(source);
+            ESUtil.putData(sourceJson,"stock_notice");
+        }catch (Exception e){
+            logger.error("dealDetail错误：",ExceptionTool.toString(e));
         }
-        SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
-        String sourceJson=JSON.toJSONString(source);
-        ESUtil.putData(sourceJson,"stock_notice");
     }
 }
