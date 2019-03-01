@@ -444,7 +444,7 @@ public class CatcherService {
                 try {
                     if(filehref.endsWith("pdf")){
                         text= PDFUtil.getText(entity.getContent());
-                    }/*else if(filehref.endsWith("txt")){
+                    }else if(filehref.endsWith("txt")){
                         text= EntityUtils.toString(entity,"gbk");
                     }else if(filehref.endsWith("doc")){
                         InputStream inputStream = entity.getContent();
@@ -454,7 +454,7 @@ public class CatcherService {
                             HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
                             text=hwpfDocument.getText().toString();
                         }catch (IllegalArgumentException e){
-                            CloseableHttpResponse tempResponse=null;
+                            /*CloseableHttpResponse tempResponse=null;
                             try{
                                 tempResponse= HttpUtil.doGetFile(filehref);
                                 XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
@@ -466,13 +466,13 @@ public class CatcherService {
                                 if(tempResponse!=null){
                                     tempResponse.close();
                                 }
-                            }
+                            }*/
 
                         }
 
                     }else {
                         logger.error("文件格式无法解析：href:"+filehref);
-                    }*/
+                    }
 
                 } catch (Exception e) {
                     logger.error("解析entity错误："+ExceptionTool.toString(e));
