@@ -33,7 +33,6 @@ public class StockNoticeTask extends BaseRecursiveTask<String,Object>{
             }catch (Exception e){
                 logger.info(ExceptionTool.toString(e));
             }
-
         });
         return null;
     }

@@ -469,7 +469,6 @@ public class CatcherService {
         }
         ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
         String sourceJson=JSON.toJSONString(source);
-        logger.info(sourceJson);
 
         ESUtil.putData(sourceJson,"stock_notice");
     }
