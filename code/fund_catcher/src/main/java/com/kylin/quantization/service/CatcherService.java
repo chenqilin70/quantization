@@ -473,7 +473,7 @@ public class CatcherService {
             String sourceJson=JSON.toJSONString(source);
             ESUtil.putData(sourceJson,"stock_notice");
         }catch (Exception e){
-            logger.error("dealDetail错误：",ExceptionTool.toString(e));
+            logger.error("dealDetail错误："+ExceptionTool.toString(e));
         }
     }
 }
