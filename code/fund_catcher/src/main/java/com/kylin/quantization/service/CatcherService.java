@@ -442,9 +442,9 @@ public class CatcherService {
             String text="";
             if(entity!=null){
                 try {
-                    /*if(filehref.endsWith("pdf")){
+                    if(filehref.endsWith("pdf")){
                         text= PDFUtil.getText(entity.getContent());
-                    }else if(filehref.endsWith("txt")){
+                    }/*else if(filehref.endsWith("txt")){
                         text= EntityUtils.toString(entity,"gbk");
                     }else if(filehref.endsWith("doc")){
                         InputStream inputStream = entity.getContent();

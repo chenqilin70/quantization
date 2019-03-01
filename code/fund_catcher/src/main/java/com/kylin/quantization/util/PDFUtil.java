@@ -29,8 +29,6 @@ public class PDFUtil {
         int startPage = 1;
         // 结束提取页数
         int endPage = Integer.MAX_VALUE;
-        // 文件输入流，生成文本文件
-        Writer output = null;
         try{
 
             // 采用PDFTextStripper提取文本
