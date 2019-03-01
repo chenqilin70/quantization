@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.kylin.quantization.component.StockNoticeRunner;
+import com.kylin.quantization.component.StockRunner;
 import com.kylin.quantization.config.CatcherConfig;
 import com.kylin.quantization.util.*;
 import org.apache.hadoop.hbase.client.Put;
@@ -50,18 +51,17 @@ public class TestMain {
     private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     public static void main(String[] args) throws ParseException, IOException {
-        String hrefs="http://guba.eastmoney.com/news,600127,789847771.html;http://guba.eastmoney.com/news,603037,789854823.html;http://guba.eastmoney.com/news,600928,806275529.html;http://guba.eastmoney.com/news,002567,805284141.html;http://guba.eastmoney.com/news,002056,789880848.html;http://guba.eastmoney.com/news,002128,789935018.html;http://guba.eastmoney.com/news,002060,806426048.html;http://guba.eastmoney.com/news,of002778,781507876.html;http://guba.eastmoney.com/news,002274,801987990.html";
+        /*String hrefs="http://guba.eastmoney.com/news,600127,789847771.html;http://guba.eastmoney.com/news,603037,789854823.html;http://guba.eastmoney.com/news,600928,806275529.html;http://guba.eastmoney.com/news,002567,805284141.html;http://guba.eastmoney.com/news,002056,789880848.html;http://guba.eastmoney.com/news,002128,789935018.html;http://guba.eastmoney.com/news,002060,806426048.html;http://guba.eastmoney.com/news,of002778,781507876.html;http://guba.eastmoney.com/news,002274,801987990.html";
 //        String hrefs="http://guba.eastmoney.com/news,002056,789880848.html";
         for(String href:hrefs.split(";")){
             dealDetail(href,new HashMap<>());
-        }
+        }*/
+        String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
+        String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
+        List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
+        System.out.println(codes.size());
 
-        /*String s="发表于 2018-10-30 16:51:46 股吧网页版";
-        Pattern pattern=Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
-        Matcher matcher = pattern.matcher(s);
-        System.out.println(matcher.find());
-        System.out.println(matcher.group());
-        System.out.println(matcher.find());*/
+
 
 
     }
