@@ -36,7 +36,7 @@ import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.*;
 import org.apache.xmlbeans.XmlException;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -57,38 +57,31 @@ public class TestMain {
     private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     public static void main(String[] args) throws ParseException, IOException {
-        String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
-        String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
-        List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
-        TestTask task = new TestTask(codes, 200);
-        ForkJoinExecutor.exec(task,20);
+        InputStream in= new FileInputStream("C:\\Users\\Administrator\\Downloads\\H2_AN201601280013299953_1.doc");
+        XWPFDocument xwpfDocument = new XWPFDocument(in);
+        POIXMLTextExtractor extractor = new XWPFWordExtractor(xwpfDocument);
+        String text = extractor.getText();
+        System.out.println(text);
+
+//        System.out.println(PDFUtil.getText(new FileInputStream("C:\\Users\\Administrator\\Downloads\\H2_AN201901181286976328_1.pdf")));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 
-    public static class TestTask extends BaseRecursiveTask<String,Object> {
-
-        public TestTask(List<String> datas, int THRESHOLD_NUM) {
-            super(datas, THRESHOLD_NUM);
-        }
-
-        @Override
-        public Object run(List<String> perIncrementList) {
-            perIncrementList.forEach(p->{
-                System.out.println(p);
-            });
-            return null;
-        }
-
-        @Override
-        protected Object reduce(Object leftResult, Object rightResult) {
-            return null;
-        }
-
-        @Override
-        public BaseRecursiveTask getBaseRecursiveTask(List<String> dataList, int THRESHOLD_NUM) {
-            return new TestTask(dataList,THRESHOLD_NUM);
-        }
-    }
 
 
 

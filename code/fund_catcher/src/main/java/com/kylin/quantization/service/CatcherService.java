@@ -19,7 +19,7 @@ import org.apache.http.util.EntityUtils;
 import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.*;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -458,8 +458,26 @@ public class CatcherService {
                             try{
                                 tempResponse= HttpUtil.doGetFile(filehref);
                                 xdoc= new XWPFDocument(tempResponse.getEntity().getContent());
-                                POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
-                                text = extractor.getText();
+                                /*POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+
+                                text = extractor.getText();*/
+
+
+                                List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
+                                // 列表外段落
+                                paragraphs.addAll(xdoc.getParagraphs());
+                                // 列表内段落
+                                List<XWPFTable> tables = xdoc.getTables();
+                                for (XWPFTable table : tables) {
+                                    List<XWPFTableRow> rows = table.getRows();
+                                    for (XWPFTableRow row : rows) {
+                                        List<XWPFTableCell> cells = row.getTableCells();
+                                        for (XWPFTableCell cell : cells) {
+                                            paragraphs.addAll(cell.getParagraphs());
+                                        }
+                                    }
+                                }
+                                text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();
 
                             }catch (Exception ex){
                                 logger.error(ExceptionTool.toString(ex));
