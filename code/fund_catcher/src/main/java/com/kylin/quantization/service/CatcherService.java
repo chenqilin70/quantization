@@ -467,9 +467,9 @@ public class CatcherService {
             }
 
         }
-        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
+        SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
         String sourceJson=JSON.toJSONString(source);
-
         ESUtil.putData(sourceJson,"stock_notice");
     }
 }
