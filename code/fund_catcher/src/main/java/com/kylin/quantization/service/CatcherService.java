@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -459,7 +460,6 @@ public class CatcherService {
                                 XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
                                 POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
                                 text = extractor.getText();
-                                tempResponse.close();
                             }catch (Exception ex){
                                 logger.error(ExceptionTool.toString(ex));
                             }finally {
@@ -474,7 +474,7 @@ public class CatcherService {
                         logger.error("文件格式无法解析：href:"+filehref);
                     }
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.error("解析entity错误："+ExceptionTool.toString(e));
                 }finally {
                     if(closeableHttpResponse!=null){
