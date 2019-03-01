@@ -486,7 +486,8 @@ public class CatcherService {
             SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
             String sourceJson=JSON.toJSONString(source);
-            ESUtil.putData(sourceJson,"stock_notice");
+            logger.info(sourceJson.substring(0,10));
+//            ESUtil.putData(sourceJson,"stock_notice");
         }catch (Exception e){
             logger.error("dealDetail错误："+ExceptionTool.toString(e));
         }
