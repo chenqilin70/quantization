@@ -15,6 +15,10 @@ import org.apache.hadoop.hbase.filter.*;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.util.EntityUtils;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,12 +29,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -398,29 +405,71 @@ public class CatcherService {
         String detailHtml = HttpUtil.doGet(href, null);
         Document doc = Jsoup.parse(detailHtml);
 
-        Elements ps = doc.select("#zwconbody > div > p[class='publishdate']");
-        if(ps.size()==0){
-            logger.error("ps为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
+        Elements posttimeEles = doc.select("#zwconbody > div > p[class='publishdate']");
+        String publishdate="";
+        if(posttimeEles.size()==0){
+//            System.out.println("ps为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());zwfbtime
+            posttimeEles=doc.select(".post_time");
+            if(posttimeEles.size()==0 || posttimeEles.text().length()<9){
+                posttimeEles=doc.select(".zwfbtime");
+                String posttime=posttimeEles.get(0).text();
+
+                Pattern pattern=Pattern.compile("\\d{4}-\\d{2}-\\d{2}");
+                Matcher matcher = pattern.matcher(posttime);
+                matcher.find();
+                publishdate=matcher.group();
+            }else{
+                publishdate=posttimeEles.get(0).text().substring(0,10);
+            }
+
+        }else{
+            publishdate=posttimeEles.get(0).text().replaceAll("公告日期：","");
         }
-        String publishdate=ps.get(0).text().replaceAll("公告日期：","");
+
 
         Elements as = doc.select("#zwconbody > div > p a[href^=\"http://pdf.dfcfw.com\"]");
         if(as.size()==0){
-            logger.error("as为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
+            as=doc.select(".zwtitlepdf a");
+//            System.out.println("as为空,href:"+href+",doc:\n"+doc.select("#zwconbody > div > p").toString());
         }
-        String pdfhref = as.get(0).attr("href");
-        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(pdfhref);
+        String filehref = as.get(0).attr("href");
+        CloseableHttpResponse closeableHttpResponse = HttpUtil.doGetFile(filehref);
         HttpEntity entity = closeableHttpResponse.getEntity();
         String text="";
         if(entity!=null){
             try {
-                text= PDFUtil.getText(entity.getContent());
+                if(filehref.endsWith("pdf")){
+                    text= PDFUtil.getText(entity.getContent());
+                }else if(filehref.endsWith("txt")){
+                    text= EntityUtils.toString(entity,"gbk");
+                }else if(filehref.endsWith("doc")){
+                    InputStream inputStream = entity.getContent();
+                    try{
+
+                        HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
+                        text=hwpfDocument.getText().toString();
+                    }catch (IllegalArgumentException e){
+                        try {
+                            XWPFDocument xdoc = new XWPFDocument(inputStream);
+                            XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
+                            text = extractor.getText();
+                        }catch (Exception e1){
+                            logger.error("doc解析错误：",e1);
+                        }
+
+                    }
+                }else {
+                    throw new RuntimeException("文件格式无法解析：href:"+filehref);
+                }
+                closeableHttpResponse.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
         ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate);
         String sourceJson=JSON.toJSONString(source);
+        logger.info(sourceJson);
 
         ESUtil.putData(sourceJson,"stock_notice");
     }
