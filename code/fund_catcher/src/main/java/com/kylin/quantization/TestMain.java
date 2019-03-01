@@ -24,9 +24,15 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.extractor.WordExtractor;
 import org.apache.poi.hwpf.usermodel.Range;
+import org.apache.poi.ooxml.POIXMLDocument;
+import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
+import org.apache.poi.openxml4j.exceptions.OpenXML4JException;
+import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.xmlbeans.XmlException;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -45,7 +51,7 @@ public class TestMain {
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     public static void main(String[] args) throws ParseException, IOException {
         String hrefs="http://guba.eastmoney.com/news,600127,789847771.html;http://guba.eastmoney.com/news,603037,789854823.html;http://guba.eastmoney.com/news,600928,806275529.html;http://guba.eastmoney.com/news,002567,805284141.html;http://guba.eastmoney.com/news,002056,789880848.html;http://guba.eastmoney.com/news,002128,789935018.html;http://guba.eastmoney.com/news,002060,806426048.html;http://guba.eastmoney.com/news,of002778,781507876.html;http://guba.eastmoney.com/news,002274,801987990.html";
-//        String hrefs="http://guba.eastmoney.com/news,002567,805284141.html";
+//        String hrefs="http://guba.eastmoney.com/news,002056,789880848.html";
         for(String href:hrefs.split(";")){
             dealDetail(href,new HashMap<>());
         }
@@ -103,20 +109,19 @@ public class TestMain {
                     text= EntityUtils.toString(entity,"gbk");
                 }else if(filehref.endsWith("doc")){
                     InputStream inputStream = entity.getContent();
+
                     try{
 
                         HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
                         text=hwpfDocument.getText().toString();
                     }catch (IllegalArgumentException e){
-                        try {
-                            XWPFDocument xdoc = new XWPFDocument(inputStream);
-                            XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-                            text = extractor.getText();
-                        }catch (Exception e1){
-                            e.printStackTrace();
-                        }
-
+                        CloseableHttpResponse tempResponse = HttpUtil.doGetFile(filehref);
+                        XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
+                        POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                        text = extractor.getText();
+                        tempResponse.close();
                     }
+
                 }else {
                     throw new RuntimeException("文件格式无法解析：href:"+filehref);
                 }

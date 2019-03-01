@@ -17,6 +17,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.jsoup.Jsoup;
@@ -444,20 +445,19 @@ public class CatcherService {
                     text= EntityUtils.toString(entity,"gbk");
                 }else if(filehref.endsWith("doc")){
                     InputStream inputStream = entity.getContent();
+
                     try{
 
                         HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
                         text=hwpfDocument.getText().toString();
                     }catch (IllegalArgumentException e){
-                        try {
-                            XWPFDocument xdoc = new XWPFDocument(inputStream);
-                            XWPFWordExtractor extractor = new XWPFWordExtractor(xdoc);
-                            text = extractor.getText();
-                        }catch (Exception e1){
-                            logger.error("doc解析错误：",e1);
-                        }
-
+                        CloseableHttpResponse tempResponse = HttpUtil.doGetFile(filehref);
+                        XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
+                        POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                        text = extractor.getText();
+                        tempResponse.close();
                     }
+
                 }else {
                     throw new RuntimeException("文件格式无法解析：href:"+filehref);
                 }
