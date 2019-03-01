@@ -453,19 +453,33 @@ public class CatcherService {
                             HWPFDocument hwpfDocument = new HWPFDocument(inputStream);
                             text=hwpfDocument.getText().toString();
                         }catch (IllegalArgumentException e){
-                            CloseableHttpResponse tempResponse = HttpUtil.doGetFile(filehref);
-                            XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
-                            POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
-                            text = extractor.getText();
-                            tempResponse.close();
+                            CloseableHttpResponse tempResponse=null;
+                            try{
+                                tempResponse= HttpUtil.doGetFile(filehref);
+                                XWPFDocument xdoc = new XWPFDocument(tempResponse.getEntity().getContent());
+                                POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                                text = extractor.getText();
+                                tempResponse.close();
+                            }catch (Exception ex){
+                                logger.error(ExceptionTool.toString(ex));
+                            }finally {
+                                if(tempResponse!=null){
+                                    tempResponse.close();
+                                }
+                            }
+
                         }
 
                     }else {
                         logger.error("文件格式无法解析：href:"+filehref);
                     }
-                    closeableHttpResponse.close();
+
                 } catch (IOException e) {
                     logger.error("解析entity错误："+ExceptionTool.toString(e));
+                }finally {
+                    if(closeableHttpResponse!=null){
+                        closeableHttpResponse.close();
+                    }
                 }
 
             }
