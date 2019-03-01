@@ -442,7 +442,7 @@ public class CatcherService {
             String text="";
             if(entity!=null){
                 try {
-                    if(filehref.endsWith("pdf")){
+                    /*if(filehref.endsWith("pdf")){
                         text= PDFUtil.getText(entity.getContent());
                     }else if(filehref.endsWith("txt")){
                         text= EntityUtils.toString(entity,"gbk");
@@ -472,7 +472,7 @@ public class CatcherService {
 
                     }else {
                         logger.error("文件格式无法解析：href:"+filehref);
-                    }
+                    }*/
 
                 } catch (Exception e) {
                     logger.error("解析entity错误："+ExceptionTool.toString(e));
