@@ -73,4 +73,18 @@
 
         ]]>
     </kzz_select>
+    <kzz_select2>
+        <![CDATA[
+            select
+                *
+            from
+                workedkzz
+            where
+                cast(yijialv as decimal(26,8))<=20
+                and period !='4等待期'
+            order by
+                period, cast(yijialv as decimal(26,8))
+
+        ]]>
+    </kzz_select2>
 </sqls>

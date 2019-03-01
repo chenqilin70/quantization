@@ -449,50 +449,47 @@ public class CatcherService {
                     }else if(filehref.endsWith("doc")){
                         InputStream inputStream = entity.getContent();
                         HWPFDocument hwpfDocument=null;
+                        XWPFDocument xdoc=null;
+                        CloseableHttpResponse tempResponse=null;
+
                         try{
-                            hwpfDocument = new HWPFDocument(inputStream);
-                            text=hwpfDocument.getText().toString();
-                        }catch (IllegalArgumentException e){
-                            CloseableHttpResponse tempResponse=null;
-                            XWPFDocument xdoc=null;
-                            try{
-                                tempResponse= HttpUtil.doGetFile(filehref);
-                                xdoc= new XWPFDocument(tempResponse.getEntity().getContent());
+
+                            xdoc= new XWPFDocument(inputStream);
                                 /*POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
 
                                 text = extractor.getText();*/
 
 
-                                List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
-                                // 列表外段落
-                                paragraphs.addAll(xdoc.getParagraphs());
-                                // 列表内段落
-                                List<XWPFTable> tables = xdoc.getTables();
-                                for (XWPFTable table : tables) {
-                                    List<XWPFTableRow> rows = table.getRows();
-                                    for (XWPFTableRow row : rows) {
-                                        List<XWPFTableCell> cells = row.getTableCells();
-                                        for (XWPFTableCell cell : cells) {
-                                            paragraphs.addAll(cell.getParagraphs());
-                                        }
+                            List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
+                            // 列表外段落
+                            paragraphs.addAll(xdoc.getParagraphs());
+                            // 列表内段落
+                            List<XWPFTable> tables = xdoc.getTables();
+                            for (XWPFTable table : tables) {
+                                List<XWPFTableRow> rows = table.getRows();
+                                for (XWPFTableRow row : rows) {
+                                    List<XWPFTableCell> cells = row.getTableCells();
+                                    for (XWPFTableCell cell : cells) {
+                                        paragraphs.addAll(cell.getParagraphs());
                                     }
                                 }
-                                text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();
-
-                            }catch (Exception ex){
-                                logger.error(ExceptionTool.toString(ex));
-                            }finally {
-                                if(tempResponse!=null){
-                                    tempResponse.close();
-                                }
-                                if(xdoc!=null){
-                                    xdoc.close();
-                                }
                             }
+                            text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();
+
+                        }catch (IllegalArgumentException e){
+                            tempResponse= HttpUtil.doGetFile(filehref);
+                            hwpfDocument = new HWPFDocument(tempResponse.getEntity().getContent());
+                            text=hwpfDocument.getText().toString();
 
                         }finally {
                             if(hwpfDocument!=null){
                                 hwpfDocument.close();
+                            }
+                            if(xdoc!=null){
+                                xdoc.close();
+                            }
+                            if(tempResponse!=null){
+                                tempResponse.close();
                             }
                         }
 
