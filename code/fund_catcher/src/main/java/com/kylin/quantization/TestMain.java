@@ -56,10 +56,8 @@ public class TestMain {
         for(String href:hrefs.split(";")){
             dealDetail(href,new HashMap<>());
         }*/
-        String stock_list = HttpUtil.doGet(conf.get("stock_list"), CatcherConfig.proToMap("param/stock_list_param.properties"));
-        String[] stock_infos = stock_list.substring(stock_list.indexOf("\"") + 1, stock_list.length() - 1).split("\",\"");
-        List<String> codes = Arrays.asList(stock_infos).stream().map(s -> s.split(",")[1]).collect(Collectors.toList());
-        System.out.println(codes.size());
+        String text=PDFUtil.getText("C:\\Users\\Administrator\\Desktop\\aaaa1811161247304727_1.pdf");
+        System.out.println(text);
 
 
 
