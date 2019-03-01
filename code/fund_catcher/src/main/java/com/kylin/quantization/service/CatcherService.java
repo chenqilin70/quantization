@@ -455,12 +455,11 @@ public class CatcherService {
                         try{
 
                             xdoc= new XWPFDocument(inputStream);
-                                /*POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                            POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
+                            text = extractor.getText();
 
-                                text = extractor.getText();*/
 
-
-                            List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
+                            /*List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
                             // 列表外段落
                             paragraphs.addAll(xdoc.getParagraphs());
                             // 列表内段落
@@ -474,11 +473,12 @@ public class CatcherService {
                                     }
                                 }
                             }
-                            text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();
+                            text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();*/
 
-                        }catch (IllegalArgumentException e){
+                        }catch (Exception e){
                             tempResponse= HttpUtil.doGetFile(filehref);
                             hwpfDocument = new HWPFDocument(tempResponse.getEntity().getContent());
+                            logger.warn("有doc是HWPFDocument解析的："+filehref);
                             text=hwpfDocument.getText().toString();
 
                         }finally {
@@ -509,7 +509,6 @@ public class CatcherService {
             SimpleDateFormat sf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             ssMapUtil.append(source,"noticeContent",text,"publishdate",publishdate,"htmlUrl",href,"fileUrl",filehref,"createtime",sf.format(new Date()));
             String sourceJson=JSON.toJSONString(source);
-            logger.info(sourceJson.substring(0,10));
             ESUtil.putData(sourceJson,"stock_notice");
         }catch (Exception e){
             logger.error("dealDetail错误："+ExceptionTool.toString(e));
