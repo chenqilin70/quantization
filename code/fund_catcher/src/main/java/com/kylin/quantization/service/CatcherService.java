@@ -464,7 +464,7 @@ public class CatcherService {
                     }
                     closeableHttpResponse.close();
                 } catch (IOException e) {
-                    logger.error("解析entity错误：",ExceptionTool.toString(e));
+                    logger.error("解析entity错误："+ExceptionTool.toString(e));
                 }
 
             }
