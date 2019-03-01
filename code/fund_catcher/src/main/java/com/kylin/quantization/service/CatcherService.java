@@ -403,7 +403,8 @@ public class CatcherService {
 
 
     private  void dealDetail(String href,Map<String,String> source) {
-        try{
+        System.out.println("href:"+href+",source:"+JSON.toJSONString(source));
+        /*try{
             String detailHtml = HttpUtil.doGet(href, null);
             Document doc = Jsoup.parse(detailHtml);
 
@@ -474,6 +475,6 @@ public class CatcherService {
             ESUtil.putData(sourceJson,"stock_notice");
         }catch (Exception e){
             logger.error("dealDetail错误："+ExceptionTool.toString(e));
-        }
+        }*/
     }
 }
