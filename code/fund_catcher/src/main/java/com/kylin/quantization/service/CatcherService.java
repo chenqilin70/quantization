@@ -387,6 +387,7 @@ public class CatcherService {
     }
 
     public void stockNotice(String stockcode) {
+        logger.info("stockNotice start:"+stockcode);
         String html = HttpUtil.doGet(StringReplaceUtil.replace(conf.get("stock_notice_list"),ssMapUtil.create("pageno","1","stockcode",stockcode)), null);
         Document parseHtml = Jsoup.parse(html);
 //        System.out.println(html);
@@ -399,6 +400,7 @@ public class CatcherService {
             String title=a.attr("title");
             dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
         }
+        logger.info("stockNotice end:"+stockcode);
     }
 
 
@@ -458,22 +460,6 @@ public class CatcherService {
                             POIXMLTextExtractor extractor = new XWPFWordExtractor(xdoc);
                             text = extractor.getText();
 
-
-                            /*List<XWPFParagraph> paragraphs = new ArrayList<XWPFParagraph>();
-                            // 列表外段落
-                            paragraphs.addAll(xdoc.getParagraphs());
-                            // 列表内段落
-                            List<XWPFTable> tables = xdoc.getTables();
-                            for (XWPFTable table : tables) {
-                                List<XWPFTableRow> rows = table.getRows();
-                                for (XWPFTableRow row : rows) {
-                                    List<XWPFTableCell> cells = row.getTableCells();
-                                    for (XWPFTableCell cell : cells) {
-                                        paragraphs.addAll(cell.getParagraphs());
-                                    }
-                                }
-                            }
-                            text=paragraphs.stream().map(p->p.getText()+"\n").reduce((p1,p2)->p1+p2).get();*/
 
                         }catch (Exception e){
                             tempResponse= HttpUtil.doGetFile(filehref);
