@@ -52,7 +52,7 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .storedFields("stockcode").setTypes("stock_notice")
+                .storedFields("stockcode").setIndices("stock_notice").setTypes("stock_notice")
                 .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"))
                 .execute()
                 .actionGet();
