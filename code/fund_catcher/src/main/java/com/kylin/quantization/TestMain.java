@@ -63,7 +63,7 @@ public class TestMain {
     private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     public static void main(String[] args) throws ParseException, IOException {
-
+        System.out.println(new Date(1551503195568l).toLocaleString());
 
 
 

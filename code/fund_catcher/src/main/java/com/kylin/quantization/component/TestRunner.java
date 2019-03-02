@@ -65,13 +65,17 @@ public class TestRunner extends CatcherRunner {
             }
             Iterator<SearchHit> iterator = hits.iterator();
             while(iterator.hasNext()){
-                Object stockcode = iterator.next().getSourceAsMap().get("stockcode");
+                SearchHit next = iterator.next();
+                if(next==null){
+                    break;
+                }
+                Object stockcode = next.getSourceAsMap().get("stockcode");
                 stocks.add(stockcode.toString());
             }
         }
-        System.out.println("stocksize:"+stocks.size());
+        logger.info("stocksize:"+stocks.size());
         stocks.forEach(s->{
-            System.out.println(s);
+            logger.info(s);
         });
 
     }
