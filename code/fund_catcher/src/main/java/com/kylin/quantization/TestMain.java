@@ -63,30 +63,7 @@ public class TestMain {
     private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
     public static void main(String[] args) throws ParseException, IOException {
-        SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .storedFields("stockcode").setTypes("stock_notice")
-                .setSize(10).setScroll(new TimeValue(2000)).execute()
-                .actionGet();
-        String scrollId=response.getScrollId();
-        Set<String> stocks=new HashSet<>();
-        while(true){
-            SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId);
-            SearchResponse searchResponse = searchScrollRequestBuilder.get();
-            scrollId=searchResponse.getScrollId();
-            SearchHits hits = searchResponse.getHits();
-            if(hits.getHits().length==0){
-                break;
-            }
-            Iterator<SearchHit> iterator = hits.iterator();
-            while(iterator.hasNext()){
-                Object stockcode = iterator.next().getSourceAsMap().get("stockcode");
-                stocks.add(stockcode.toString());
-            }
-        }
-        System.out.println("stocksize:"+stocks.size());
-        stocks.forEach(s->{
-            System.out.println(s);
-        });
+
 
 
 

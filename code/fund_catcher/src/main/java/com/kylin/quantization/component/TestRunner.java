@@ -5,10 +5,15 @@ import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.action.search.SearchScrollRequestBuilder;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -18,10 +23,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * ClassName: TestRunner
@@ -39,8 +41,6 @@ public class TestRunner extends CatcherRunner {
     private CatcherService service ;
     @Autowired
     private HBaseDao hBaseDao;
-    private static final String HOST="192.168.109.205";
-    private static final Integer PORT=9300;
 
     @Override
     protected String getTask() {
@@ -49,7 +49,30 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        String indexName="stock_notice";
+        SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
+                .storedFields("stockcode").setTypes("stock_notice")
+                .setSize(10).setScroll(new TimeValue(2000)).execute()
+                .actionGet();
+        String scrollId=response.getScrollId();
+        Set<String> stocks=new HashSet<>();
+        while(true){
+            SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId);
+            SearchResponse searchResponse = searchScrollRequestBuilder.get();
+            scrollId=searchResponse.getScrollId();
+            SearchHits hits = searchResponse.getHits();
+            if(hits.getHits().length==0){
+                break;
+            }
+            Iterator<SearchHit> iterator = hits.iterator();
+            while(iterator.hasNext()){
+                Object stockcode = iterator.next().getSourceAsMap().get("stockcode");
+                stocks.add(stockcode.toString());
+            }
+        }
+        System.out.println("stocksize:"+stocks.size());
+        stocks.forEach(s->{
+            System.out.println(s);
+        });
 
     }
 
