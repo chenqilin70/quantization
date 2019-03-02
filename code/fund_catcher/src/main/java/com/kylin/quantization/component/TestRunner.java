@@ -52,7 +52,7 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .setIndices("stock_notice").setTypes("stock_notice")
+                .storedFields().setIndices("stock_notice").setTypes("stock_notice")
                 .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"))
                 .execute()
                 .actionGet();
@@ -68,9 +68,8 @@ public class TestRunner extends CatcherRunner {
                 break;
             }
             for(SearchHit hit:hits){
-                logger.info("getSourceAsMap:"+hit.getSourceAsMap());
-                logger.info("getSourceAsString:"+hit.getSourceAsString());
-                Object stockcode = hit.getSourceAsString();
+                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                Object stockcode = sourceAsMap.get("stockcode");
                 stocks.add(stockcode.toString());
             }
         }
