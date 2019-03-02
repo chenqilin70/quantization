@@ -68,9 +68,6 @@ public class TestRunner extends CatcherRunner {
                 break;
             }
             for(SearchHit hit:hits){
-                logger.info("============");
-                logger.info(hit.getSourceAsMap());
-                logger.info(hit.getSourceAsString());
                 Map<String, Object> sourceAsMap = hit.getSourceAsMap();
                 Object stockcode = sourceAsMap.get("stockcode");
                 stocks.add(stockcode.toString());
