@@ -50,14 +50,15 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .fields("stockcode").setTypes("stock_notice")
-                .setSize(10).setScroll(new TimeValue(2000)).execute()
+                .storedFields("stockcode").setTypes("stock_notice")
+                .setSize(10).setScroll(new TimeValue(60000)).execute()
                 .actionGet();
         String scrollId=response.getScrollId();
         Set<String> stocks=new HashSet<>();
         while(true){
-            SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId);
-            SearchResponse searchResponse = searchScrollRequestBuilder.get();
+            SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
+                    .setScroll(new TimeValue(60000));
+            SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
             scrollId=searchResponse.getScrollId();
             SearchHits hits = searchResponse.getHits();
             if(hits.getHits().length==0){
