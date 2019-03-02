@@ -50,7 +50,7 @@ public class TestRunner extends CatcherRunner {
     @Override
     protected void doTask() {
         SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .storedFields("stockcode").setTypes("stock_notice")
+                .fields("stockcode").setTypes("stock_notice")
                 .setSize(10).setScroll(new TimeValue(2000)).execute()
                 .actionGet();
         String scrollId=response.getScrollId();
