@@ -444,6 +444,8 @@ public class CatcherService {
             String text="";
             if(entity!=null){
                 try {
+
+                    //有待添加html类型公告的处理
                     if(filehref.endsWith("pdf")){
                         text= PDFUtil.getText(entity.getContent());
                     }else if(filehref.endsWith("txt")){
