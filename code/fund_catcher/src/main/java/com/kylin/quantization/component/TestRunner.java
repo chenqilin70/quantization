@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequestBuilder;
+import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
@@ -14,6 +15,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -51,7 +53,8 @@ public class TestRunner extends CatcherRunner {
     protected void doTask() {
         SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
                 .storedFields("stockcode").setTypes("stock_notice")
-                .setSize(10).setScroll(new TimeValue(60000)).execute()
+                .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"))
+                .execute()
                 .actionGet();
         String scrollId=response.getScrollId();
         Set<String> stocks=new HashSet<>();
@@ -64,15 +67,10 @@ public class TestRunner extends CatcherRunner {
             if(hits.getHits().length==0){
                 break;
             }
-            Iterator<SearchHit> iterator = hits.iterator();
-            while(iterator.hasNext()){
-                SearchHit next = iterator.next();
-                if(next==null){
-                    break;
-                }
-                logger.info("getSourceAsMap:"+next.getSourceAsMap());
-                logger.info("getSourceAsString:"+next.getSourceAsString());
-                Object stockcode = next.getSourceAsString();
+            for(SearchHit hit:hits){
+                logger.info("getSourceAsMap:"+hit.getSourceAsMap());
+                logger.info("getSourceAsString:"+hit.getSourceAsString());
+                Object stockcode = hit.getSourceAsString();
                 stocks.add(stockcode.toString());
             }
         }
