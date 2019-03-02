@@ -69,7 +69,7 @@ public class TestRunner extends CatcherRunner {
                 if(next==null){
                     break;
                 }
-                Object stockcode = next.getSourceAsMap().get("stockcode");
+                Object stockcode = next.field("stockcode").getValue();
                 stocks.add(stockcode.toString());
             }
         }
