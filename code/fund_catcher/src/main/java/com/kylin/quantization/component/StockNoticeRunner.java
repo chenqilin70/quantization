@@ -43,10 +43,10 @@ public class StockNoticeRunner  extends CatcherRunner{
 
     @Override
     protected void doTask() {
-        if(ESUtil.isExists(INDEX)){
+        /*if(ESUtil.isExists(INDEX)){
             ESUtil.deleteIndex(INDEX);
         }
-        ESUtil.createIndex(INDEX,5,0);
+        ESUtil.createIndex(INDEX,5,0);*/
         /*StockNoticeTask stockNoticeTask = new StockNoticeTask(stockRunner.getStockList(), 1000, service);
         ForkJoinExecutor.exec(stockNoticeTask,9);*/
 

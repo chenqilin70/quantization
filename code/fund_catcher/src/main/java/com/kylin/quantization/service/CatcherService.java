@@ -20,6 +20,8 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.search.Scroll;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -398,11 +400,22 @@ public class CatcherService {
             Element a = spans.get(2).getElementsByTag("a").get(0);
             String href = conf.get("stock_notice_detail")+a.attr("href");
             String title=a.attr("title");
-            dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
+
+            if(!existHref(stockcode,href)){
+                dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
+            }
+
+
+
         }
         logger.info("stockNotice end:"+stockcode);
     }
 
+    private boolean existHref(String stockcode, String href) {
+        Client esClient = ESUtil.getEsClient();
+        esClient.prepareSearch("stock_notice").setSize(1).setTypes("stock_notice");
+        return false;
+    }
 
 
     private  void dealDetail(String href,Map<String,String> source) {

@@ -3,8 +3,10 @@ package com.kylin.quantization.component;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
+import com.kylin.quantization.util.MapUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
@@ -13,6 +15,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -51,13 +54,35 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        SearchResponse response = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .setIndices("stock_notice").setTypes("stock_notice")
-                .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"))
-                .execute()
-                .actionGet();
-        String scrollId=response.getScrollId();
-        Set<String> stocks=new HashSet<>();
+
+
+        Map<String, String> source = new MapUtil<String, String>().create(
+                "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html"
+                ,"601319","http://guba.eastmoney.com/news,601319,753909484.html"
+        );
+
+        source.keySet().stream().forEach(stockcode->{
+            SearchRequestBuilder searchRequestBuilder = ESUtil.getEsClient().prepareSearch("stock_notice")
+                    .setIndices("stock_notice").setTypes("stock_notice")
+                    .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
+
+            searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery()) //查询所有
+                    .setQuery(QueryBuilders.boolQuery()
+                            .must(QueryBuilders.matchQuery("htmlUrl", source.get(stockcode)))
+                            .must(QueryBuilders.matchQuery("stockcode", stockcode)));
+
+            SearchResponse response = searchRequestBuilder.execute().actionGet();
+
+            long totalCount = response.getHits().getTotalHits();
+            logger.info(stockcode+" totalCount is "+totalCount);
+        });
+
+
+
+
+
+
+       /* Set<String> stocks=new HashSet<>();
         while(true){
             SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
                     .setScroll(new TimeValue(60000));
@@ -76,7 +101,7 @@ public class TestRunner extends CatcherRunner {
         logger.info("stocksize:"+stocks.size());
         stocks.forEach(s->{
             logger.info(s);
-        });
+        });*/
 
     }
 
