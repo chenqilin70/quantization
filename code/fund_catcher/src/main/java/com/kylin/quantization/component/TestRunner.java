@@ -1,5 +1,6 @@
 package com.kylin.quantization.component;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
@@ -75,6 +76,25 @@ public class TestRunner extends CatcherRunner {
 
             long totalCount = response.getHits().getTotalHits();
             logger.info(stockcode+" totalCount is "+totalCount);
+            String scrollId=response.getScrollId();
+            if(totalCount>0){
+                while(true){
+                    SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
+                            .setScroll(new TimeValue(60000));
+                    SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
+                    scrollId=searchResponse.getScrollId();
+                    SearchHits hits = searchResponse.getHits();
+                    if(hits.getHits().length==0){
+                        break;
+                    }
+                    for(SearchHit hit:hits){
+                        Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+                        sourceAsMap.remove("noticeContent");
+                        logger.info(JSON.toJSONString(sourceAsMap));
+                    }
+                }
+            }
+
         });
 
 
