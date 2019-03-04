@@ -67,8 +67,7 @@ public class TestRunner extends CatcherRunner {
                     .setIndices("stock_notice").setTypes("stock_notice")
                     .setSize(10).setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
 
-            searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery()) //查询所有
-                    .setQuery(QueryBuilders.boolQuery()
+            searchRequestBuilder.setQuery(QueryBuilders.boolQuery()
                             .must(QueryBuilders.termQuery("htmlUrl", source.get(stockcode)))
                             .must(QueryBuilders.termQuery("stockcode", stockcode)));
 
