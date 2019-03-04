@@ -58,13 +58,13 @@ public class TestRunner extends CatcherRunner {
 
 
         Map<String, String> source = new MapUtil<String, String>().create(
-//                "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,
+                "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,
                "601319","http://guba.eastmoney.com/news,601319,753909484.html"
         );
 
         source.keySet().stream().forEach(stockcode->{
             SearchRequestBuilder searchRequestBuilder = ESUtil.getEsClient().prepareSearch("stock_notice")
-                    .setIndices("stock_notice").setTypes("stock_notice")
+                    .setIndices("stock_notice").setTypes("stock_notice").setSize(0)
                     .setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
 
             searchRequestBuilder.setQuery(QueryBuilders.boolQuery()
@@ -75,24 +75,14 @@ public class TestRunner extends CatcherRunner {
             long totalCount = response.getHits().getTotalHits();
             logger.info(stockcode+" totalCount is "+totalCount);
             String scrollId=response.getScrollId();
-            Map<String, Object> sourceAsMap1 = response.getHits().getHits()[0].getSourceAsMap();
-            sourceAsMap1.remove("noticeContent");
-            logger.info(JSON.toJSONString(sourceAsMap1));
+            printHits(response.getHits());
             while(true){
                 SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
                         .setScroll(new TimeValue(60000));
                 SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
                 scrollId=searchResponse.getScrollId();
                 SearchHits hits = searchResponse.getHits();
-                if(hits.getHits().length==0){
-                    logger.info("hits.getHits().length   :0");
-                    break;
-                }
-                for(SearchHit hit:hits){
-                    Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-                    sourceAsMap.remove("noticeContent");
-                    logger.info(JSON.toJSONString(sourceAsMap));
-                }
+                printHits(hits);
             }
 
         });
@@ -123,6 +113,18 @@ public class TestRunner extends CatcherRunner {
             logger.info(s);
         });*/
 
+    }
+
+    public static void printHits(SearchHits hits){
+        if(hits.getHits().length==0){
+            logger.info("hits.getHits().length   :0");
+            return;
+        }
+        for(SearchHit hit:hits){
+            Map<String, Object> sourceAsMap = hit.getSourceAsMap();
+            sourceAsMap.remove("noticeContent");
+            logger.info(JSON.toJSONString(sourceAsMap));
+        }
     }
 
 

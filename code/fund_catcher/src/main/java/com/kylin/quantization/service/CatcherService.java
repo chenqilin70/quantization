@@ -20,8 +20,13 @@ import org.apache.poi.hwpf.HWPFDocument;
 import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.*;
+import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.Scroll;
+import org.elasticsearch.search.sort.SortBuilders;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -412,8 +417,16 @@ public class CatcherService {
     }
 
     private boolean existHref(String stockcode, String href) {
-        Client esClient = ESUtil.getEsClient();
-        esClient.prepareSearch("stock_notice").setSize(1).setTypes("stock_notice");
+        SearchRequestBuilder searchRequestBuilder = ESUtil.getEsClient().prepareSearch("stock_notice")
+                .setIndices("stock_notice").setTypes("stock_notice")
+                .setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
+
+        searchRequestBuilder.setQuery(QueryBuilders.boolQuery()
+                .must(QueryBuilders.termQuery("htmlUrl.keyword", href))
+                .must(QueryBuilders.termQuery("stockcode.keyword", stockcode)));
+
+        SearchResponse response = searchRequestBuilder.execute().actionGet();
+        long totalCount = response.getHits().getTotalHits();
         return false;
     }
 
