@@ -113,4 +113,9 @@
 
         ]]>
     </quekou>
+    <test>
+        <![CDATA[
+            select * from fund limit 10
+        ]]>
+    </test>
 </sqls>

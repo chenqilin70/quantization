@@ -2,6 +2,7 @@ package com.kylin.quantization.component;
 
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.dao.impl.HiveDaoImpl;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
 import com.kylin.quantization.util.MapUtil;
@@ -55,9 +56,11 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
+        HiveDaoImpl dao=new HiveDaoImpl();
+        List<Map<String, Object>> test = dao.executeSql("test", true);
+        logger.info(JSON.toJSONString(test));
 
-
-        Map<String, String> source = new MapUtil<String, String>().create(
+        /*Map<String, String> source = new MapUtil<String, String>().create(
                 "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,
                "601319","http://guba.eastmoney.com/news,601319,753909484.html"
         );
@@ -87,33 +90,14 @@ public class TestRunner extends CatcherRunner {
                 }
             }
 
-        });
-
-
-
-
-
-
-       /* Set<String> stocks=new HashSet<>();
-        while(true){
-            SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
-                    .setScroll(new TimeValue(60000));
-            SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
-            scrollId=searchResponse.getScrollId();
-            SearchHits hits = searchResponse.getHits();
-            if(hits.getHits().length==0){
-                break;
-            }
-            for(SearchHit hit:hits){
-                Map<String, Object> sourceAsMap = hit.getSourceAsMap();
-                Object stockcode = sourceAsMap.get("stockcode");
-                stocks.add(stockcode.toString());
-            }
-        }
-        logger.info("stocksize:"+stocks.size());
-        stocks.forEach(s->{
-            logger.info(s);
         });*/
+
+
+
+
+
+
+
 
     }
 
