@@ -82,7 +82,9 @@ public class TestRunner extends CatcherRunner {
                 SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
                 scrollId=searchResponse.getScrollId();
                 SearchHits hits = searchResponse.getHits();
-                printHits(hits);
+                if(!printHits(hits)){
+                    break;
+                }
             }
 
         });
@@ -115,16 +117,17 @@ public class TestRunner extends CatcherRunner {
 
     }
 
-    public static void printHits(SearchHits hits){
+    public static boolean printHits(SearchHits hits){
         if(hits.getHits().length==0){
             logger.info("hits.getHits().length   :0");
-            return;
+            return false;
         }
         for(SearchHit hit:hits){
             Map<String, Object> sourceAsMap = hit.getSourceAsMap();
             sourceAsMap.remove("noticeContent");
             logger.info(JSON.toJSONString(sourceAsMap));
         }
+        return true;
     }
 
 
