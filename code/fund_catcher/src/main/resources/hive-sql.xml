@@ -87,4 +87,30 @@
 
         ]]>
     </kzz_select2>
+    <quekou>
+        <![CDATA[
+            select
+                cast(a.low as decimal(28,6))-cast(b.high as decimal(28,6)) as tiaokong,a.*,b.*
+            from
+                (
+                    select
+                        key,low,high,row_number() OVER(order by key) as rownum
+                    from
+                        index
+                    where
+                        key like 'SH000001_2018%'
+                ) a inner join
+                (
+                    select
+                        key,low,high,row_number() OVER(order by key) as rownum
+                    from
+                        index
+                    where
+                        key like 'SH000001_2018%'
+                ) b on cast(a.rownum as decimal(16,8))=cast(b.rownum as decimal(16,8))-1
+            where
+                cast(a.low as decimal(28,6))-cast(b.high as decimal(28,6))>20.00
+
+        ]]>
+    </quekou>
 </sqls>
