@@ -72,7 +72,7 @@ public class TestRunner extends CatcherRunner {
                             .must(QueryBuilders.termQuery("stockcode.keyword", stockcode)));
 
             SearchResponse response = searchRequestBuilder.execute().actionGet();
-
+            logger.info("zzzzzzzzzzzzz"+response);
             long totalCount = response.getHits().getTotalHits();
             logger.info(stockcode+" totalCount is "+totalCount);
             String scrollId=response.getScrollId();
