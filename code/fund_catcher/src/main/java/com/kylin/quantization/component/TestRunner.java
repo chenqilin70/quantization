@@ -77,15 +77,23 @@ public class TestRunner extends CatcherRunner {
             logger.info(stockcode+" totalCount is "+totalCount);
             String scrollId=response.getScrollId();
             while(true){
+                logger.info("aaaaaa");
                 SearchScrollRequestBuilder searchScrollRequestBuilder = ESUtil.getEsClient().prepareSearchScroll(scrollId)
                         .setScroll(new TimeValue(60000));
+                logger.info("bbbb"+searchScrollRequestBuilder);
                 SearchResponse searchResponse = searchScrollRequestBuilder.execute().actionGet();
+                logger.info("cccc"+searchResponse);
                 scrollId=searchResponse.getScrollId();
+                logger.info("dddd"+scrollId);
                 SearchHits hits = searchResponse.getHits();
+                logger.info("eeee"+hits);
                 if(hits.getHits().length==0){
+                    logger.info("hits.getHits().length   :0");
                     break;
                 }
+                logger.info("ffff");
                 for(SearchHit hit:hits){
+                    logger.info("gggg");
                     Map<String, Object> sourceAsMap = hit.getSourceAsMap();
                     sourceAsMap.remove("noticeContent");
                     logger.info(JSON.toJSONString(sourceAsMap));
