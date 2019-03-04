@@ -405,9 +405,10 @@ public class CatcherService {
             Element a = spans.get(2).getElementsByTag("a").get(0);
             String href = conf.get("stock_notice_detail")+a.attr("href");
             String title=a.attr("title");
-
             if(!existHref(stockcode,href)){
                 dealDetail(href,ssMapUtil.create("stockcode",stockcode,"title",title));
+            }else{
+                logger.info("stockcode:"+stockcode+" ,href:"+href+"，在ES中已存在，将略过……");
             }
 
 
@@ -418,7 +419,7 @@ public class CatcherService {
 
     private boolean existHref(String stockcode, String href) {
         SearchRequestBuilder searchRequestBuilder = ESUtil.getEsClient().prepareSearch("stock_notice")
-                .setIndices("stock_notice").setTypes("stock_notice")
+                .setIndices("stock_notice").setTypes("stock_notice").setSize(1)
                 .setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
 
         searchRequestBuilder.setQuery(QueryBuilders.boolQuery()
@@ -427,7 +428,7 @@ public class CatcherService {
 
         SearchResponse response = searchRequestBuilder.execute().actionGet();
         long totalCount = response.getHits().getTotalHits();
-        return false;
+        return totalCount>0;
     }
 
 
