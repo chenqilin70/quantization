@@ -69,8 +69,8 @@ public class TestRunner extends CatcherRunner {
 
             searchRequestBuilder.setQuery(QueryBuilders.matchAllQuery()) //查询所有
                     .setQuery(QueryBuilders.boolQuery()
-                            .must(QueryBuilders.matchQuery("htmlUrl", source.get(stockcode)))
-                            .must(QueryBuilders.matchQuery("stockcode", stockcode)));
+                            .must(QueryBuilders.termQuery("htmlUrl", source.get(stockcode)))
+                            .must(QueryBuilders.termQuery("stockcode", stockcode)));
 
             SearchResponse response = searchRequestBuilder.execute().actionGet();
 
