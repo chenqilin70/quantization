@@ -58,8 +58,8 @@ public class TestRunner extends CatcherRunner {
 
 
         Map<String, String> source = new MapUtil<String, String>().create(
-                "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html"
-                ,"601319","http://guba.eastmoney.com/news,601319,753909484.html"
+//                "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,
+               "601319","http://guba.eastmoney.com/news,601319,753909484.html"
         );
 
         source.keySet().stream().forEach(stockcode->{
