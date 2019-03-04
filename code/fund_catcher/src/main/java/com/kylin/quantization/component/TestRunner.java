@@ -64,7 +64,7 @@ public class TestRunner extends CatcherRunner {
 
         source.keySet().stream().forEach(stockcode->{
             SearchRequestBuilder searchRequestBuilder = ESUtil.getEsClient().prepareSearch("stock_notice")
-                    .setIndices("stock_notice").setTypes("stock_notice").setSize(0)
+                    .setIndices("stock_notice").setTypes("stock_notice").setSize(1)
                     .setScroll(new TimeValue(60000)).addSort(SortBuilders.fieldSort("_doc"));
 
             searchRequestBuilder.setQuery(QueryBuilders.boolQuery()
