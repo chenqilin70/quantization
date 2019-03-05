@@ -57,7 +57,8 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        logger.info(TestMain.class.getClassLoader().getResource("ac.txt"));
+        logger.info("==========="+TestMain.class.getClassLoader().getResource("").getPath());
+        logger.info("==========="+TestMain.class.getClassLoader().getResource("ac.txt").getPath());
 
         /*Map<String, String> source = new MapUtil<String, String>().create(
                 "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,

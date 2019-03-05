@@ -9,6 +9,7 @@ import com.kylin.quantization.util.ExceptionTool;
 import com.kylin.quantization.util.MapUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
 import com.kylin.quantization.util.StringReplaceUtil;
+import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
