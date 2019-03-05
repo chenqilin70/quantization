@@ -1,7 +1,11 @@
 package com.kylin.quantization;
 
+import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.config.CatcherConfig;
+import com.kylin.quantization.dao.impl.HiveDaoImpl;
 import com.kylin.quantization.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.text.ParseException;
@@ -11,8 +15,11 @@ import java.util.*;
 public class TestMain {
     private static Map<String, String> conf = CatcherConfig.proToMap("conf.properties");
     private static MapUtil<String,String> ssMapUtil=new MapUtil<>();
+    public static Logger logger= LoggerFactory.getLogger(HiveDaoImpl.class);
     public static void main(String[] args) throws ParseException, IOException {
-        System.out.println(TestMain.class.getClassLoader().getResource(""));
+        HiveDaoImpl dao=new HiveDaoImpl();
+        List<Map<String, Object>> test = dao.executeSql("test", true);
+        logger.info(JSON.toJSONString(test));
 
         /*BigDecimal chicang=new BigDecimal("1");
         BigDecimal zuigaojia=new BigDecimal("100");

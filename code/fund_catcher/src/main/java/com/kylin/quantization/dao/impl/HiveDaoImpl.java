@@ -53,13 +53,13 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
             synchronized (this){
                 if(conn==null){
                     try {
-                        Configuration conf = new Configuration();
+                        /*Configuration conf = new Configuration();
                         conf.set("hadoop.security.authentication", "Kerberos");
 
                         System.setProperty("java.security.krb5.conf", "/usr/local/workspace/krb5.conf");// krb5.conf存放的位置
 
                         UserGroupInformation.setConfiguration(conf);
-                        UserGroupInformation.loginUserFromKeytab("hive@EXAMPLE.COM", "/usr/local/workspace/hive.keytab"); // 把edw.keytab放到指定目录
+                        UserGroupInformation.loginUserFromKeytab("hive@EXAMPLE.COM", "/usr/local/workspace/hive.keytab"); // 把edw.keytab放到指定目录*/
 
 
 
