@@ -1,7 +1,6 @@
 package com.kylin.quantization.component;
 
 import com.alibaba.fastjson.JSON;
-import com.kylin.quantization.TestMain;
 import com.kylin.quantization.dao.HBaseDao;
 import com.kylin.quantization.dao.impl.HiveDaoImpl;
 import com.kylin.quantization.service.CatcherService;
@@ -57,8 +56,9 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        logger.info("==========="+TestMain.class.getClassLoader().getResource("").getPath());
-        logger.info("==========="+TestMain.class.getClassLoader().getResource("ac.txt").getPath());
+        HiveDaoImpl dao=new HiveDaoImpl();
+        List<Map<String, Object>> test = dao.executeSql("test", true);
+        logger.info(JSON.toJSONString(test));
 
         /*Map<String, String> source = new MapUtil<String, String>().create(
                 "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,

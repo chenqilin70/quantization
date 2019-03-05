@@ -9,6 +9,7 @@ import com.kylin.quantization.util.ExceptionTool;
 import com.kylin.quantization.util.MapUtil;
 import com.kylin.quantization.util.SqlConfigUtil;
 import com.kylin.quantization.util.StringReplaceUtil;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +53,17 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
             synchronized (this){
                 if(conn==null){
                     try {
+                        Configuration conf = new Configuration();
+                        conf.set("hadoop.security.authentication", "Kerberos");
+
+                        System.setProperty("java.security.krb5.conf", "/usr/local/workspace/fund_catcher/krb5.conf");// krb5.conf存放的位置
+
+                        UserGroupInformation.setConfiguration(conf);
+                        UserGroupInformation.loginUserFromKeytab("hive@EXAMPLE.COM", "/usr/local/workspace/fund_catcher/hive.keytab"); // 把edw.keytab放到指定目录
+
+
+
+
                         Map<String, String> hiveProp = CatcherConfig.proToMap("hive.properties");
                         Class.forName(hiveProp.get("driverName"));
                         conn = DriverManager.getConnection(hiveProp.get("url"),hiveProp.get("user"),hiveProp.get("password"));
