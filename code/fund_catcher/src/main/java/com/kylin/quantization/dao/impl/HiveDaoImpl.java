@@ -59,7 +59,7 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
                         System.setProperty("java.security.krb5.conf", "/usr/local/workspace/fund_catcher/krb5.conf");// krb5.conf存放的位置
 
                         UserGroupInformation.setConfiguration(conf);
-                        UserGroupInformation.loginUserFromKeytab("hive", "/usr/local/workspace/fund_catcher/hive.keytab"); // 把edw.keytab放到指定目录
+                        UserGroupInformation.loginUserFromKeytab("hive@EXAMPLE.COM", "/usr/local/workspace/fund_catcher/hive.keytab"); // 把edw.keytab放到指定目录
 
 
 
