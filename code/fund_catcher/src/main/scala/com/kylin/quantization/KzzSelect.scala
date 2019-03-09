@@ -7,8 +7,10 @@ import com.alibaba.fastjson.serializer.SerializerFeature
 import com.kylin.quantization.computors.BaseSparkMain
 import com.kylin.quantization.dao.impl.HiveDaoImpl
 import com.kylin.quantization.model.{Kzzmx, LoadDataModel, Workedkzzmx}
-import com.kylin.quantization.util.{HdfsUtil, JedisUtil}
+import com.kylin.quantization.util.{HdfsUtil, JedisUtil, MapUtil}
+import org.apache.calcite.avatica.Meta.Pat
 import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.Path
 import org.apache.spark.SparkContext
 import org.apache.spark.mllib.random.RandomRDDs._
 import org.apache.spark.sql.{SQLContext, SaveMode}
@@ -57,10 +59,11 @@ object KzzSelect extends ScalaBaseSparkMain{
 
     var df2=sql("kzz_select2",sc,sqlSc)
     var destPath="hdfs://nameservice1/workspace/externalData/workedkzz"
-    df2.write.format("parquet").mode(SaveMode.Overwrite).save(destPath)
     var dao=new HiveDaoImpl()
     dao.executeSql("create_worked_kzz",false)
-
+    dao.executeSql("truncateTable",false,new MapUtil[String,String].create("table","workedkzz"))
+    HdfsUtil.getFs.delete(new Path("hdfs://nameservice1/workspace/externalData/workedkzz/*"),true)
+    df2.write.format("parquet").mode(SaveMode.Overwrite).save(destPath)
     var load=new LoadDataModel(destPath+"/*.parquet","fund_catcher.workedkzz").setLocal(LoadDataModel.HDFS_FILE).setOverwrite(LoadDataModel.OVERWRITE_TABLE)
     dao.loadData(load)
     sc.stop()
