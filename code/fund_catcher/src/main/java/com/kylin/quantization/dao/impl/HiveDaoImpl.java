@@ -53,17 +53,6 @@ public class HiveDaoImpl  extends BaseDaoImpl implements HiveDao {
             synchronized (this){
                 if(conn==null){
                     try {
-                        Configuration conf = new Configuration();
-                        conf.set("hadoop.security.authentication", "Kerberos");
-
-                        System.setProperty("java.security.krb5.conf", "/etc/krb5.conf");// krb5.conf存放的位置
-
-                        UserGroupInformation.setConfiguration(conf);
-                        UserGroupInformation.loginUserFromKeytab("kylin/admin@EXAMPLE.COM", "/usr/local/workspace/kylin.keytab"); // 把edw.keytab放到指定目录
-
-
-
-
                         Map<String, String> hiveProp = CatcherConfig.proToMap("hive.properties");
                         Class.forName(hiveProp.get("driverName"));
                         conn = DriverManager.getConnection(hiveProp.get("url"),hiveProp.get("user"),hiveProp.get("password"));
