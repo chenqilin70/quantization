@@ -115,7 +115,7 @@
     </quekou>
     <test>
         <![CDATA[
-            select * from fund limit 10
+            select * from fund_catcher.fund limit 10
         ]]>
     </test>
 </sqls>
