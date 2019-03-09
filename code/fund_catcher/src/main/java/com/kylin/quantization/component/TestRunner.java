@@ -2,10 +2,12 @@ package com.kylin.quantization.component;
 
 import com.alibaba.fastjson.JSON;
 import com.kylin.quantization.dao.HBaseDao;
+import com.kylin.quantization.dao.impl.HBaseDaoImpl;
 import com.kylin.quantization.dao.impl.HiveDaoImpl;
 import com.kylin.quantization.service.CatcherService;
 import com.kylin.quantization.util.ESUtil;
 import com.kylin.quantization.util.MapUtil;
+import com.kylin.quantization.util.RowKeyUtil;
 import org.apache.log4j.Logger;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -56,9 +58,7 @@ public class TestRunner extends CatcherRunner {
 
     @Override
     protected void doTask() {
-        HiveDaoImpl dao=new HiveDaoImpl();
-        List<Map<String, Object>> test = dao.executeSql("test", true);
-        logger.info(JSON.toJSONString(test));
+        logger.info(hBaseDao.getData("fund", RowKeyUtil.getBaseInfoRowKey("161604")));
 
         /*Map<String, String> source = new MapUtil<String, String>().create(
                 "002070", "http://guba.eastmoney.com/list,002070,3,f_1.html" ,
