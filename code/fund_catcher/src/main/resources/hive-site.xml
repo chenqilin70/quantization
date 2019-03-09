@@ -203,20 +203,8 @@
     <value>true</value>
   </property>
   <property>
-    <name>hive.metastore.sasl.enabled</name>
-    <value>true</value>
-  </property>
-  <property>
-    <name>hive.server2.authentication</name>
-    <value>kerberos</value>
-  </property>
-  <property>
-    <name>hive.metastore.kerberos.principal</name>
-    <value>hive/_HOST@EXAMPLE.COM</value>
-  </property>
-  <property>
-    <name>hive.server2.authentication.kerberos.principal</name>
-    <value>hive/_HOST@EXAMPLE.COM</value>
+    <name>hive.server2.use.SSL</name>
+    <value>false</value>
   </property>
   <property>
     <name>spark.shuffle.service.enabled</name>
