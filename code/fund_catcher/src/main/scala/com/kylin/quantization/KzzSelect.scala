@@ -61,7 +61,7 @@ object KzzSelect extends ScalaBaseSparkMain{
     var destPath="hdfs://nameservice1/workspace/externalData/workedkzz"
     var dao=new HiveDaoImpl()
     dao.executeSql("create_worked_kzz",false)
-    dao.executeSql("truncateTable",false,new MapUtil[String,String].create("table","workedkzz"))
+    dao.executeSql("truncateTable",false,new MapUtil[String,String].create("table","fund_catcher.workedkzz"))
     HdfsUtil.getFs.delete(new Path("hdfs://nameservice1/workspace/externalData/workedkzz/*"),true)
     df2.write.format("parquet").mode(SaveMode.Overwrite).save(destPath)
     var load=new LoadDataModel(destPath+"/*.parquet","fund_catcher.workedkzz").setLocal(LoadDataModel.HDFS_FILE).setOverwrite(LoadDataModel.OVERWRITE_TABLE)
