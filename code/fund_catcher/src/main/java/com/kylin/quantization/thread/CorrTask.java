@@ -19,7 +19,7 @@ import java.util.List;
  * Author: aierxuan
  * Date: 2019-01-27 10:36
  * History:
- * <author> <time> <version>    <desc>
+ * <author> <time> <version>    desc>
  * 作者姓名 修改时间    版本号 描述
  */
 public class CorrTask  extends BaseRecursiveTask<Row,Object>{
